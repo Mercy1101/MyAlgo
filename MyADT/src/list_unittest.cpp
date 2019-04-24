@@ -75,17 +75,17 @@ namespace {
     TEST_F(ListTest, Insert_Test)
     {
         list InsertList;
-        /* 链表为空的情况 */
+        /* List is empty */
         ASSERT_FALSE(InsertList.Insert(555, 0));
         ASSERT_FALSE(InsertList.Insert(666, 1));
 
-        /* 正常情况 */
+        /* common */
         InsertList.push_back(0);
         ASSERT_TRUE(InsertList.Insert(1, 0));
         EXPECT_EQ(InsertList.at(0), 0);
         EXPECT_EQ(InsertList.at(1), 1);
 
-        /* index为负数的情况 */
+        /* index is negative */
         for (int i = -1; i > -100; --i)
         {
             ASSERT_FALSE(InsertList.Insert(i, i));
@@ -96,13 +96,13 @@ namespace {
             InsertList.push_back(i);
         }
 
-        /* 正常情况 */
+        /* common */
         ASSERT_TRUE(InsertList.Insert(2222, 2));
         EXPECT_EQ(InsertList.at(2 + 1), 2222);
         ASSERT_TRUE(InsertList.Insert(55555, 50));
         EXPECT_EQ(InsertList.at(50 + 1), 55555);
 
-        /* index超过list的最大值情况 */
+        /* index is bigger than list max value */
         list OutOfIndex;
         OutOfIndex.push_back(0);
         for (int i = 0; i < 5; i++)

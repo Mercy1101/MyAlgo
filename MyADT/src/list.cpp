@@ -14,7 +14,7 @@ list::list(int iValue)
 
 list::~list()
 {
-    /* 如果是第一个节点 */
+    /* If is first node */
     if (nullptr == m_pstRoot)
     {
         return;
@@ -35,7 +35,7 @@ list::~list()
 
 bool list::push_back(const int &iValue)
 {
-    /* 如果是第一个节点 */
+    /* If is first node */
     if (nullptr == m_pstRoot)
     {
         m_pstRoot = new T;
@@ -57,12 +57,11 @@ bool list::push_back(const int &iValue)
     return true;
 }
 
-/* 在第iIndex位置后插入元素 */
+/* Insert node after index node */
 bool list::Insert(const int &iValue, const int &iIndex)
 {
     if (iIndex < 0 || nullptr == m_pstRoot)
     {
-        // assert(0);
         return false;
     }
     else
@@ -72,7 +71,8 @@ bool list::Insert(const int &iValue, const int &iIndex)
         {
             if (pTmp == nullptr)
             {
-                /* iIndex大于list总长度，就直接在list后面添加该元素 */
+                /* iIndex is max than list total length
+                Insert back in list */
                 this->push_back(iValue);
                 return false;
             }
@@ -88,10 +88,9 @@ bool list::Insert(const int &iValue, const int &iIndex)
 
 const int& list::at(const int &iIndex) const
 {
-    /* Index 非法情況 */
+    /* Index is invalid */
     if (iIndex < 0 || nullptr == m_pstRoot)
     {
-        // assert(0);
         return INVALID_VALUE;
     }
 
@@ -105,7 +104,6 @@ const int& list::at(const int &iIndex) const
     {
         if (nullptr == pSt->pNext)
         {
-            // assert(0);
             return INVALID_VALUE;
         }
         pSt = pSt->pNext;
