@@ -1,13 +1,15 @@
-project(MyADT)
+project(MyAlgo)
 
 # Create the executable
 add_executable(${PROJECT_NAME} 
-            src/main.cpp
+            main.cpp
             src/list.cpp
             src/list_unittest.cpp
+            src/list_template.cpp
+            src/list_template_unittest.cpp
 )
 
-target_include_directories(MyADT
+target_include_directories(MyAlgo
     PRIVATE 
         ${PROJECT_SOURCE_DIR}/include
         ${PROJECT_SOURCE_DIR}/googletest/include

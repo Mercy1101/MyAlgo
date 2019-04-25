@@ -1,7 +1,7 @@
 cmake_minimum_required (VERSION 3.5)
 
-project(MyADT)
+project(MyAlgo)
 
 # Add sub directories
 add_subdirectory(googletest)
-add_subdirectory(MyADT)
+add_subdirectory(MyAlgo)
