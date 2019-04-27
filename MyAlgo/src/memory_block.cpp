@@ -79,8 +79,8 @@ private:
     int* _data; // 指向资源的指针，代表资源本身
 };
 
+#if 0
 MemoryBlock f() { return MemoryBlock(50); }
-
 int main()
 {
     MemoryBlock a = f();            // 调用移动构造器，移动语义
@@ -90,3 +90,4 @@ int main()
     b = a;                          // 调用拷贝赋值运算符，拷贝语义
     c = std::move(a);               // 调用移动赋值运算符，移动语义
 }
+#endif
