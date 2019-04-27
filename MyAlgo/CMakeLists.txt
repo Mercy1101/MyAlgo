@@ -7,12 +7,15 @@ add_executable(${PROJECT_NAME}
             src/list_unittest.cpp
             src/list_template.cpp
             src/list_template_unittest.cpp
+            src/memory_block.cpp
+            easylogging++/easylogging++.cc
 )
 
 target_include_directories(MyAlgo
     PRIVATE 
         ${PROJECT_SOURCE_DIR}/include
-        ${PROJECT_SOURCE_DIR}/googletest/include
+        #${PROJECT_SOURCE_DIR}/googletest/include
+        ${PROJECT_SOURCE_DIR}/easylogging++
 )
 
 # Link the static library from subproject1 using it's alias sub::lib1

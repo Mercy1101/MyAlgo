@@ -3,11 +3,31 @@
 
 template<typename T>
 List<T>::~List()
-{}
+{
+    if (nullptr != m_pHead)
+    {
+        for (int i = 0; i < m_iListSize; i++)
+        {
+        }
+    }
+}
 
 template<typename T>
 bool List<T>::push_back(const ListNode<T> &tempInput)
-{}
+{
+    if (nullptr == m_Head)
+    {
+        m_Head = new List<T>(tempInput);
+        m_pTail = m_pHead;
+        m_iListSize = 1;
+    }
+    else
+    {
+        m_pTail->pNextNode = new List<T>(tempInput);
+        m_pTail = m_pTail->pNextNode;
+        m_iListSize++;
+    }
+}
 
 template<typename T>
 void List<T>::print(std::ostream &os = std::cout) const
