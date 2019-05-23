@@ -2,8 +2,8 @@
 #include "gos_get_file_size.h"
 
 /* 72¸ö×Ö½Ú */
-const char * g_TestFilePath = "E:\\1WorkStation\\MyAlgo\\build\\MyAlgo\\Debug\\FileSizeTest.txt";
-const char * g_TestFileZeroPath = "E:\\1WorkStation\\MyAlgo\\build\\MyAlgo\\Debug\\FileSizeTest_Zero.txt";
+const char * g_TestFilePath = "G:\\GitHub_Clone\\MyAlgo\\build\\FileSizeTest.txt";
+const char * g_TestFileZeroPath = "G:\\GitHub_Clone\\MyAlgo\\build\\FileSizeTest_Zero.txt";
 
 namespace {
     // The fixture for testing class Foo.
@@ -43,7 +43,7 @@ namespace {
 
     TEST_F(Gos_get_file_size, Normal_TXTFile)
     {
-       EXPECT_EQ(gos_get_file_size(g_TestFilePath), 72);
+        EXPECT_EQ(gos_get_file_size(g_TestFilePath), 72);
     }
 
     TEST_F(Gos_get_file_size, No_Input_File)
@@ -66,5 +66,4 @@ namespace {
 #define _OSWIN32_
 #endif
     }
-
 }  // namespace

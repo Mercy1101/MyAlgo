@@ -41,7 +41,7 @@ namespace {
     // Tests that the Foo::Bar() method does Abc.
     TEST_F(Gos_itoa, NormalTest)
     {
-        CHAR    acDigit[10] = {0};
+        CHAR    acDigit[10] = { 0 };
         UINT32  ulDigit = 0;
 
         ulDigit = 1;
@@ -63,7 +63,7 @@ namespace {
 
     TEST_F(Gos_itoa, Out_Of_Bound)
     {
-        CHAR    acDigit[11] = {0};
+        CHAR    acDigit[11] = { 0 };
         UINT32  ulDigit = 0;
 
         // 负值不正常工作
@@ -77,7 +77,7 @@ namespace {
             EXPECT_EQ(gos_itoa(ulDigit, acDigit), 10);
             ASSERT_STREQ(acDigit, "2147483647");
 
-            ulDigit = INT_MAX+1;
+            ulDigit = INT_MAX + 1;
             EXPECT_EQ(gos_itoa(ulDigit, acDigit), 10);
             ASSERT_STREQ(acDigit, "2147483648");
 
@@ -96,17 +96,16 @@ namespace {
             EXPECT_EQ(gos_itoa(ulDigit, acDigit), 10);
             ASSERT_STREQ(acDigit, "4294967295");
 
-            ulDigit = UINT_MAX+1;// ulDigitΪ0
+            ulDigit = UINT_MAX + 1;// ulDigitΪ0
             EXPECT_EQ(gos_itoa(ulDigit, acDigit), 1);
             ASSERT_STRNE(acDigit, "4294967296");
             ASSERT_STREQ(acDigit, "0");
         }
-
     }
 
     TEST_F(Gos_itoa, Imporve_Normal)
     {
-        char acBuf[1024] = {0};
+        char acBuf[1024] = { 0 };
         int  value = -123456;
         ASSERT_STREQ(gos_itoa_imporve(value, acBuf), "-123456");
         ASSERT_STREQ(acBuf, "-123456");
@@ -125,7 +124,7 @@ namespace {
     /* 正常工作的最大值和最小值 */
     TEST_F(Gos_itoa, Imporve_MaxAndMin)
     {
-        char acBuf[1024] = {0};
+        char acBuf[1024] = { 0 };
         int  value = INT_MAX;
 
         ASSERT_STREQ(gos_itoa_imporve(value, acBuf), "2147483647");
@@ -140,23 +139,22 @@ namespace {
     /* int型溢出时，工作不正常 */
     TEST_F(Gos_itoa, Imporve_OutOfBound)
     {
-        char acBuf[1024] = {0};
+        char acBuf[1024] = { 0 };
         int  value = INT_MAX;
 
-        value = INT_MAX+1;
+        value = INT_MAX + 1;
         ASSERT_STREQ(gos_itoa_imporve(value, acBuf), "-2147483648");
         ASSERT_STREQ(acBuf, "-2147483648");
 
         memset(acBuf, sizeof(acBuf), 0);
-        value = INT_MIN-1;
+        value = INT_MIN - 1;
         ASSERT_STREQ(gos_itoa_imporve(value, acBuf), "2147483647");
         ASSERT_STREQ(acBuf, "2147483647");
     }
 
-
     void gos_itoa_test(UINT32 times)
     {
-        CHAR    acDigit[16] = {0};
+        CHAR    acDigit[16] = { 0 };
 
         for (UINT32 i = 0; i < times; ++i)
         {
@@ -166,7 +164,7 @@ namespace {
 
     void gos_itoa_imporve_test(UINT32 times)
     {
-        CHAR    acDigit[16] = {0};
+        CHAR    acDigit[16] = { 0 };
 
         for (UINT32 i = 0; i < times; ++i)
         {
@@ -176,8 +174,7 @@ namespace {
 
     TEST_F(Gos_itoa, Profiler_Test)
     {
-        PROFILER_F(gos_itoa_test, LEE_DEBUG::NUMBER_E::Billion_);
-        PROFILER_F(gos_itoa_imporve_test, LEE_DEBUG::NUMBER_E::Billion_);
+        PROFILER_F(gos_itoa_test, LEE_DEBUG::NUMBER_E::Hundred_Thousands_);
+        PROFILER_F(gos_itoa_imporve_test, LEE_DEBUG::NUMBER_E::Hundred_Thousands_);
     }
-
 }  // namespace
