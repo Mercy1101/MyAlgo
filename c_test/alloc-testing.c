@@ -50,7 +50,8 @@ CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 typedef struct _BlockHeader BlockHeader;
 
-struct _BlockHeader {
+struct _BlockHeader 
+{
 	unsigned int magic_number;
 	size_t bytes;
 };
@@ -108,7 +109,8 @@ void *alloc_test_malloc(size_t bytes)
 
 	/* Check if we have reached the allocation limit. */
 
-	if (allocation_limit == 0) {
+	if (allocation_limit == 0) 
+    {
 		return NULL;
 	}
 
@@ -117,7 +119,8 @@ void *alloc_test_malloc(size_t bytes)
 
 	header = malloc(sizeof(BlockHeader) + bytes);
 
-	if (header == NULL) {
+	if (header == NULL) 
+    {
 		return NULL;
 	}
 
@@ -136,7 +139,8 @@ void *alloc_test_malloc(size_t bytes)
 
 	/* Decrease the allocation limit */
 
-	if (allocation_limit > 0) {
+	if (allocation_limit > 0) 
+    {
 		--allocation_limit;
 	}
 
@@ -154,7 +158,8 @@ void alloc_test_free(void *ptr)
 
 	/* Must accept NULL as a valid pointer to free. */
 
-	if (ptr == NULL) {
+	if (ptr == NULL) 
+    {
 		return;
 	}
 
@@ -193,18 +198,21 @@ void *alloc_test_realloc(void *ptr, size_t bytes)
 
 	new_ptr = alloc_test_malloc(bytes);
 
-	if (new_ptr == NULL) {
+	if (new_ptr == NULL) 
+    {
 		return NULL;
 	}
 
 	/* Copy over the old data and free the old block, if there was any. */
 
-	if (ptr != NULL) {
+	if (ptr != NULL) 
+    {
 		header = alloc_test_get_header(ptr);
 
 		bytes_to_copy = header->bytes;
 
-		if (bytes_to_copy > bytes) {
+		if (bytes_to_copy > bytes)
+        {
 			bytes_to_copy = bytes;
 		}
 
@@ -225,7 +233,8 @@ void *alloc_test_calloc(size_t nmemb, size_t bytes)
 
 	result = alloc_test_malloc(total_bytes);
 
-	if (result == NULL) {
+	if (result == NULL) 
+    {
 		return NULL;
 	}
 
@@ -242,7 +251,8 @@ char *alloc_test_strdup(const char *string)
 
 	result = alloc_test_malloc(strlen(string) + 1);
 
-	if (result == NULL) {
+	if (result == NULL) 
+    {
 		return NULL;
 	}
 

@@ -1,5 +1,6 @@
 /build/*
-/.vscode/*
-/cmake/*
+/SourceInsight/*
+/MyAlgo.si4project/*
 /*.si4project/*
+/.vscode/*
 html/*

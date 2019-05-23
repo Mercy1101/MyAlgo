@@ -4,9 +4,15 @@ project(MyAlgo)
 add_executable(${PROJECT_NAME} 
             main.cpp
             src/list.cpp
-            src/list_unittest.cpp
-            src/easylogging++.cpp
+            src/gos_itoa.cpp
+            src/gos_get_localtime.cpp
+            src/gos_get_file_size.cpp
+            unittest/list_unittest.cpp
+            unittest/gos_itoa_unittest.cpp
+            unittest/gos_get_localtime_unittest.cpp
+            unittest/gos_get_file_size_unittest.cpp
             src/profiler.cpp
+            src/easylogging++.cpp
 )
 
 target_include_directories(MyAlgo
@@ -15,9 +21,6 @@ target_include_directories(MyAlgo
         ${PROJECT_SOURCE_DIR}/googletest/include
 )
 
-# Link the static library from subproject1 using it's alias sub::lib1
-# Link the header only library from subproject2 using it's alias sub::lib2
-# This will cause the include directories for that target to be added to this project
 target_link_libraries(${PROJECT_NAME}
     sub::googletest
 )

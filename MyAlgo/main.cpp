@@ -1,18 +1,15 @@
 #include <iostream>
 #include "gtest/gtest.h"
 #include "easylogging++.h"
+#include "gos_typedef.h"
 #include "profiler.h"
 
 INITIALIZE_EASYLOGGINGPP
 
 int main(int argc, char **argv)
 {
-    TinySTL::profiler::ProfilerInstance::start();
     ::testing::InitGoogleTest(&argc, argv);
-    RUN_ALL_TESTS();
-    LOG(INFO) << "Test once!";
-    TinySTL::profiler::ProfilerInstance::finish();
-    TinySTL::profiler::ProfilerInstance::dumpDuringTime();
-    TinySTL::profiler::ProfilerInstance::memory();
+    PROFILER_F(RUN_ALL_TESTS);
+    PROFILER_F(printf, "It's Test. %d%u\n", "12s12", -34, 69);
     return 0;
 }
