@@ -1,6 +1,7 @@
 #ifndef MYALGO_INCLUDE_GOS_TYPEDEF_H
 #define MYALGO_INCLUDE_GOS_TYPEDEF_H
 
+#include <stdio.h>
 #include "profiler.h"
 
 #define PROFILER_MODE

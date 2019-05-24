@@ -62,6 +62,8 @@ namespace LEE_DEBUG{
             case MemoryUnit::GB_:
                 memory = pmc.WorkingSetSize GB;
                 break;
+            default:
+                break;
             }
             return memory;
         }
