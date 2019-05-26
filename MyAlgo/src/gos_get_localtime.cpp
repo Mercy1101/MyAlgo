@@ -23,14 +23,14 @@ INT32 gos_get_timezone(VOID)
 * @globalparam        : NONE
 * @classparam         : NONE
 * @database           : NONE
-* @return             : 
+* @return             :
 * @author             : Lijiancong, 316, lijiancong@fritt.com.cn
 * @createtime         : 2019-05-21 15:14:00
-* @note               : 
+* @note               :
 */
 BOOL gos_get_localtime(UINT32           *pulCurrTime,   // [in]
-                       GOS_DATETIME_T   *pstTime        // [out]
-                       )
+    GOS_DATETIME_T   *pstTime        // [out]
+)
 {
     static UINT32           bInit = FALSE;
     static UINT32           ulSecPerDay = 24 * 3600;
@@ -101,12 +101,12 @@ BOOL gos_get_localtime(UINT32           *pulCurrTime,   // [in]
 }
 
 BOOL gos_get_localtime_imporve(const time_t   * const    pulCurrTime,   // [in]
-                               GOS_DATETIME_IMPORVE_T   *pstTime        // [out]
-                               )
+    GOS_DATETIME_IMPORVE_T   *pstTime        // [out]
+)
 {
     tm      *pstTimeTemp = nullptr;
 
-    if(nullptr == pulCurrTime)
+    if (nullptr == pulCurrTime)
     {
         time_t  now = time(0);
         pstTimeTemp = localtime(&now);      // Current Time (UINTX time stamp)
@@ -116,12 +116,12 @@ BOOL gos_get_localtime_imporve(const time_t   * const    pulCurrTime,   // [in]
         pstTimeTemp = localtime(pulCurrTime);
     }
 
-    pstTime->ulYear     = pstTimeTemp->tm_year + 1900;
-    pstTime->ulMonth    = pstTimeTemp->tm_mon + 1;
-    pstTime->ulDay      = pstTimeTemp->tm_mday;
-    pstTime->ulHour     = pstTimeTemp->tm_hour;
-    pstTime->ulMinute   = pstTimeTemp->tm_min;
-    pstTime->ulSecond   = pstTimeTemp->tm_sec;
+    pstTime->ulYear = pstTimeTemp->tm_year + 1900;
+    pstTime->ulMonth = pstTimeTemp->tm_mon + 1;
+    pstTime->ulDay = pstTimeTemp->tm_mday;
+    pstTime->ulHour = pstTimeTemp->tm_hour;
+    pstTime->ulMinute = pstTimeTemp->tm_min;
+    pstTime->ulSecond = pstTimeTemp->tm_sec;
 
     return TRUE;
 }

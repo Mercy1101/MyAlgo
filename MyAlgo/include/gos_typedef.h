@@ -1,34 +1,10 @@
-#ifndef MYALGO_INCLUDE_GOS_TYPEDEF_H
+ï»¿#ifndef MYALGO_INCLUDE_GOS_TYPEDEF_H
 #define MYALGO_INCLUDE_GOS_TYPEDEF_H
 
 #include <stdio.h>
 #include "profiler.h"
 
-#define PROFILER_MODE
-#define _OSWIN32_
-
-#define THOU_TESTS_TIMES
-
-namespace LEE_DEBUG
-{
-
-/// 32Î»ÏµÍ³intÈ¡Öµ·¶Î§         £º-2^31 ~ 2^31-1£¨2147483647~-2147483648, Ô¼21ÒÚ£©
-/// 32Î»ÏµÍ³unsigned intÈ¡Öµ·¶Î§£º0 ~ 2^23 - 1 (0~4294967296, Ô¼42ÒÚ)
-enum NUMBER_E
-{
-    Thousand_ = 1000,               // Ç§
-    Ten_Thousands_ = 10000,         // Íò
-    Hundred_Thousands_ = 100000,    // Ê®Íò
-    Million_ = 1000000,             // °ÙÍò
-    Ten_Million_ = 10000000,        // Ç§Íò
-    Hundred_Million_ = 10000000,    // ÒÚ
-    Billion_ = 100000000,           // Ê®ÒÚ
-    INT_MAX_NUM_ = 2147483647,      // 32Î»ÏµÍ³intÉÏÏŞ£¨Ô¼21ÒÚ£©
-    //UINT_MAX_NUM_ = 4294967296,     // 32Î»ÏµÍ³intÉÏÏŞ£¨Ô¼21ÒÚ£©
-};
-
-}
-
+#define _OSWIN32_       // windowsä¸‹32bitçš„åº”ç”¨ç¨‹åºå®šä¹‰è¯¥å®
 
 #define BOOL    int
 #define TRUE    1
@@ -46,7 +22,6 @@ enum NUMBER_E
 #define CHAR    char
 #define VOID    void
 
-
 #ifndef ARRAY_SIZE
 #define ARRAY_SIZE(x)   sizeof(x)/sizeof((x)[0])
 #endif
@@ -61,28 +36,5 @@ enum NUMBER_E
 
 #define GET_SHORT(ptr)          (*((UINT16*)(ptr)))
 #define SET_SHORT(ptr, value)   (*((UINT16*)(ptr))) = (UINT16)(value)
-
-
-/* ´òÓ¡ÔËĞĞÊ±³¤ºÍµ±Ç°³ÌĞòÊ¹ÓÃ¶àÉÙÄÚ´æµÈĞÅÏ¢ 
-   Ê¹ÓÃËµÃ÷£º Ö»ÓĞÔÚ¶¨ÒåÁËPROFILER_MODEºêµÄÇé¿öÏÂ²Å»áÏÔÊ¾ĞÔÄÜĞÅÏ¢¡£·ñÔòÖ»ÊÇÕı³£µÄÔËĞĞ¸Ãº¯Êı¡£
-   xÎªº¯ÊıÃû£¬ ¶ººÅºóÃæÊÇº¯ÊıxËùĞèÒªµÄÈë²Î
-   ÀıÈç£º 1. itoa(a, b); ¸ÄĞ´ÎªºêÓ¦Îª PROFILER_F(itoa, a, b)
-         2. find();     ¸ÄĞ´ÎªºêÓ¦Îª PROFILER_F(find);
-*/
-#ifdef PROFILER_MODE
-#define PROFILER_F(x, ...)  LEE_DEBUG::Profiler::ProfilerInstance::start();\
-                            x##(__VA_ARGS__);\
-                            LEE_DEBUG::Profiler::ProfilerInstance::finish();\
-                            std::cout << "Function: " << #x << "() \n"; \
-                            std::cout << "In File: " << __FILE__ << " Line: " << __LINE__ << "\n";\
-                            std::cout << "Date: " << __DATE__ << " " << __TIME__<< "\n";\
-                            std::cout << "Spand Time: " << LEE_DEBUG::Profiler::ProfilerInstance::millisecond() << "ms\n" ;\
-                            std::cout << "Use Memory: " << LEE_DEBUG::Profiler::ProfilerInstance::memory() << "KB"; \
-                            std::cout << "(" << LEE_DEBUG::Profiler::ProfilerInstance::memory(LEE_DEBUG::Profiler::ProfilerInstance::MemoryUnit::MB_) \
-                                      << " MB)\n"<< std::endl;
-#else
-#define PROFILER_F(x, ...) x##(__VA_ARGS__);
-#endif
-
 
 #endif

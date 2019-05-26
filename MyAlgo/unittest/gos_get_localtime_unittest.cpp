@@ -1,4 +1,4 @@
-#include "gtest/gtest.h"
+ï»¿#include "gtest/gtest.h"
 #include "gos_get_localtime.h"
 
 namespace {
@@ -46,7 +46,7 @@ namespace {
         EXPECT_EQ(gos_get_localtime(reinterpret_cast<UINT32 *>(&ulCurrTime), &stLocalTime), TRUE);
         EXPECT_EQ(stLocalTime.usYear, 2019);
         EXPECT_EQ(stLocalTime.ucMonth, 5);
-        EXPECT_EQ(stLocalTime.ucDay, 21); 
+        EXPECT_EQ(stLocalTime.ucDay, 21);
 
         EXPECT_EQ(stLocalTime.ucHour, 15);
         EXPECT_EQ(stLocalTime.ucMinute, 41);
@@ -55,10 +55,10 @@ namespace {
 
         EXPECT_EQ(ulCurrTime, 1558424496);
 
-        // imporve°æÍ¬Ñù²âÊÔÒ»±é
+        // imporveç‰ˆåŒæ ·æµ‹è¯•ä¸€é
         GOS_DATETIME_IMPORVE_T      stLocalTimeImporve = { 0 };
 
-        // ËùÓĞÊıÖµÓ¦¸úÃ»ÓĞ¸Ä½ø°æÒ»ÖÂ
+        // æ‰€æœ‰æ•°å€¼åº”è·Ÿæ²¡æœ‰æ”¹è¿›ç‰ˆä¸€è‡´
         EXPECT_EQ(gos_get_localtime_imporve(&ulCurrTime, &stLocalTimeImporve), TRUE);
         EXPECT_EQ(stLocalTime.usYear, stLocalTimeImporve.ulYear);
         EXPECT_EQ(stLocalTime.ucMonth, stLocalTimeImporve.ulMonth);
@@ -68,7 +68,7 @@ namespace {
         EXPECT_EQ(stLocalTime.ucMinute, stLocalTimeImporve.ulMinute);
         EXPECT_EQ(stLocalTime.ucSecond, stLocalTimeImporve.ulSecond);
         // EXPECT_EQ(stLocalTime.ucSn, 0);
-        // ÔÙ´Î¼ì²é¸ÃÊıÖµÃ»ÓĞ±ä»¯
+        // å†æ¬¡æ£€æŸ¥è¯¥æ•°å€¼æ²¡æœ‰å˜åŒ–
         EXPECT_EQ(ulCurrTime, 1558424496);
     }
 
@@ -78,7 +78,7 @@ namespace {
         GOS_DATETIME_T      stLocalTime = { 0 };
 
         time_t now = time(0);
-        tm ltm = {0};
+        tm ltm = { 0 };
         localtime_s(&ltm, &now);      // Current Time (UINTX time stamp)
 
         // ASSERT_TRUE(gos_get_localtime(pulCurrTime, &stLocalTime));
@@ -94,10 +94,10 @@ namespace {
 
         EXPECT_EQ(pulCurrTime, nullptr);
 
-        // imporve°æÍ¬Ñù²âÊÔÒ»±é
+        // imporveç‰ˆåŒæ ·æµ‹è¯•ä¸€é
         GOS_DATETIME_IMPORVE_T      stLocalTimeImporve = { 0 };
 
-        // ËùÓĞÊıÖµÓ¦¸úÃ»ÓĞ¸Ä½ø°æÒ»ÖÂ
+        // æ‰€æœ‰æ•°å€¼åº”è·Ÿæ²¡æœ‰æ”¹è¿›ç‰ˆä¸€è‡´
         EXPECT_EQ(gos_get_localtime_imporve(pulCurrTime, &stLocalTimeImporve), TRUE);
         EXPECT_EQ(stLocalTime.usYear, stLocalTimeImporve.ulYear);
         EXPECT_EQ(stLocalTime.ucMonth, stLocalTimeImporve.ulMonth);
@@ -107,20 +107,20 @@ namespace {
         EXPECT_EQ(stLocalTime.ucMinute, stLocalTimeImporve.ulMinute);
         EXPECT_EQ(stLocalTime.ucSecond, stLocalTimeImporve.ulSecond);
         // EXPECT_EQ(stLocalTime.ucSn, 0);
-        // ÔÙ´Î¼ì²é¸ÃÊıÖµÃ»ÓĞ±ä»¯
+        // å†æ¬¡æ£€æŸ¥è¯¥æ•°å€¼æ²¡æœ‰å˜åŒ–
         EXPECT_EQ(pulCurrTime, nullptr);
     }
 
     TEST_F(Gos_get_localtime, Input_Time_Zero)
     {
-        time_t              ulCurrTime = 0;    // 1970/01/01 08:00:00   ¶«°ËÊ±Çø£¬ËùÒÔÊÇ°Ëµã
+        time_t              ulCurrTime = 0;    // 1970/01/01 08:00:00   ä¸œå…«æ—¶åŒºï¼Œæ‰€ä»¥æ˜¯å…«ç‚¹
         GOS_DATETIME_T      stLocalTime = { 0 };
 
         // ASSERT_TRUE(gos_get_localtime(reinterpret_cast<UINT32 *>(&ulCurrTime), &stLocalTime));
         EXPECT_EQ(gos_get_localtime(reinterpret_cast<UINT32 *>(&ulCurrTime), &stLocalTime), TRUE);
         EXPECT_EQ(stLocalTime.usYear, 1970);
         EXPECT_EQ(stLocalTime.ucMonth, 1);
-        EXPECT_EQ(stLocalTime.ucDay, 1); 
+        EXPECT_EQ(stLocalTime.ucDay, 1);
 
         EXPECT_EQ(stLocalTime.ucHour, 8);
         EXPECT_EQ(stLocalTime.ucMinute, 0);
@@ -129,10 +129,10 @@ namespace {
 
         EXPECT_EQ(ulCurrTime, 0);
 
-        // imporve°æÍ¬Ñù²âÊÔÒ»±é
+        // imporveç‰ˆåŒæ ·æµ‹è¯•ä¸€é
         GOS_DATETIME_IMPORVE_T      stLocalTimeImporve = { 0 };
 
-        // ËùÓĞÊıÖµÓ¦¸úÃ»ÓĞ¸Ä½ø°æÒ»ÖÂ
+        // æ‰€æœ‰æ•°å€¼åº”è·Ÿæ²¡æœ‰æ”¹è¿›ç‰ˆä¸€è‡´
         EXPECT_EQ(gos_get_localtime_imporve(&ulCurrTime, &stLocalTimeImporve), TRUE);
         EXPECT_EQ(stLocalTime.usYear, stLocalTimeImporve.ulYear);
         EXPECT_EQ(stLocalTime.ucMonth, stLocalTimeImporve.ulMonth);
@@ -142,7 +142,7 @@ namespace {
         EXPECT_EQ(stLocalTime.ucMinute, stLocalTimeImporve.ulMinute);
         EXPECT_EQ(stLocalTime.ucSecond, stLocalTimeImporve.ulSecond);
         // EXPECT_EQ(stLocalTime.ucSn, 0);
-        // ÔÙ´Î¼ì²é¸ÃÊıÖµÃ»ÓĞ±ä»¯
+        // å†æ¬¡æ£€æŸ¥è¯¥æ•°å€¼æ²¡æœ‰å˜åŒ–
         EXPECT_EQ(ulCurrTime, 0);
     }
 
@@ -173,5 +173,4 @@ namespace {
         PROFILER_F(gos_get_localtime_test, LEE_DEBUG::NUMBER_E::Hundred_Thousands_);
         PROFILER_F(gos_get_localtime_imporve_test, LEE_DEBUG::NUMBER_E::Hundred_Thousands_);
     }
-
 }  // namespace

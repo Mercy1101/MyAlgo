@@ -1,8 +1,7 @@
-#include "profiler.h"
+ï»¿#include "profiler.h"
 
-namespace LEE_DEBUG{
-    namespace Profiler{
-
+namespace LEE_DEBUG {
+    namespace Profiler {
         ProfilerInstance::TimePoint ProfilerInstance::startTime;
         ProfilerInstance::TimePoint ProfilerInstance::finishTime;
         ProfilerInstance::DurationTime ProfilerInstance::duringTime;
@@ -36,7 +35,7 @@ namespace LEE_DEBUG{
         size_t ProfilerInstance::memory(MemoryUnit mu)
         {
             size_t memory = 0;
-        #ifdef WIN32
+#ifdef WIN32
             PROCESS_MEMORY_COUNTERS pmc;
             HANDLE hProcess = GetCurrentProcess();
             if (!GetProcessMemoryInfo(hProcess, &pmc, sizeof(pmc)))
@@ -45,12 +44,12 @@ namespace LEE_DEBUG{
             }
 
             CloseHandle(hProcess);
-        #else
+#else
             struct rusage usage;
-            if(getrusage(RUSAGE_SELF, &usage) == -1)
+            if (getrusage(RUSAGE_SELF, &usage) == -1)
                 throw std::runtime_error("getrusage failed");
-            memory = usage.ru_maxrss / 1024;//Èç¹ûÄ³Ğ©linuxÆ½Ì¨²»ÍêÈ«Ö§³ÖgetrusageÔòru_maxrss×ÜÊÇ·µ»Ø0
-        #endif
+            memory = usage.ru_maxrss / 1024;//å¦‚æœæŸäº›linuxå¹³å°ä¸å®Œå…¨æ”¯æŒgetrusageåˆ™ru_maxrssæ€»æ˜¯è¿”å›0
+#endif
             switch (mu)
             {
             case MemoryUnit::KB_:

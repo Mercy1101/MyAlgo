@@ -1,7 +1,7 @@
-#include "gtest/gtest.h"
+ï»¿#include "gtest/gtest.h"
 #include "gos_get_file_size.h"
 
-/* 118¸ö×Ö½Ú */
+/* 118ä¸ªå­—èŠ‚ */
 const char * g_TestFilePath = "D:\\NormalTxt.txt";
 const char * g_TestFileZeroPath = "D:\\ZeroFile.txt";
 

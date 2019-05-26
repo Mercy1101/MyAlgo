@@ -6,7 +6,7 @@
 /*
 * @name               : gos_itoa
 * @function           : 将输入的无符号整型转化为C字符串输出,工作在32位系统无符号整形所有值
-* @class              : 
+* @class              :
 * @classparam         : NONE
 * @database           : NONE
 * @return             : 返回szDigit中的数字的长度，如‘1000’为4，‘10’为2
@@ -15,13 +15,13 @@
 * @note               : szDigit:如为字符数组，则长度最少为11位，否则有可能溢出(win32)。
 */
 INT32 gos_itoa(const  UINT32 ulDigit,   // [in]
-               CHAR *        szDigit    // [out]
-               )
+    CHAR *        szDigit    // [out]
+)
 {
     static BOOL         bInit = FALSE;
-    static UINT32       aulLen[100000] = {0};
-    static UINT64       au64Value[100000] = {0};
-    static UINT64       au64Value2[100000] = {0};
+    static UINT32       aulLen[100000] = { 0 };
+    static UINT64       au64Value[100000] = { 0 };
+    static UINT64       au64Value2[100000] = { 0 };
     UINT32              ulDigitLow = 0;
     UINT32              ulDigitHigh = 0;
 
@@ -55,7 +55,7 @@ INT32 gos_itoa(const  UINT32 ulDigit,   // [in]
 template<class BidirIt>
 void reverse(BidirIt first, BidirIt last)
 {
-    while ((first != last) && (first != --last)) 
+    while ((first != last) && (first != --last))
     {
         std::iter_swap(first++, last);
     }
@@ -71,13 +71,13 @@ void reverse(BidirIt first, BidirIt last)
 * @author             : Lijiancong, 316, lijiancong@fritt.com.cn
 * @createtime         : 2019-05-23 14:24:24
 * @modifytime         : 2019-05-23 14:24:24
-* @note               : 
+* @note               :
 */
 const char* gos_itoa_imporve(const int value,     // [in]
-                             char      buf[]      // [out]
-                             )
+    char      buf[]      // [out]
+)
 {
-    static char digits[] = {'9','8','7','6','5','4','3','2','1','0','1','2','3','4','5','6','7','8','9'};
+    static char digits[] = { '9','8','7','6','5','4','3','2','1','0','1','2','3','4','5','6','7','8','9' };
     static const char* zero = digits + 9;   // zero points to '0'
 
     // works for -2137483648 .. 2137483648
@@ -86,7 +86,7 @@ const char* gos_itoa_imporve(const int value,     // [in]
 
     do
     {
-        // lsd - least significant digits int 
+        // lsd - least significant digits int
         int lsd = i % 10;   // lsd 可能小于0
         i /= 10;
         *p++ = zero[lsd];
@@ -102,5 +102,3 @@ const char* gos_itoa_imporve(const int value,     // [in]
     /* p在这个时刻指向buf后面的空字符 */
     return buf; // p - buf 为整数长度
 }
-
-

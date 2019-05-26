@@ -30,7 +30,7 @@ struct GOS_DATETIME_IMPORVE_T
 BOOL gos_get_localtime(UINT32 *pulCurrTime, GOS_DATETIME_T *pstTime);
 
 BOOL gos_get_localtime_imporve(const time_t   * const    pulCurrTime,   // [in]
-                               GOS_DATETIME_IMPORVE_T   *pstTime        // [out]
-                               );
+    GOS_DATETIME_IMPORVE_T   *pstTime        // [out]
+);
 
 #endif
