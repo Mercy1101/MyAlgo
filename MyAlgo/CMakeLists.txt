@@ -19,6 +19,8 @@ target_include_directories(MyAlgo
     PRIVATE 
         ${PROJECT_SOURCE_DIR}/include
         ${PROJECT_SOURCE_DIR}/googletest/include
+        ${PROJECT_SOURCE_DIR}/include/easy
+        ${PROJECT_SOURCE_DIR}/include/easy/details
 )
 
 target_link_libraries(${PROJECT_NAME}
