@@ -6,7 +6,7 @@
 INT32 gos_itoa(UINT32 ulDigit, CHAR *szDigit);
 
 const char* gos_itoa_imporve(const int value,     // [in]
-    char      buf[]      // [out]
-);
+                             char      buf[]      // [out]
+                             );
 
 #endif
