@@ -9,12 +9,18 @@ add_executable(${PROJECT_NAME}
             src/gos_get_file_size.cpp
             src/GLog.cpp
             src/g_logger.cpp
+            src/binary_search.cpp
+            src/forward.cpp
+            src/move.cpp
             unittest/list_unittest.cpp
             unittest/gos_itoa_unittest.cpp
             unittest/gos_get_localtime_unittest.cpp
             unittest/gos_get_file_size_unittest.cpp
             unittest/GLog_unittest.cpp
             unittest/Console_Color_unittest.cpp
+            unittest/binary_search_unittest.cpp
+            unittest/forward_unittest.cpp
+            unittest/move_unittest.cpp
             src/profiler.cpp
 )
 
