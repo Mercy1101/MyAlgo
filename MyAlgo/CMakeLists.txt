@@ -3,31 +3,15 @@ project(MyAlgo)
 # Create the executable
 add_executable(${PROJECT_NAME} 
             main.cpp
-            src/list.cpp
-            src/gos_itoa.cpp
-            src/gos_get_localtime.cpp
-            src/gos_get_file_size.cpp
-            src/GLog.cpp
-            src/g_logger.cpp
-            src/binary_search.cpp
-            src/forward.cpp
-            src/move.cpp
-            unittest/list_unittest.cpp
-            unittest/gos_itoa_unittest.cpp
-            unittest/gos_get_localtime_unittest.cpp
-            unittest/gos_get_file_size_unittest.cpp
-            unittest/GLog_unittest.cpp
-            unittest/Console_Color_unittest.cpp
-            unittest/binary_search_unittest.cpp
-            unittest/forward_unittest.cpp
-            unittest/move_unittest.cpp
-            src/profiler.cpp
+            src/gos/gos_func.cpp
+            unittest/gos_func_unittest.cpp
+            unittest/algorithm_unittest.cpp
 )
 
 target_include_directories(MyAlgo
     PRIVATE 
         ${PROJECT_SOURCE_DIR}/include
-        ${PROJECT_SOURCE_DIR}/googletest/include
+        ${PROJECT_SOURCE_DIR}/include/gos
 )
 
 target_link_libraries(${PROJECT_NAME}
