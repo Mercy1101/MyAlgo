@@ -90,7 +90,26 @@ namespace {
     }
 
     class QuickSort : public ::testing::Test
-    { };
+    {
+    public : 
+        template<typename T>
+        static
+        bool GP_Compare(const T &a, const T &b)
+        {
+            return a > b;
+        }
+
+        struct stDouble
+        {
+            int     first;
+            double  second;
+        };
+
+        static bool Struct_Compare(stDouble &a, stDouble &b)
+        {
+            return (a.second > b.second);
+        }
+    };
 
     TEST_F(QuickSort, Int)
     {
@@ -100,7 +119,7 @@ namespace {
         int list[MAX_ELEMENTS] = {6, 9, 5, 2, 4, 8, 7, 0, 1, 3};
 
         // sort the list using quicksort
-        quicksort(list, 0, MAX_ELEMENTS-1, GP_Compare<int>);
+        quicksort(list, 0, MAX_ELEMENTS-1, QuickSort::GP_Compare<int>);
 
         for (int i = 0; i < MAX_ELEMENTS-1; i++)
         {
@@ -125,23 +144,12 @@ namespace {
                                      3.00000002};
 
         // sort the list using quicksort
-        quicksort(list, 0, MAX_ELEMENTS-1, GP_Compare<double>);
+        quicksort(list, 0, MAX_ELEMENTS-1, QuickSort::GP_Compare<double>);
 
         for (int i = 0; i < MAX_ELEMENTS-1; i++)
         {
             EXPECT_DOUBLE_EQ(list[i], static_cast<double>(i)+0.00000002);
         }
-    }
-
-    struct stDouble
-    {
-        int     first;
-        double  second;
-    };
-
-    bool Struct_Compare(stDouble &a, stDouble &b)
-    {
-        return (a.second > b.second);
     }
 
     TEST_F(QuickSort, Struct)
@@ -163,7 +171,7 @@ namespace {
             {1, 3.00000002}};
 
         // sort the list using quicksort
-        quicksort(list, 0, MAX_ELEMENTS-1, Struct_Compare);
+        quicksort(list, 0, MAX_ELEMENTS-1, QuickSort::Struct_Compare);
 
         for (int i = 0; i < MAX_ELEMENTS-1; i++)
         {
@@ -172,7 +180,8 @@ namespace {
     }
 
     class Sort : public ::testing::Test
-    {};
+    {
+    };
 
     TEST_F(Sort, NormalTest)
     {

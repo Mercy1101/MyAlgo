@@ -1,6 +1,11 @@
+#ifndef INCLUDE_ALGORITHM_IMP_H
+#define INCLUDE_ALGORITHM_IMP_H
+
 #include <iostream>
 #include <algorithm>
 #include <vector>
+#include <limits>
+#include "gos_typedef.h"
 
 namespace Lee { namespace STL {
 
@@ -116,27 +121,9 @@ static void quicksort(T list[], int begin, int end, Compare Comp)
     }
 }
 
-template<typename T>
-bool GP_Compare(const T &a, const T &b)
-{
-    return a > b;
-}
-
 /***************************************************************************/
 
 /**************************sort*******************************************/
-template<class T>
-struct less
-{
-    typedef T First_Iteraor;
-    typedef T Second_Iteraor;
-    typedef bool Return_Value;
-    Return_Value operator()(const First_Iteraor& x, const Second_Iteraor& y)
-    {
-        return x < y;
-    }
-};
-
 template<class RandomIterator, class BinaryPredicate>
 typename std::iterator_traits<RandomIterator>::value_type
 mid3(RandomIterator first, RandomIterator last, BinaryPredicate pred)
@@ -178,6 +165,18 @@ void bubble_sort(RandomIterator first, RandomIterator last, BinaryPredicate pred
             break;
     }
 }
+
+template<class T>
+struct less
+{
+    typedef T First_Iteraor;
+    typedef T Second_Iteraor;
+    typedef bool Return_Value;
+    Return_Value operator()(const First_Iteraor& x, const Second_Iteraor& y)
+    {
+        return x < y;
+    }
+};
 
 template<class RandomIterator>
 void sort(RandomIterator first, RandomIterator last)
@@ -261,5 +260,9 @@ static size_t ROUND_UP(size_t bytes)
     return (x & y);
 }
 
+
+
 }  // end of namespace STL
 }  // end of namespace Lee
+
+#endif
