@@ -1,3 +1,76 @@
+### STL算法速览
+
+STL算法：
+
++ 非更易型算法（Nonmodifying algorithms）
+
++ 更易型算法（Modifying algorithms）
+
++ 移除型算法（Removing algorithms）
+
++ 变序型算法（Mutating algorithms）
+
++ 排序算法（Sorting algorithms）
+
++ 已排序区间算法（Sorted-range algorithms）
+
++ 数值算法（Numeric algorithms）
+
+#### 非更易型算法（Nonmodifying algorithms）
+
+| 名称                      | 效果                                                         |
+| ------------------------- | ------------------------------------------------------------ |
+| for_each()                | 对每个元素执行某操作                                         |
+| count()                   | 返回元素个数                                                 |
+| count_if()                | 返回满足某一准则(条件)的元素个数                             |
+| min_element()             | 返回最小值元素                                               |
+| max_element()             | 返回最大值元素                                               |
+| minmax_element()          | 返回最小值和最大值元素                                       |
+| find()                    | 查找“与被传入值相等”的第一个元素                             |
+| find_if()                 | 查找“满足某个准则”的第一个元素                               |
+| find_if_not()             | 查找“不满足某个准则”的第一个元素                             |
+| search_n()                | 查找”具备某特性“之前n个连续元素                              |
+| search()                  | 查找某个子区间的第一次出现位置                               |
+| find_end()                | 查找某个子区间的最后一次出现的位置                           |
+| find_first_of()           | 查找”数个可能元素中的第一个出现者“                           |
+| adjacent_find()           | 查找连续两个相等（或者说符合特定准则）的元素                 |
+| equal()                   | 判断两区间是否相等                                           |
+| is_permutation()          | 连个不定序区间是否含有相等元素                               |
+| mismatch()                | 返回两序列的各组对应元素中的第一对不相等元素                 |
+| lexicographical_compare() | 判断在”字典顺寻“(lexicographically)下某序列是否小于另一序列  |
+| is_sorted()               | 返回”是否区间内的元素已排序“                                 |
+| is_sorted_until()         | 返回"区间内的元素是否基于某准则被分割为两组"                 |
+| partition_point()         | 返回区间内的一个分割元素， 它把元素切割为两组，其中一组满足某个predicate，另一组则不然 |
+| is_heap()                 | 返回”是否区间内的元素形成一个heap“                           |
+| is_heap_until()           | 返回”是否所有元素都吻合某准则的元素“                         |
+| all_of()                  | 返回”是否所有元素都吻合某准则“                               |
+| any_of()                  | 返回”是否至少一个元素吻合某准则“                             |
+| none_of()                 | 返回”是否五任何元素吻合某准则“                               |
+
+#### 更易型算法（Modifying algorithms）
+
+| 名称            | 效果                             |
+| --------------- | -------------------------------- |
+| for_each()      | 针对每个元素执行某项操作         |
+| copy()          | 从某个元素开始，复制某个区间     |
+| copy_if()       | 复制那些”符合某个给定准则“的元素 |
+| copy_n()        | 复制n个元素                      |
+| copy_backward() | 从最后一个元素开始，复制某个区间 |
+| move()          | 从第一个元素开始，搬移某个区间   |
+| move_backward() | 从最后一个元素开始，搬移某个区间 |
+
+
+
+#### 移除型算法（Removing algorithms）
+
+#### 变序型算法（Mutating algorithms）
+
+#### 排序算法（Sorting algorithms）
+
+#### 已排序区间算法（Sorted-range algorithms）
+
+#### 数值算法（Numeric algorithms）
+
 ### std::optional 介绍
 
 类模板 `std::optional` 管理一个*可选*的容纳值，即可以存在也可以不存在的值。
@@ -59,7 +132,7 @@ int main ()
 }
 ```
 
-### 排序算法比较
+### STL排序算法比较
 
 **sort()**传统上是采用quicksort算法。因此保证了很好的平均效能，复杂度为***n x log(n)***, 但最差情况下可能为n^2。如果“避免最差情况”对你是一件重要的事，你应该采用其他算法，如partial_sort()或stable_sort()。
 
@@ -305,8 +378,32 @@ The second largest element is 7
 这是一种无序集合(unordered collection), 其内每个元素的每个位置无关紧要，唯一重要的是某特定元素是否位于此集合内。元素值或其安插顺序，都不影响元素的位置，而且元素的位置有可能在容器生命周期中被改变。如果你放6个元素到这种集合内，它们的次序不明确，并且可能随时间而改变。STL内含4个预定义的无序容器：unordered_set、unordered_multiset、unordered_map和unordered_multimap。
 
 + **Sequence**容器通常被实现为array或linked list
+
 + **Associative**容器通常被实现为binary tree
+
 + **Unordered**容器通常被实现为hash table
+
+### 各种容器使用时机
+
+  ![ContainerSelect](.\picture\ContainerSelect.png)
+
++ 默认情况下应该使用vector。Vector的内部构造最简单，并允许随机访问，所以数据的访问十分方便灵活，数据的处理也够快。
+
++ 如果经常要在序列头部和尾部安插和一处元素，应该采用deque。如果你希望元素被移除时，容器能够自动缩减内部用量，那么也该使用deque。此外，由于vector通常采用一个内存区块来存放元素，而deque采用多个区块，所以后者可内含更多元素。
+
++ 如果需要经常在容器中段执行元素安插、移除和移动，可考虑使用list。List提供特殊的成员函数，可在常量时间内将元素从A容器转移到B容器。但由于list不支持随机访问，所以如果只知道list的头部却要造访list的中端元素，效能会大打折扣。和所有“以节点为基础”的容器相似，只要元素仍是容器的一部分，list就不会令只想那些元素的迭代器失效。Vector则不然，一旦超过其容量，它的所有iterator、pointer和reference失效。至于deque，当它的大小改变，所有iterator、pointer和reference都会失效。
+
++ 如果你要的容器对异常处理使得“每次操作若不成功便无任何作用”，那么应该选用list(但是不调用其assignment操作符和sort(), 而且如果元素比较过程中会抛出异常，就不要调用merge()、remove()、remove_if()和unique()，或选用associative/unordered容器（但不调用多元素安插动作，而且如果比较准则的复制/赋值动作可能抛出异常，就不要调用swap()或erase()）)。
+
++ 如果你经常需要根据某个准则查找元素，应当使用“依据该准则进行hash”的unordered set 或multiset。然而，hash容器内是无序的，所以如果你必须以来元素的次序(order),应该使用set或multiset，他们根据查找准则对元素排序。
+
++ 如果想处理key/value pair，请采用unordered (multi)map。如果元素次序很重要，可采用(multi)map。
+
++ 如果需要关联式数组(associative array), 应采用unordered map。如果元素次序很重要，可采用map。
+
++ 如果需要字典结构，应采用unordered multimap。如果元素次序很重要，可采用multimap。
+
+![ContainerTypes](.\picture\ContainerTypes.png)
 
 ### 严格弱序（strict weak ordering）
 
@@ -395,4 +492,19 @@ int main()
     return 0;
 }
 ```
+
+### 迭代器种类
+
+根据能力的不同，迭代器被划分为物种不同类别。STL预先定义好的所有容器，其迭代器均属于一下三种分类：
+
+1. **前向迭代器（Forward iterator）**	只能够以累加操作符（increment operator） 向前迭代。Class forward_list的迭代器就属此类。其他容器如unordered_set、unordered_multiset、unordered_map和unordered_multimap也都至少是此类别（但标准库其实为他们提供的是双向迭代器）
+
+2. **双向迭代器（Bidirectional iterator）** 顾名思义它可以双向行进：以递增（increment）运算前进或以递减(decrement)运算后退。list、set、multiset、map和multimap提供的迭代器都属此类。
+
+3. **随机访问迭代器（Random-access iterator）** 它不但具备双向迭代器的所有属性，还具备随机访问能力。更明确的说，他们提供了迭代器算数运算的必要操作符（和寻常指针的算数运算完全对应）。你可以对迭代器增加或减少一个偏移量、计算两迭代器间的距离，或使用`<`和`>`之类的relational（相对关系）操作符进行比较。vector、deque、array和string提供的迭代器都属此类。
+
+除此之外，STL还定义了两个类别：
+
++ **输入型迭代器（Input iterator）** 向前迭代时能够读取/处理value。Input stream迭代器就是这样的例子。
++ **输出型迭代器（Output iterator）** 向前迭代时能够涂写value。Inserter和output stream迭代器都属此类。
 
