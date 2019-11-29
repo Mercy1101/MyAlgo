@@ -42,6 +42,9 @@ set(SPD_LOG_SOURCES
     include/tools/log/spdlog.cpp
 )
 
+# leetcode源文件
+set(LEET_CODE_FILE_SOURCES src/leetcode/leetcode.cpp)
+
 # 单元测试的文件
 set(UNITTEST_SOURCE
   # 自己实现的Singleton的单元测试文件
@@ -55,6 +58,9 @@ set(UNITTEST_SOURCE
 
   # 开源库concurrentqueue的例子
   unittest/concurrentqueue/concurrentqueue_unittest.cpp
+
+  # leetcode 解法测试
+  unittest/leetcode/leetcode_unittest.cpp
 )
 
 
@@ -64,7 +70,7 @@ add_executable(${EXECUTABLE_EXE_NAME} ${SOURCES}
                                       ${INIT_FILE_SOURCES}
                                       ${UNITTEST_SOURCE}
                                       ${SPD_LOG_SOURCES}
-                                  
+                                      ${LEET_CODE_FILE_SOURCES}
 )
 
 # 设置包含路径
@@ -81,6 +87,9 @@ target_include_directories(${EXECUTABLE_EXE_NAME}
         
         # 自己封装的小工具的路径
         ${PROJECT_SOURCE_DIR}/include/tools
+
+        # leetcode 文件的头文件路径
+        ${PROJECT_SOURCE_DIR}/include/leetcode
 
         # boost库的包含路径
         #$ENV{BOOST_ROOT}
