@@ -143,6 +143,40 @@ namespace Lee { namespace Utility_{ namespace Time_{
         return CompileTime;
     }
 
+    /**
+    * @name                GetTodaySpecificTimeStamp_Agent
+    * @brief               获取今天特定时间的时间戳
+
+    * @param               iHour    [in]
+    * @param               iMin     [in]
+    * @param               iSec     [in]
+
+    * @return              返回的今天特定时间的时间戳
+    *  @retval             0            非法入参
+    *  @retval             UnixStamp    今天特定时间的时间戳
+
+    * @author              Lijiancong, 316, lijiancong@fritt.com.cn
+    * @date                2019-08-20 16:11:44
+
+    * @note
+    */
+    inline time_t GetTodaySpecificTimeStamp(const int iHour, const int iMin, const int iSec)
+    {
+        if (iHour < 0 || iHour > 23 || iMin < 0 || iMin > 59 || iSec < 0 || iSec > 59)
+        {
+            assert(false && "Invalid Param! GetTodaySpecificTimeStamp Execute fail! ");
+            return 0;
+        }
+
+        time_t t = time(nullptr);
+        tm     stTimer = { 0 };
+        localtime_s(&stTimer, &t);
+        stTimer.tm_hour = iHour;
+        stTimer.tm_min = iMin;
+        stTimer.tm_sec = iSec;
+        return mktime(&stTimer);
+    }
+
 }   // end of namespace Time_
 using namespace Time_;
 }   // end of namespace Utility_

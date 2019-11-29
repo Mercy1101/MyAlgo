@@ -57,6 +57,58 @@ namespace Lee { namespace Utility_ { namespace WindowsSystem_ {
     }
 
     /**
+    * @name                StringToLPCWSTR
+    * @brief               std::string 向LPCWSTR的转换
+
+    * @param               strText [in] std::string
+
+    * @return              转换后的LPCWSTR
+
+    * @author              Lijiancong, 316, lijiancong@fritt.com.cn
+    * @date                2019-11-22 09:52:06
+    * @warning             线程安全
+
+    * @note
+    注意：不可以使用空字符串传入，会抛出异常
+    */
+    inline LPCWSTR StringToLPCWSTR(const std::string& strText)
+    {
+        assert(!strText.empty());
+        size_t origsize = strText.length() + 1;
+        const size_t newsize = 100;
+        size_t convertedChars = 0;
+        wchar_t *wcstring = (wchar_t *)malloc(sizeof(wchar_t)*(strText.length() - 1));
+        mbstowcs_s(&convertedChars, wcstring, origsize, strText.c_str(), _TRUNCATE);
+
+        return wcstring;
+    }
+
+    /**
+    * @name                Wchar_tToString
+    * @brief               wchar_t to string
+
+    * @param               szDst    [in]
+    * @param               wchar    [out]
+
+    * @return              NONE
+    * @author              Lijiancong, 316, lijiancong@fritt.com.cn
+    * @date                2019-11-22 10:09:35
+    * @warning             线程不安全
+
+    * @note
+    */
+    inline void Wchar_tToString(std::string& szDst, wchar_t *wchar)
+    {
+        wchar_t * wText = wchar;
+        DWORD dwNum = WideCharToMultiByte(CP_OEMCP, NULL, wText, -1, NULL, 0, NULL, FALSE);// WideCharToMultiByte的运用
+        char *psText; // psText为char*的临时数组，作为赋值给std::string的中间变量
+        psText = new char[dwNum];
+        WideCharToMultiByte (CP_OEMCP, NULL, wText, -1, psText, dwNum, NULL, FALSE);// WideCharToMultiByte的再次运用
+        szDst = psText;// std::string赋值
+        delete[]psText;// psText的清除
+    }
+
+    /**
      * @name                GetRootPath
      * @brief               获取当前程序所在的根目录.(windows系统限定)
      * 
@@ -75,16 +127,18 @@ namespace Lee { namespace Utility_ { namespace WindowsSystem_ {
         static std::once_flag InstanceFlag;
         static std::string strPathName;
         std::call_once(InstanceFlag, [&](){
-            TCHAR szPath[MAX_PATH] = { 0 };
+#if 1
+            char szPath[MAX_PATH] = { 0 };
             if (!GetModuleFileName(NULL, szPath, MAX_PATH))
             {
                 std::cout << "Cannot GetModuleFileName!Error Code: " << GetLastError() << std::endl;
                 assert(false && "Cannot GetModuleFileName!");
                 strPathName = "";
             }
-            auto pos = std::string(szPath).find_last_of("\\/");
-            strPathName = std::string(szPath).substr(0, pos);
-            #if 0
+            std::string Path(szPath);
+            auto pos = Path.find_last_of("\\/");
+            strPathName = Path.substr(0, pos);
+#else 
             TCHAR Buffer[MAX_PATH] = {0};
             DWORD dwRet = GetCurrentDirectory(MAX_PATH, Buffer);
             if (dwRet == 0)
@@ -99,7 +153,8 @@ namespace Lee { namespace Utility_ { namespace WindowsSystem_ {
                 assert(false && "Buffer too small; need more characters!");
                 strPathName = "";
             }
-            strPathName = Buffer;
+            //strPathName = Buffer;
+            Wchar_tToString(strPathName, Buffer);
             #endif
             #if 0
             char* buffer = _getcwd(NULL, 0);
@@ -137,7 +192,7 @@ namespace Lee { namespace Utility_ { namespace WindowsSystem_ {
     inline bool CreateFileFolder(const std::string& strFolderPath)
     {
         if (strFolderPath.empty()) return false;
-        return 0 == CreateDirectory(strFolderPath.c_str(), NULL) ? false : true;
+        return 0 == CreateDirectory((strFolderPath.c_str()), NULL) ? false : true;
     }
     #if 0
     #ifdef _DEBUG
@@ -152,6 +207,31 @@ namespace Lee { namespace Utility_ { namespace WindowsSystem_ {
     #endif
     #endif
 
+    /**
+    * @name                StringToWstring
+    * @brief               string to wstring
+
+    * @param               szDst    [out]
+    * @param               str      [in]
+
+    * @return              NONE
+    * @author              Lijiancong, 316, lijiancong@fritt.com.cn
+    * @date                2019-11-22 10:16:52
+    * @warning             线程不安全
+    
+    * @note
+    */
+    inline void StringToWstring(std::wstring& szDst, const std::string& str)
+    {
+        //std::string temp = str;
+        int len = MultiByteToWideChar(CP_ACP, 0, (LPCSTR)str.c_str(), -1, NULL, 0);
+        wchar_t * wszUtf8 = new wchar_t[len + 1];
+        memset(wszUtf8, 0, len * 2 + 2);
+        MultiByteToWideChar(CP_ACP, 0, (LPCSTR)str.c_str(), -1, (LPWSTR)wszUtf8, len);
+        szDst = wszUtf8;
+        //std::wstring r = wszUtf8;
+        delete[] wszUtf8;
+    }
 }   // end of namespace WindowsSystem_
 using namespace WindowsSystem_;
 }   // end of namespace Utility_

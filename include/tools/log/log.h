@@ -50,13 +50,13 @@ const std::string DEFAULT_LOG_CONFIG_FILE_NAME = DEFAULT_CONFIG_FOLDER_NAME + "\
 */
 enum SPD_LOG_LEVEL : int
 {
-    SPD_TRACE       = SPDLOG_LEVEL_TRACE,       ///< 0
-    SPD_DEBUG       = SPDLOG_LEVEL_DEBUG,       ///< 1
-    SPD_INFO        = SPDLOG_LEVEL_INFO,        ///< 2
-    SPD_WARN        = SPDLOG_LEVEL_WARN,        ///< 3
-    SPD_ERROR       = SPDLOG_LEVEL_ERROR,       ///< 4
-    SPD_CRITICAL    = SPDLOG_LEVEL_CRITICAL,    ///< 5
-    SPD_OFF         = SPDLOG_LEVEL_OFF,         ///< 6  全部不打印
+    LOG_TRACE       = SPDLOG_LEVEL_TRACE,       ///< 0
+    LOG_DEBUG       = SPDLOG_LEVEL_DEBUG,       ///< 1
+    LOG_INFO        = SPDLOG_LEVEL_INFO,        ///< 2
+    LOG_WARN        = SPDLOG_LEVEL_WARN,        ///< 3
+    LOG_ERROR       = SPDLOG_LEVEL_ERROR,       ///< 4
+    LOG_CRITICAL    = SPDLOG_LEVEL_CRITICAL,    ///< 5
+    LOG_OFF         = SPDLOG_LEVEL_OFF,         ///< 6  全部不打印
 };
 
 namespace Lee {
@@ -139,37 +139,37 @@ namespace Lee {
                 std::lock_guard<std::mutex> Lock(LoggerMutex);
                 static std::once_flag flag;
                 static std::shared_ptr<spdlog::logger> g_sptrDetailLogger;
-                static int g_iLogLevelConf = SPD_LOG_LEVEL::SPD_INFO;
+                static int g_iLogLevelConf = SPD_LOG_LEVEL::LOG_INFO;
                 std::call_once(flag, InitSpdLogger, g_sptrDetailLogger, g_iLogLevelConf);
                 int iLogLevel = eLogLevel;
                 /** 无论怎么样都会写文件日志 */
                 switch (iLogLevel)
                 {
-                case SPD_TRACE:
+                case LOG_TRACE:
                     g_sptrDetailLogger->trace(strLogText);
                     break;
 
-                case SPD_DEBUG:
+                case LOG_DEBUG:
                     g_sptrDetailLogger->debug(strLogText);
                     break;
 
-                case SPD_INFO:
+                case LOG_INFO:
                     g_sptrDetailLogger->info(strLogText);
                     break;
 
-                case SPD_WARN:
+                case LOG_WARN:
                     g_sptrDetailLogger->warn(strLogText);
                     break;
 
-                case SPD_ERROR:
+                case LOG_ERROR:
                     g_sptrDetailLogger->error(strLogText);
                     break;
 
-                case SPD_CRITICAL:
+                case LOG_CRITICAL:
                     g_sptrDetailLogger->critical(strLogText);
                     break;
 
-                case SPD_OFF:
+                case LOG_OFF:
                     /// Do Nothing
                     break;
 
@@ -183,31 +183,31 @@ namespace Lee {
                 {
                     switch (iLogLevel)
                     {
-                    case SPD_TRACE:
+                    case LOG_TRACE:
                         spdlog::trace(strLogText);
                         break;
 
-                    case SPD_DEBUG:
+                    case LOG_DEBUG:
                         spdlog::debug(strLogText);
                         break;
 
-                    case SPD_INFO:
+                    case LOG_INFO:
                         spdlog::info(strLogText);
                         break;
 
-                    case SPD_WARN:
+                    case LOG_WARN:
                         spdlog::warn(strLogText);
                         break;
 
-                    case SPD_ERROR:
+                    case LOG_ERROR:
                         spdlog::error(strLogText);
                         break;
 
-                    case SPD_CRITICAL:
+                    case LOG_CRITICAL:
                         spdlog::critical(strLogText);
                         break;
 
-                    case SPD_OFF:
+                    case LOG_OFF:
                         /// Do Nothing
                         break;
 
@@ -319,12 +319,12 @@ namespace Lee {
                 std::string strFlushLevel = ini.GetValue("LogConfig","spd_flush_level", NULL);
                 int iLogFlushLevel = strLogLevel.empty() ? DEFAULT_FLUSH_LEVEL_CONF : std::stoi(strFlushLevel);
 
-                if (SPD_TRACE == iLogFlushLevel) eFlushLevel = spdlog::level::level_enum::trace;
-                else if (SPD_DEBUG == iLogFlushLevel) eFlushLevel = spdlog::level::level_enum::debug;
-                else if (SPD_INFO == iLogFlushLevel) eFlushLevel = spdlog::level::level_enum::info;
-                else if (SPD_WARN == iLogFlushLevel) eFlushLevel = spdlog::level::level_enum::warn;
-                else if (SPD_ERROR == iLogFlushLevel) eFlushLevel = spdlog::level::level_enum::err;
-                else if (SPD_CRITICAL == iLogFlushLevel) eFlushLevel = spdlog::level::level_enum::critical;
+                if (LOG_TRACE == iLogFlushLevel) eFlushLevel = spdlog::level::level_enum::trace;
+                else if (LOG_DEBUG == iLogFlushLevel) eFlushLevel = spdlog::level::level_enum::debug;
+                else if (LOG_INFO == iLogFlushLevel) eFlushLevel = spdlog::level::level_enum::info;
+                else if (LOG_WARN == iLogFlushLevel) eFlushLevel = spdlog::level::level_enum::warn;
+                else if (LOG_ERROR == iLogFlushLevel) eFlushLevel = spdlog::level::level_enum::err;
+                else if (LOG_CRITICAL == iLogFlushLevel) eFlushLevel = spdlog::level::level_enum::critical;
                 else eFlushLevel = spdlog::level::level_enum::warn;
 
                 return true;
