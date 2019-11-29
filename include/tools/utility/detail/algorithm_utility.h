@@ -24,6 +24,9 @@
 #include <vector>
 #include <string>
 #include <mutex>
+#include <functional>
+#include <algorithm>
+#include <iterator>
 
 namespace Lee { namespace Utility_ { namespace Algorithm_ {
 
@@ -132,6 +135,52 @@ namespace Lee { namespace Utility_ { namespace Algorithm_ {
         return y;
     }
 
+    /**
+     * @name                is_palindrome
+     * @brief               判断一个区间是不是回文
+     * 
+     * @param               begin   [in]    区间的开始
+     * @param               end     [in]    区间的结束
+     * @param               p       [in]    谓词（做相等判断）
+     * 
+     * @return              是或不是回文
+     * 
+     * @author              Lijiancong, pipinstall@163.com(taken from boost/algorithm/is_palindrome.hpp)
+     * @date                2019-11-29 11:40:27
+     * @warning             线程不安全
+
+     * @note
+     */
+    template <typename BidirectionalIterator, typename Predicate>
+    bool is_palindrome(BidirectionalIterator begin, BidirectionalIterator end, Predicate p)
+    {
+        if(begin == end)
+        {
+            return true;
+        }
+
+        --end;
+        while(begin != end)
+        {
+            if(!p(*begin, *end))
+            {
+                return false;
+            }
+            ++begin;
+            if(begin == end)
+            {
+                break;
+            }
+            --end;
+        }
+        return true;
+    }
+    template <typename BidirectionalIterator>
+    bool is_palindrome(BidirectionalIterator begin, BidirectionalIterator end)
+    {
+        return is_palindrome(begin, end,
+                            std::equal_to<typename std::iterator_traits<BidirectionalIterator>::value_type> ());
+    }
     
 
 }   // end of namespace Algorithm_
