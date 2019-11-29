@@ -76,7 +76,7 @@ namespace Lee { namespace Utility_{ namespace Time_{
         std::cout << GetTimeString(1571290440) << std::endl;
         输出：2019-10-17 13:34:00
     */
-    inline std::string GetTimeString(time_t Time)
+    inline std::string GetTimeString(time_t Time, const char *Format = "%F %T")
     {
         if (Time < 0)
         {
@@ -88,7 +88,7 @@ namespace Lee { namespace Utility_{ namespace Time_{
         tm buf;
         localtime_s(&buf, &t);
         char p[32] = { 0 };
-        strftime(p, sizeof(p), "%F %T", &buf);
+        strftime(p, sizeof(p), Format, &buf);
         return std::string(p);
     }
 
