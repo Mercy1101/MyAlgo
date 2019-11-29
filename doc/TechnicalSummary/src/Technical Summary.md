@@ -46,6 +46,9 @@
 | V4.0 | 李建聪 | 添加**std::underlying_type介绍**小节 | 2019-11-12 15:35:55 |
 | V4.1 | 李建聪 | 添加**格式化字符串示例**小节 | 2019-11-12 15:36:32 |
 | V4.2 | 李建聪 | 添加**预定义宏**小节 | 2019-11-15 15:01:37 |
+| V4.3 | 李建聪 | 添加**isalnum函数介绍**小节 | 2019-11-28 19:48:33 |
+| V4.4 | 李建聪 | 添加**std::transform介绍**小节 | 2019-11-29 08:34:55 |
+| V4.5 | 李建聪 | 添加**std::round介绍**小节 | 2019-11-29 08:39:34 |
 
 ### std::string 用法
 
@@ -2492,6 +2495,142 @@ void Print()
 输出：
 
 ![define](.\picture\define.png)
+
+### isalnum函数介绍
+
+检查给定的字符是否为当前 C 本地环境所分类的字母数字字符。在默认本地环境中，下列字符为字母数字：
+
+- 数字（ `0123456789` ）
+- 大写字母（ `ABCDEFGHIJKLMNOPQRSTUVWXYZ` ）
+- 小写字母（ `abcdefghijklmnopqrstuvwxyz` ）
+
+若 `ch` 的值不能表示为 unsigned char 且不等于 [EOF](http://zh.cppreference.com/w/c/io) ，则行为未定义。
+
+```c++
+#include <stdio.h>
+#include <ctype.h>
+#include <locale.h>
+ 
+int main(void)
+{
+    unsigned char c = '\xdf'; // ISO-8859-1 中的德文字母 ß 
+ 
+    printf("isalnum('\\xdf') in default C locale returned %d\n", !!isalnum(c));
+ 
+    if(setlocale(LC_CTYPE, "de_DE.iso88591"))
+        printf("isalnum('\\xdf') in ISO-8859-1 locale returned %d\n", !!isalnum(c));
+}
+```
+
+### std::transform介绍
+
+  `std::transform` 应用给定的函数到范围并存储结果于始于 `d_first` 的另一范围。
+
+可能的实现：
+
+```c++
+template<class InputIt, class OutputIt, class UnaryOperation>
+OutputIt transform(InputIt first1, InputIt last1, OutputIt d_first, 
+                   UnaryOperation unary_op)
+{
+    while (first1 != last1) {
+        *d_first++ = unary_op(*first1++);
+    }
+    return d_first;
+}
+
+template<class InputIt1, class InputIt2, 
+         class OutputIt, class BinaryOperation>
+OutputIt transform(InputIt1 first1, InputIt1 last1, InputIt2 first2, 
+                   OutputIt d_first, BinaryOperation binary_op)
+{
+    while (first1 != last1) {
+        *d_first++ = binary_op(*first1++, *first2++);
+    }
+    return d_first;
+}
+```
+
+见用法：
+
+```c++
+#include <algorithm>
+#include <cctype>
+#include <iostream>
+#include <string>
+#include <vector>
+ 
+int main()
+{
+    std::string s("hello");
+    std::transform(s.begin(), s.end(), s.begin(),
+                   [](unsigned char c) -> unsigned char { return std::toupper(c); });
+ 
+    std::vector<std::size_t> ordinals;
+    std::transform(s.begin(), s.end(), std::back_inserter(ordinals),
+                   [](unsigned char c) -> std::size_t { return c; });
+ 
+    std::cout << s << ':';
+    for (auto ord : ordinals) {
+       std::cout << ' ' << ord;
+    }
+}
+```
+
+### std::round介绍
+
+`std::round`函数作用是：返回入参最接近的整数值(返回类型为浮点型)。(四舍五入，向零远离)
+
+`std::lround`函数的作用是：返回入参最接近的整数值(返回类型为整型)。（四舍五入，向零原理）
+
+```c++
+#include <iostream>
+#include <cmath>
+#include <cfenv>
+#include <climits>
+ 
+#pragma STDC FENV_ACCESS ON
+ 
+int main()
+{
+    // round
+    std::cout << "round(+2.3) = " << std::round(2.3)
+              << "  round(+2.5) = " << std::round(2.5)
+              << "  round(+2.7) = " << std::round(2.7) << '\n'
+              << "round(-2.3) = " << std::round(-2.3)
+              << "  round(-2.5) = " << std::round(-2.5)
+              << "  round(-2.7) = " << std::round(-2.7) << '\n';
+ 
+    std::cout << "round(-0.0) = " << std::round(-0.0)  << '\n'
+              << "round(-Inf) = " << std::round(-INFINITY) << '\n';
+ 
+    // lround
+    std::cout << "lround(+2.3) = " << std::lround(2.3)
+              << "  lround(+2.5) = " << std::lround(2.5)
+              << "  lround(+2.7) = " << std::lround(2.7) << '\n'
+              << "lround(-2.3) = " << std::lround(-2.3)
+              << "  lround(-2.5) = " << std::lround(-2.5)
+              << "  lround(-2.7) = " << std::lround(-2.7) << '\n';
+ 
+    std::cout << "lround(-0.0) = " << std::lround(-0.0)  << '\n'
+              << "lround(-Inf) = " << std::lround(-INFINITY) << '\n';
+ 
+    // 错误处理
+    std::feclearexcept(FE_ALL_EXCEPT);
+    std::cout << "std::lround(LONG_MAX+1.5) = "
+              << std::lround(LONG_MAX+1.5) << '\n';
+    if (std::fetestexcept(FE_INVALID))
+              std::cout << "    FE_INVALID was raised\n";
+}
+```
+
+其相关函数介绍：
+
+`std::floor`  不大于给定值的最接近整数。
+
+`std::ceil`  不小于给定值的最接近整数。
+
+`std::trunc`  绝对值不大于给定值的最接近整数。
 
 ## C++17及其以后的特性
 
