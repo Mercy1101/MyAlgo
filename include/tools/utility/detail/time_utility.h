@@ -160,7 +160,7 @@ namespace Lee { namespace Utility_{ namespace Time_{
 
     * @note
     */
-    inline time_t GetTodaySpecificTimeStamp(const int iHour, const int iMin, const int iSec)
+    inline int GetTodaySpecificTimeStamp(const int iHour, const int iMin, const int iSec)
     {
         if (iHour < 0 || iHour > 23 || iMin < 0 || iMin > 59 || iSec < 0 || iSec > 59)
         {
@@ -174,7 +174,7 @@ namespace Lee { namespace Utility_{ namespace Time_{
         stTimer.tm_hour = iHour;
         stTimer.tm_min = iMin;
         stTimer.tm_sec = iSec;
-        return mktime(&stTimer);
+        return static_cast<int>(mktime(&stTimer));
     }
 
 }   // end of namespace Time_
