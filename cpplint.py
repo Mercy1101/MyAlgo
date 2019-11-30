@@ -27,26 +27,18 @@
 # THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-# 译者： 李建聪
-# 时间： 2019-03-09 11:04:55
-# 如翻译有误，请发送至邮箱(pipinstall@163.com),及时修改
 
 """Does google-lint on c++ files.
 
 The goal of this script is to identify places in the code that *may*
-be in non-compliance with google style.
-此脚本的目的是识别代码中可能存在不符合google风格的地方。
-It does not attempt to fix up these problems -- the point is to educate.  
-它不会企图修正这些问题，只是为了启发而指出这些地方。
-It does also not attempt to find all problems, or to ensure that everything it does
+be in non-compliance with google style.  It does not attempt to fix
+up these problems -- the point is to educate.  It does also not
+attempt to find all problems, or to ensure that everything it does
 find is legitimately a problem.
-它也不会企图找到所有问题或者确保所有找到的问题是合理的。
+
 In particular, we can get very confused by /* and // inside strings!
 We do a small hack, which is to ignore //'s with "'s after them on the
 same line, but it is far from perfect (in either direction).
-特别提醒：我们对"/*"和"//"里面的字符串不是很理解。
-我们做了一个小小的决定就是忽略"/*"和"//"同一行的字符串，
-所以这让这个脚本离完美还有一定差距(在另一个角度来说).
 """
 
 import codecs
@@ -65,7 +57,6 @@ import unicodedata
 import xml.etree.ElementTree
 
 # if empty, use defaults
-# 假如为空，用默认值
 _valid_extensions = set([])
 
 __VERSION__ = '1.4.4'
@@ -91,58 +82,39 @@ Syntax: cpplint.py [--verbose=#] [--output=emacs|eclipse|vs7|junit]
         <file> [file] ...
 
   Style checker for C/C++ source files.
-  C/C++源文件的代码风格检查。
   This is a fork of the Google style checker with minor extensions.
-  这是一个谷歌风格检查的次要扩展的分支。
 
   The style guidelines this tries to follow are those in
-    https://google.github.io/styleguide/cppguide.html
-  这个风格检查的参考手册可以从下面网址获取：
     https://google.github.io/styleguide/cppguide.html
 
   Every problem is given a confidence score from 1-5, with 5 meaning we are
   certain of the problem, and 1 meaning it could be a legitimate construct.
   This will miss some errors, and is not a substitute for a code review.
-  每个风格检查错误都会有一个可信度分数（1-5），分别包含了五个不同意义的问题和
-  一个意义的可信度结构。这会错过一些错误，所以这不是一个code review的替代方案。
 
   To suppress false-positive errors of a certain category, add a
   'NOLINT(category)' comment to the line.  NOLINT or NOLINT(*)
   suppresses errors of all categories on that line.
-  为了在一个去确定的分类中减少错误报告，在这行添加一个'NOLINT(category)'注释。
-  NOLINT or NOLINT(*)会抑制这行所有的报错
 
   The files passed in will be linted; at least one file must be provided.
   Default linted extensions are %s.
   Other file types will be ignored.
   Change the extensions with the --extensions flag.
-  文件被传入将被lint，这需要至少提供一个文件。
-  默认lint的文件扩展名是%s。
-  其他的文件类型将被忽略。
-  在--extensions flag下改变扩展名。
 
   Flags:
-  参数
 
     output=emacs|eclipse|vs7|junit
       By default, the output is formatted to ease emacs parsing.  Visual Studio
       compatible output (vs7) may also be used.  Further support exists for
       eclipse (eclipse), and JUnit (junit). XML parsers such as those used
       in Jenkins and Bamboo may also be used.  Other formats are unsupported.
-	  默认情况下，输出的格式是emacs解析的格式。VS的格式也是支持的。更多的支持
-	  包括eclipse、JUnit。XML解析器例如Jenkins、Bamboo的格式也可以使用。其他的
-	  格式则不支持。
 
     verbose=#
       Specify a number 0-5 to restrict errors to certain verbosity levels.
       Errors with lower verbosity levels have lower confidence and are more
       likely to be false positives.
-	  指定数字0-5去限定错误的五个详细级别。
-	  低详细级别的错误拥有较低的可信度和更多的误报。
 
     quiet
       Don't print anything if no errors are found.
-	  当没有错误被找到，不打印任何东西。
 
     filter=-x,+y,...
       Specify a comma-separated list of category-filters to apply: only
@@ -151,10 +123,6 @@ Syntax: cpplint.py [--verbose=#] [--output=emacs|eclipse|vs7|junit]
       "[whitespace/indent]".)  Filters are evaluated left to right.
       "-FOO" and "FOO" means "do not print categories that start with FOO".
       "+FOO" means "do print categories that start with FOO".
-	  指定一个逗号分割的类别过滤列表去提供：只有类别名字通过过滤列表的错误信息
-	  才会被打印。(列别名字打印的信息格式像"[whitespace/indent]"形式)。
-	  过滤器将从左向右评估。"-FOO" 和 "FOO"意思为：不要打印以FOO开头的类别。
-	  "+FOO"意思为打印以FOO开头的列表
 
       Examples: --filter=-whitespace,+whitespace/braces
                 --filter=whitespace,runtime/printf,+runtime/printf_format
@@ -162,7 +130,6 @@ Syntax: cpplint.py [--verbose=#] [--output=emacs|eclipse|vs7|junit]
 
       To see a list of all the categories used in cpplint, pass no arg:
          --filter=
-	  查看cpplint的所有类别，输入： --filter=
 
     counting=total|toplevel|detailed
       The total number of errors found is always printed. If
@@ -170,9 +137,6 @@ Syntax: cpplint.py [--verbose=#] [--output=emacs|eclipse|vs7|junit]
       the top-level categories like 'build' and 'whitespace' will
       also be printed. If 'detailed' is provided, then a count
       is provided for each category like 'build/class'.
-	  被找到的错误所有数字总是会打印出来。假如提供了'toplevel'参数，
-	  然后所有每个top-level类别像'build'和'whitspace'的数字将会被打印。
-	  假如提供了'detailed'参数,一个提供所有类别的像'build/class'将会被计数。
 
     repository=path
       The top level directory of the repository, used to derive the header
@@ -183,10 +147,6 @@ Syntax: cpplint.py [--verbose=#] [--output=emacs|eclipse|vs7|junit]
       repository root directories (such as when checking out a subdirectory
       with SVN). In addition, users of non-mainstream version control systems
       can use this flag to ensure readable header guard CPP variables.
-	  存储仓库习惯用顶层路径来派生头文件守护变量。默认情况下，有一个决定搜索
-	  路径包括.git, .hg, or .svn。当这个标志位是特定的，将改为制定的。这个选项允许
-	  头文件保护变量在即使小组其他成员有不同的存储仓库的根路径情况下保持一致。
-	  另外非主流版本控制系统的用户可以用这些标志位确保头文件保护变量可读。
 
       Examples:
         Assuming that Alice checks out ProjectName and Bob checks out
@@ -208,9 +168,6 @@ Syntax: cpplint.py [--verbose=#] [--output=emacs|eclipse|vs7|junit]
       which by default is determined by searching for a directory that contains
       .git, .hg, or .svn but can also be controlled with the --repository flag.
       If the specified directory does not exist, this flag is ignored.
-	  根路径用来派生头文件守护变量。此目录相对于存储库的顶级目录默认情况下，
-	  它是通过搜索包含的目录来确定的.git，.hg或.svn，但也可以使用--repository标志进行控制。
-	  如果这个特定的路径不存在，这个flag是被忽略的。
 
       Examples:
         Assuming that src is the top level directory of the repository (and
@@ -225,7 +182,6 @@ Syntax: cpplint.py [--verbose=#] [--output=emacs|eclipse|vs7|junit]
     linelength=digits
       This is the allowed line length for the project. The default value is
       80 characters.
-	  这个是允许这个工程每一行的长度。默认值为80个字符。
 
       Examples:
         --linelength=120
@@ -235,16 +191,12 @@ Syntax: cpplint.py [--verbose=#] [--output=emacs|eclipse|vs7|junit]
       of files to be linted is replaced by all files that descend from that
       directory. Files with extensions not in the valid extensions list are
       excluded.
-	  为了递归lint寻找文件。每一个在文件列表里的被lint的路径会被替换成所有下层路径的文件。
-	  文件的扩展名不再合法的扩展名列表将不会被包含。
 
     exclude=path
       Exclude the given path from the list of files to be linted. Relative
       paths are evaluated relative to the current directory and shell globbing
       is performed. This flag can be provided multiple times to exclude
       multiple files.
-	  在被lint的文件列表中排除的路径。联系的路径将评估与当前路径的联系和shell globbing将被执行。
-	  这个标志位可以标志多次多次被包含。
 
       Examples:
         --exclude=one.cc
@@ -253,7 +205,6 @@ Syntax: cpplint.py [--verbose=#] [--output=emacs|eclipse|vs7|junit]
 
     extensions=extension,extension,...
       The allowed file extensions that cpplint will check
-	  允许某个文件扩展名cpplint会检查。
 
       Examples:
         --extensions=%s
@@ -262,7 +213,6 @@ Syntax: cpplint.py [--verbose=#] [--output=emacs|eclipse|vs7|junit]
       The header extensions that cpplint will treat as .h in checks. Values are
       automatically added to --extensions list.
      (by default, only files with extensions %s will be assumed to be headers)
-	 cpplint将会对带这个标志位的扩展名像.h文件一样进行检查。其扩展名将自动被添加进扩展名列表
 
       Examples:
         --headers=%s
@@ -272,8 +222,6 @@ Syntax: cpplint.py [--verbose=#] [--output=emacs|eclipse|vs7|junit]
     cpplint.py supports per-directory configurations specified in CPPLINT.cfg
     files. CPPLINT.cfg file can contain a number of key=value pairs.
     Currently the following options are supported:
-	cpplint.py将会支持每个路径配置特定的CPPLINT.cfg文件。CPPLINT.cfg文件可以包含一个key=value对。
-	当前支持的配置如下。
 
       set noparent
       filter=+filter1,-filter2,...
@@ -285,35 +233,25 @@ Syntax: cpplint.py [--verbose=#] [--output=emacs|eclipse|vs7|junit]
     "set noparent" option prevents cpplint from traversing directory tree
     upwards looking for more .cfg files in parent directories. This option
     is usually placed in the top-level project directory.
-	"set noparent"选项保护cpplint在子路径下遍历路径树找寻更多的cfg文件，
-	这个选项经常被置成顶层工程路径。
 
     The "filter" option is similar in function to --filter flag. It specifies
     message filters in addition to the |_DEFAULT_FILTERS| and those specified
     through --filter command-line flag.
-	"filter"选项像是--filter标志位的功能。
-	它指定消息过滤器除了| _DEFAULT_FILTERS | 和那些指定的通过--filter命令行标志。
 
     "exclude_files" allows to specify a regular expression to be matched against
     a file name. If the expression matches, the file is skipped and not run
     through the linter.
-	"exclude_files" 允许特定的正则表达式被一个文件名被匹配。佳入表达式被匹配，这个文件将会被
-	跳过不会通过linter。
 
     "linelength" allows to specify the allowed line length for the project.
-	"linelength"允许特定的行长度。
 
     The "root" option is similar in function to the --root flag (see example
     above). Paths are relative to the directory of the CPPLINT.cfg.
-	"root"选项像是--root 标志位的功能(查看上面的例子)。路径会与CPPLINT.cfg相关联
 
     The "headers" option is similar in function to the --headers flag
     (see example above).
-	"headers"这个选项类似--headers标志位
 
     CPPLINT.cfg has an effect on files in the same directory and all
     sub-directories, unless overridden by a nested configuration file.
-	CPPLINT.cfg将会影响在一个文件路径和子路径，除了嵌套的文件。
 
       Example file:
         filter=-build/include_order,+build/include_alpha
@@ -323,18 +261,12 @@ Syntax: cpplint.py [--verbose=#] [--output=emacs|eclipse|vs7|junit]
     build/include_alpha as well as excludes all .cc from being
     processed by linter, in the current directory (where the .cfg
     file is located) and all sub-directories.
-	上面的例子忽略build/include_order 警告, 像在当前路径和子路径处理所有.cc
-	文件一样启用build/include_alpha
-	
 """
 
 # We categorize each error message we print.  Here are the categories.
 # We want an explicit list so we can list them all in cpplint --filter=.
 # If you add a new error message with a new category, add it to the list
 # here!  cpplint_unittest.py should tell you if you forget to do this.
-# 我们分类好了每个错误的信息打印。这里是分类信息。
-# 我们像有一个可以明确的列表让我们可以在cpplint里列出来所有选项。
-# 假如你添加一个错误信息，就添加在这个列表里cpplint_unittest.py应该会提示你加入你忘记了这个
 _ERROR_CATEGORIES = [
     'build/class',
     'build/c++11',
@@ -408,7 +340,6 @@ _ERROR_CATEGORIES = [
 
 # These error categories are no longer enforced by cpplint, but for backwards-
 # compatibility they may still appear in NOLINT comments.
-# 这些错误分类被cpplint不再强制执行，但是为了向下兼容可能会显示NOLINT注释
 _LEGACY_ERROR_CATEGORIES = [
     'readability/streams',
     'readability/function',
@@ -418,18 +349,14 @@ _LEGACY_ERROR_CATEGORIES = [
 # flag. By default all errors are on, so only add here categories that should be
 # off by default (i.e., categories that must be enabled by the --filter= flags).
 # All entries here should start with a '-' or '+', as in the --filter= flag.
-# 分类过滤器默认状态。这个选项将被 --filter= 的选项覆盖。默认情况下所有错误类别被开启
-# 所以只有这里的分类才能改变其默认状态。在这里的所有入口--filter= flag都要用'-' 或者 '+'开头
 _DEFAULT_FILTERS = ['-build/include_alpha']
 
 # The default list of categories suppressed for C (not C++) files.
-# 默认的分类的列表是禁止c文件
 _DEFAULT_C_SUPPRESSED_CATEGORIES = [
     'readability/casting',
     ]
 
 # The default list of categories suppressed for Linux Kernel files.
-# 默认的分类列表是禁止Linux内核文件
 _DEFAULT_KERNEL_SUPPRESSED_CATEGORIES = [
     'whitespace/tab',
     ]
@@ -437,8 +364,6 @@ _DEFAULT_KERNEL_SUPPRESSED_CATEGORIES = [
 # We used to check for high-bit characters, but after much discussion we
 # decided those were OK, as long as they were in UTF-8 and didn't represent
 # hard-coded international strings, which belong in a separate i18n file.
-# 我们曾经检查过高位字符，但经过多次讨论后我们认为这些都没问题，只要它们是
-# UTF-8并且不代表硬编码的国际字符串，它们属于一个单独的i18n文件。
 
 # C++ headers
 _CPP_HEADERS = frozenset([
@@ -590,7 +515,6 @@ _CPP_HEADERS = frozenset([
     ])
 
 # Type names
-# 数据类型名
 _TYPES = re.compile(
     r'^(?:'
     # [dcl.type.simple]
@@ -609,25 +533,18 @@ _TYPES = re.compile(
 # - Anything not following google file name conventions (containing an
 #   uppercase character, such as Python.h or nsStringAPI.h, for example).
 # - Lua headers.
-# 这里的头文件不包括[build/include] 和 [build/include_order]里面的
-# 检查：
-# - 所有没有遵循google文件名惯例的（包括大写字符，就像Python.h or nsStringAPI.h）
-# - Lua headers.
 _THIRD_PARTY_HEADERS_PATTERN = re.compile(
     r'^(?:[^/]*[A-Z][^/]*\.h|lua\.h|lauxlib\.h|lualib\.h)$')
 
 # Pattern for matching FileInfo.BaseName() against test file name
-# 模式匹配FileInfo.BaseName()与测试文件名冲突。
 _test_suffixes = ['_test', '_regtest', '_unittest']
 _TEST_FILE_SUFFIX = '(' + '|'.join(_test_suffixes) + r')$'
 
 # Pattern that matches only complete whitespace, possibly across multiple lines.
-# 模式只匹配一个完整的空格，可能会穿越多行
 _EMPTY_CONDITIONAL_BODY_PATTERN = re.compile(r'^\s*$', re.DOTALL)
 
 # Assertion macros.  These are defined in base/logging.h and
 # testing/base/public/gunit.h.
-# 断言宏。这个在base/logging.h和testing/base/public/gunit.h文件中定义的
 _CHECK_MACROS = [
     'DCHECK', 'CHECK',
     'EXPECT_TRUE', 'ASSERT_TRUE',
@@ -635,7 +552,6 @@ _CHECK_MACROS = [
     ]
 
 # Replacement macros for CHECK/DCHECK/EXPECT_TRUE/EXPECT_FALSE
-# CHECK/DCHECK/EXPECT_TRUE/EXPECT_FALSE的替换宏
 _CHECK_REPLACEMENT = dict([(macro_var, {}) for macro_var in _CHECK_MACROS])
 
 for op, replacement in [('==', 'EQ'), ('!=', 'NE'),
@@ -657,8 +573,6 @@ for op, inv_replacement in [('==', 'NE'), ('!=', 'EQ'),
 #
 # Digraphs (such as '%:') are not included here since it's a mess to
 # match those on a word boundary.
-# 可替代符号符号和他们的替代品。整个列表在 c++标准中，
-# section 2.5，Alternative tokens [lex.digraph]
 _ALT_TOKEN_REPLACEMENT = {
     'and': '&&',
     'bitor': '|',
@@ -678,16 +592,12 @@ _ALT_TOKEN_REPLACEMENT = {
 #
 # False positives include C-style multi-line comments and multi-line strings
 # but those have always been troublesome for cpplint.
-# 编译正则表达式来匹配所有键盘上的东西。"[ =()]"符号意思位避免匹配关键词之外的布尔表达式
-#
-# 误报包括C风格的多行注释和多行string, 但这经常给cpplint带来麻烦
 _ALT_TOKEN_REPLACEMENT_PATTERN = re.compile(
     r'[ =()](' + ('|'.join(_ALT_TOKEN_REPLACEMENT.keys())) + r')(?=[ (]|$)')
 
 
 # These constants define types of headers for use with
 # _IncludeState.CheckNextIncludeOrder().
-# 这些常量用函数_IncludeState.CheckNextIncludeOrder()定义了头文件的类型
 _C_SYS_HEADER = 1
 _CPP_SYS_HEADER = 2
 _LIKELY_MY_HEADER = 3
@@ -695,58 +605,47 @@ _POSSIBLE_MY_HEADER = 4
 _OTHER_HEADER = 5
 
 # These constants define the current inline assembly state
-# 这些常量定义了当前内联汇编状态
-_NO_ASM = 0       # Outside of inline assembly block 			# 内联汇编块外
-_INSIDE_ASM = 1   # Inside inline assembly block				# 内联汇编块内
-_END_ASM = 2      # Last line of inline assembly block			# 内联汇编块最后一行
-_BLOCK_ASM = 3    # The whole block is an inline assembly block	# 整个块都是内联汇编块
+_NO_ASM = 0       # Outside of inline assembly block
+_INSIDE_ASM = 1   # Inside inline assembly block
+_END_ASM = 2      # Last line of inline assembly block
+_BLOCK_ASM = 3    # The whole block is an inline assembly block
 
 # Match start of assembly blocks
-# 匹配汇编块的开始
 _MATCH_ASM = re.compile(r'^\s*(?:asm|_asm|__asm|__asm__)'
                         r'(?:\s+(volatile|__volatile__))?'
                         r'\s*[{(]')
 
 # Match strings that indicate we're working on a C (not C++) file.
-# 工作在C文件中匹配字符串的标志位
 _SEARCH_C_FILE = re.compile(r'\b(?:LINT_C_FILE|'
                             r'vim?:\s*.*(\s*|:)filetype=c(\s*|:|$))')
 
 # Match string that indicates we're working on a Linux Kernel file.
-# 在Linux内核文件中匹配字符串的标志位
 _SEARCH_KERNEL_FILE = re.compile(r'\b(?:LINT_KERNEL_FILE)')
 
 _regexp_compile_cache = {}
 
 # {str, set(int)}: a map from error categories to sets of linenumbers
 # on which those errors are expected and should be suppressed.
-# {str, set(int)}: 一个来自错误类别行数的集合里来的容器map。哪些错误是预期的，应予以抑制。
 _error_suppressions = {}
 
 # The root directory used for deriving header guard CPP variable.
 # This is set by --root flag.
-# 用于头文件的守护变量的根路径
 _root = None
 _root_debug = False
 
 # The top level repository directory. If set, _root is calculated relative to
 # this directory instead of the directory containing version control artifacts.
 # This is set by the --repository flag.
-# 顶层仓库路径，=。假如设置了，_root是计算与这个路径的联系用来替换白喊版本控制的路径
-# 这个选项可以用 --repository进行设置
 _repository = None
 
 # Files to exclude from linting. This is set by the --exclude flag.
-# 不进行lint的文件，通过--exclude 标志位设置
 _excludes = None
 
 # Whether to supress PrintInfo messages
-# 禁止打印信息
 _quiet = False
 
 # The allowed line length of files.
 # This is set by --linelength flag.
-# 这个允许文件每行的长度为几个字符，可以通过 --linelength进行设置
 _line_length = 80
 
 try:
@@ -779,13 +678,10 @@ def unicode_escape_decode(x):
 
 # Treat all headers starting with 'h' equally: .h, .hpp, .hxx etc.
 # This is set by --headers flag.
-# 对待所有头文件开始于字符'h'等价于: .h, .hpp, .hxx etc.
-# 这个可以通过--headers来设置
 _hpp_headers = set(['h', 'hh', 'hpp', 'hxx', 'h++', 'cuh'])
 
 # {str, bool}: a map from error categories to booleans which indicate if the
 # category should be suppressed for every line.
-# {str, bool}: 一个标志禁止从错误类别的到布尔类型的map
 _global_error_suppressions = {}
 
 def ProcessHppHeadersOption(val):
@@ -793,7 +689,6 @@ def ProcessHppHeadersOption(val):
   try:
     _hpp_headers = set(val.split(','))
     # Automatically append to extensions list so it does not have to be set 2 times
-    # 自动增加扩展列表所以这个东西不用被置两次
     _valid_extensions.update(_hpp_headers)
   except ValueError:
     PrintUsage('Header extensions must be comma separated list.')
@@ -806,8 +701,6 @@ def GetHeaderExtensions():
 
 # The allowed extensions for file names
 # This is set by --extensions flag
-# 被允许的文件扩展名
-# 这个可以用--extensions 来设置 
 def GetAllExtensions():
   if not _valid_extensions:
     return GetHeaderExtensions().union(set(['c', 'cc', 'cpp', 'cxx', 'c++', 'cu']))
@@ -830,17 +723,6 @@ def ParseNolintSuppressions(filename, raw_line, linenum, error):
     raw_line: str, the line of input text, with comments.
     linenum: int, the number of the current line.
     error: function, an error handler.
-  """
-  
-  """更新错误抑制全局列表
-  
-  解析当前所有注释NOLINT的行，更新错误抑制表。
-  参数列表:
-    filename: str, 输入文件名
-    raw_line: str, 输入带有注释的代码行
-    linenum: int, 当前的行数
-    error: function, an error handler.
-  
   """
   matched = Search(r'\bNOLINT(NEXTLINE)?\b(\([^)]+\))?', raw_line)
   if matched:
@@ -870,15 +752,6 @@ def ProcessGlobalSuppresions(lines):
     lines: An array of strings, each representing a line of the file, with the
            last element being empty if the file is terminated with a newline.
   """
-  """更新全局错误抑制表
-
-  解析带有全局影响的文件中任何带有lint指令
-
-  参数列表：
-    lines: 一个string类型的数组，每个代表文件中的一个行,
-           假如文件结束于一个新的行，其最后一个元素为空
-  
-  """
   for line in lines:
     if _SEARCH_C_FILE.search(line):
       for category in _DEFAULT_C_SUPPRESSED_CATEGORIES:
@@ -890,7 +763,6 @@ def ProcessGlobalSuppresions(lines):
 
 def ResetNolintSuppressions():
   """Resets the set of NOLINT suppressions to empty."""
-  """重置NOLINT抑制的集合为空"""
   _error_suppressions.clear()
   _global_error_suppressions.clear()
 
@@ -908,19 +780,6 @@ def IsErrorSuppressedByNolint(category, linenum):
     bool, True iff the error should be suppressed due to a NOLINT comment or
     global suppression.
   """
-  """假如特定的错误分类在这一行被抑制了，返回真
-
-  查找全局错误抑制map是否被
-  ParseNolintSuppressions/ProcessGlobalSuppresions/ResetNolintSuppressions污染
-
-  参数列表：
-    category: str, 错误的分类
-    linenum: int, 当前行数
-
-  返回值：
-      bool, True 假如错误应该被注释NOLINT或者global suppression抑制
-  
-  """
   return (_global_error_suppressions.get(category, False) or
           linenum in _error_suppressions.get(category, set()) or
           linenum in _error_suppressions.get(None, set()))
@@ -928,11 +787,9 @@ def IsErrorSuppressedByNolint(category, linenum):
 
 def Match(pattern, s):
   """Matches the string with the pattern, caching the compiled regexp."""
-  """用模式匹配字符串， 缓存一个编译过的正则表达式"""
   # The regexp compilation caching is inlined in both Match and Search for
   # performance reasons; factoring it out into a separate function turns out
   # to be noticeably expensive.
-  
   if pattern not in _regexp_compile_cache:
     _regexp_compile_cache[pattern] = sre_compile.compile(pattern)
   return _regexp_compile_cache[pattern].match(s)
@@ -951,15 +808,6 @@ def ReplaceAll(pattern, rep, s):
   Returns:
     string with replacements made (or original string if no replacements)
   """
-  """在一个string中替换模式实例
-  编译过的正则表达式是保存在一个换村里Match和Search是共享的
-
-  参数列表：
-      pattern: 正则表达式模式
-      rep: 替换文本
-      s: 要查找的字符串search string
-
-  """
   if pattern not in _regexp_compile_cache:
     _regexp_compile_cache[pattern] = sre_compile.compile(pattern)
   return _regexp_compile_cache[pattern].sub(rep, s)
@@ -967,7 +815,6 @@ def ReplaceAll(pattern, rep, s):
 
 def Search(pattern, s):
   """Searches the string for the pattern, caching the compiled regexp."""
-  """查找一个字符串的模式，然后缓存该正则表达式"""
   if pattern not in _regexp_compile_cache:
     _regexp_compile_cache[pattern] = sre_compile.compile(pattern)
   return _regexp_compile_cache[pattern].search(s)
@@ -975,13 +822,12 @@ def Search(pattern, s):
 
 def _IsSourceExtension(s):
   """File extension (excluding dot) matches a source file extension."""
-  """文件扩展名(包括小数点)匹配一个源文件扩展名"""
   return s in GetNonHeaderExtensions()
 
 
 class _IncludeState(object):
   """Tracks line numbers for includes, and the order in which includes appear.
-  
+
   include_list contains list of lists of (header, line number) pairs.
   It's a lists of lists rather than just one flat list to make it
   easier to update across preprocessor boundaries.
@@ -991,20 +837,8 @@ class _IncludeState(object):
   raise an _IncludeError with an appropriate error message.
 
   """
-  
-  """跟踪一个include的行数和include出现的顺序
-  
-  include_list  包含了一个（header，line number）的配对
-  它是一个列表的列表，而不是仅仅一个平摊的列表，这让在编译器边界是更容易更新。
-
-  每个文件的头文件调用CheckNextIncludeOrder()一次通过常量定义。调用一个非法指令将会抛出
-  一个带有适当错误信息_IncludeError错误
-  """
-  
   # self._section will move monotonically through this set. If it ever
   # needs to move backwards, CheckNextIncludeOrder will raise an error.
-  # self._section将单调向前移动穿过整个set。假如需要向回移动，
-  # CheckNextIncludeOrder将会抛出一个错误
   _INITIAL_SECTION = 0
   _MY_H_SECTION = 1
   _C_SECTION = 2
@@ -1053,20 +887,13 @@ class _IncludeState(object):
     Args:
       directive: preprocessor directive (e.g. "if", "else").
     """
-    """检查预处理指令，重置一个扇区
-
-    参数列表：
-        directive：预处理指令
-    """
     # The name of the current section.
-    # 当前扇区的名字
     self._section = self._INITIAL_SECTION
     # The path of last found header.
     self._last_header = ''
 
     # Update list of includes.  Note that we never pop from the
     # include list.
-    # 更新包含列表。我们永远不pop的include的列表的备注
     if directive in ('if', 'ifdef', 'ifndef'):
       self.include_list.append([])
     elif directive in ('else', 'elif'):
@@ -1486,7 +1313,7 @@ class FileInfo(object):
     If we have a real absolute path name here we can try to do something smart:
     detecting the root of the checkout and truncating /path/to/checkout from
     the name so that we get header guards that don't include things like
-    "C:\Documents and Settings\..." or "/home/username/..." in them and thus
+    "C:\\Documents and Settings\\..." or "/home/username/..." in them and thus
     people on different computers who have checked the source out to different
     locations won't see bogus errors.
     """
@@ -2419,9 +2246,9 @@ def CheckForBadCharacters(filename, lines, error):
     error: The function to call with any errors found.
   """
   for linenum, line in enumerate(lines):
-    #if unicode_escape_decode('\ufffd') in line:
-      #error(filename, linenum, 'readability/utf8', 5,
-            #'Line contains invalid UTF-8 (or Unicode replacement character).')
+    if unicode_escape_decode('\ufffd') in line:
+      error(filename, linenum, 'readability/utf8', 5,
+            'Line contains invalid UTF-8 (or Unicode replacement character).')
     if '\0' in line:
       error(filename, linenum, 'readability/nul', 5, 'Line contains NUL byte.')
 
@@ -3489,7 +3316,7 @@ def CheckForFunctionLengths(filename, clean_lines, linenum,
       if Search(r'(;|})', start_line):  # Declarations and trivial functions
         body_found = True
         break                              # ... ignore
-      elif Search(r'{', start_line):
+      if Search(r'{', start_line):
         body_found = True
         function = Search(r'((\w|:)*)\(', line).group(1)
         if Match(r'TEST', function):    # Handle TEST... macros
@@ -4010,10 +3837,10 @@ def CheckBracesSpacing(filename, clean_lines, linenum, nesting_state, error):
     # We also suppress warnings for `uint64_t{expression}` etc., as the style
     # guide recommends brace initialization for integral types to avoid
     # overflow/truncation.
-    #if (not Match(r'^[\s}]*[{.;,)<>\]:]', trailing_text)
-        #and not _IsType(clean_lines, nesting_state, leading_text)):
-      #error(filename, linenum, 'whitespace/braces', 5,
-            #'Missing space before {')
+    if (not Match(r'^[\s}]*[{.;,)<>\]:]', trailing_text)
+        and not _IsType(clean_lines, nesting_state, leading_text)):
+      error(filename, linenum, 'whitespace/braces', 5,
+            'Missing space before {')
 
   # Make sure '} else {' has spaces.
   if Search(r'}else', line):
@@ -4155,18 +3982,18 @@ def CheckBraces(filename, clean_lines, linenum, error):
     # following line if it is part of an array initialization and would not fit
     # within the 80 character limit of the preceding line.
     prevline = GetPreviousNonBlankLine(clean_lines, linenum)[0]
-    #if (not Search(r'[,;:}{(]\s*$', prevline) and
-        #not Match(r'\s*#', prevline) and
-        #not (GetLineWidth(prevline) > _line_length - 2 and '[]' in prevline)):
-      #error(filename, linenum, 'whitespace/braces', 4,
-            #'{ should almost always be at the end of the previous line')
+    if (not Search(r'[,;:}{(]\s*$', prevline) and
+        not Match(r'\s*#', prevline) and
+        not (GetLineWidth(prevline) > _line_length - 2 and '[]' in prevline)):
+      error(filename, linenum, 'whitespace/braces', 4,
+            '{ should almost always be at the end of the previous line')
 
   # An else clause should be on the same line as the preceding closing brace.
   if Match(r'\s*else\b\s*(?:if\b|\{|$)', line):
     prevline = GetPreviousNonBlankLine(clean_lines, linenum)[0]
-    #if Match(r'\s*}\s*$', prevline):
-      #error(filename, linenum, 'whitespace/newline', 4,
-            #'An else should appear on the same line as the preceding }')
+    if Match(r'\s*}\s*$', prevline):
+      error(filename, linenum, 'whitespace/newline', 4,
+            'An else should appear on the same line as the preceding }')
 
   # If braces come on one side of an else, they should be on both.
   # However, we have to worry about "else if" that spans multiple lines!
@@ -5787,11 +5614,11 @@ _HEADERS_CONTAINING_TEMPLATES = (
                      )),
     ('<limits>', ('numeric_limits',)),
     ('<list>', ('list',)),
-    ('<map>', ('map', 'multimap',)),
+    ('<map>', ('multimap',)),
     ('<memory>', ('allocator', 'make_shared', 'make_unique', 'shared_ptr',
                   'unique_ptr', 'weak_ptr')),
     ('<queue>', ('queue', 'priority_queue',)),
-    ('<set>', ('set', 'multiset',)),
+    ('<set>', ('multiset',)),
     ('<stack>', ('stack',)),
     ('<string>', ('char_traits', 'basic_string',)),
     ('<tuple>', ('tuple',)),
@@ -5825,6 +5652,16 @@ for _header, _templates in _HEADERS_MAYBE_TEMPLATES:
         (re.compile(r'[^>.]\b' + _template + r'(<.*?>)?\([^\)]'),
             _template,
             _header))
+# Match set<type>, but not foo->set<type>, foo.set<type>
+_re_pattern_headers_maybe_templates.append(
+    (re.compile(r'[^>.]\bset\s*\<'),
+        'set<>',
+        '<set>'))
+# Match 'map<type> var' and 'std::map<type>(...)', but not 'map<type>(...)''
+_re_pattern_headers_maybe_templates.append(
+    (re.compile(r'(std\b::\bmap\s*\<)|(^(std\b::\b)map\b\(\s*\<)'),
+        'map<>',
+        '<map>'))
 
 # Other scripts may reach in and modify this pattern.
 _re_pattern_templates = []
