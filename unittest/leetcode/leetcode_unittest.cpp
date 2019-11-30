@@ -1,6 +1,5 @@
-﻿#include "leetcode.h"
-
-#include "gtest/gtest.h"
+﻿#include "gtest/gtest.h"
+#include "leetcode.h"
 
 /**
  * @brief Lee::Leetcode::isPalindrome()函数的简单测试

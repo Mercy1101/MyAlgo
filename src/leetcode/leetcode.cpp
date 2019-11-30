@@ -1,10 +1,9 @@
-#include "leetcode.h"
-
 #include <algorithm>
 #include <iostream>
 #include <stack>
 #include <vector>
 
+#include "leetcode.h"
 
 namespace Lee {
 namespace Leetcode {
