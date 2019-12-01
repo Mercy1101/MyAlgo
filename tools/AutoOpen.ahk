@@ -52,22 +52,67 @@ clipboard = %d%
 Send ^v
 return
 
+; 输出函数头注释
 ;(10)
 CapsLock & q::
 d = %A_YYYY%-%A_MM%-%A_DD% %A_Hour%:%A_Min%:%A_Sec%
 clipboard = %d%
 SetCapsLockState, AlwaysOff
-SendInput,/**{Enter}
-SendInput,* @name                {Enter}
-SendInput,* @brief               {Enter}
-SendInput,* @param               {Enter}
-SendInput,* @return              {Enter}
-SendInput,* @author              Lijiancong, pipinstall@163.com{Enter}
-SendInput,* @date               {space} 
+SendInput,/// @name     {Enter}
+SendInput,/// @brief    {Enter}
+SendInput,/// @param    {Enter}
+SendInput,/// @return   {Enter}
+SendInput,/// @author   Lijiancong, pipinstall@163.com{Enter}
+SendInput,/// @date    {space} 
 Send ^v
-SendInput,{Enter}* @warning             线程不安全{Enter}
-SendInput,{Enter}* @note{Enter}
-SendInput,*/
+SendInput,{Enter}/// @warning  线程不安全{Enter}
+return
+
+; 输出/// @note
+CapsLock & n::
+SetCapsLockState, AlwaysOff
+SendInput,/// @note    {space}
+return
+
+; 输出///   @retval
+CapsLock & r::
+SetCapsLockState, AlwaysOff
+SendInput,///   @retval
+return
+
+; 输出头文件注释
+CapsLock & p::
+SetCapsLockState, AlwaysOff
+;SendInput,/// Copyright (c) 2019 Lijiancong. All rights reserved.
+;SendInput,{ENTER}/// 
+;SendInput,{ENTER}/// Use of this source code is governed by a MIT license
+;SendInput,{ENTER}/// that can be found in the License file.
+SendInput,/** Copyright (c) 2019, FRITT Inc. All rights reserved. */
+SendInput,{ENTER}
+SendInput,{ENTER}///////// ///////// ///////// ///////// ///////// ///////// ///////// /////////
+SendInput,{ENTER}/// 
+SendInput,{ENTER}/// {@}file{space}{space}{space}FILENAME.h
+SendInput,{ENTER}/// {@}brief{space}               
+SendInput,{ENTER}/// 
+SendInput,{ENTER}/// {@}author{space}lijiancong, pipinstall@163.com
+SendInput,{ENTER}/// {@}date{space}{space}{space}            
+d = %A_YYYY%-%A_MM%-%A_DD% %A_Hour%:%A_Min%:%A_Sec%
+clipboard = %d%
+Send ^v
+SendInput,{ENTER}
+SendInput,///////// ///////// ///////// ///////// ///////// ///////// ///////// /////////{ENTER}
+SendInput,{ENTER}
+SendInput,{#}ifndef <PROJECT>_<PATH>_<FILE>_H_{ENTER}
+SendInput,{#}define <PROJECT>_<PATH>_<FILE>_H_{ENTER}
+SendInput,{#}pragma once{ENTER}
+SendInput,{ENTER}
+SendInput,{#}endif  // end of <PROJECT>_<PATH>_<FILE>_H_{ENTER}
+return
+
+; 输出/// @details  
+CapsLock & a::
+SetCapsLockState, AlwaysOff
+SendInput,/// @details{space}{space}
 return
 
 ;(11)
@@ -106,4 +151,10 @@ return
 ;(17)
 !b::
 Run, C:\boost_1_70_0\index.html
+return
+
+;(18)
+CapsLock & d::
+SetCapsLockState, AlwaysOff
+Send, /// TODO(lijiancong){space}
 return
