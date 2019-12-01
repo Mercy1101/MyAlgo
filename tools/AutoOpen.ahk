@@ -58,6 +58,7 @@ CapsLock & q::
 d = %A_YYYY%-%A_MM%-%A_DD% %A_Hour%:%A_Min%:%A_Sec%
 clipboard = %d%
 SetCapsLockState, AlwaysOff
+Send,^1
 SendInput,/// @name     {Enter}
 SendInput,/// @brief    {Enter}
 SendInput,/// @param    {Enter}
@@ -65,24 +66,27 @@ SendInput,/// @return   {Enter}
 SendInput,/// @author   Lijiancong, pipinstall@163.com{Enter}
 SendInput,/// @date    {space} 
 Send ^v
-SendInput,{Enter}/// @warning  线程不安全{Enter}
+SendInput,{Enter}/// @warning  线程不安全
 return
 
 ; 输出/// @note
 CapsLock & n::
 SetCapsLockState, AlwaysOff
+Send,^1
 SendInput,/// @note    {space}
 return
 
 ; 输出///   @retval
 CapsLock & r::
 SetCapsLockState, AlwaysOff
+Send,^1
 SendInput,///   @retval
 return
 
 ; 输出头文件注释
 CapsLock & p::
 SetCapsLockState, AlwaysOff
+Send,^1
 ;SendInput,/// Copyright (c) 2019 Lijiancong. All rights reserved.
 ;SendInput,{ENTER}/// 
 ;SendInput,{ENTER}/// Use of this source code is governed by a MIT license
@@ -92,7 +96,7 @@ SendInput,{ENTER}
 SendInput,{ENTER}///////// ///////// ///////// ///////// ///////// ///////// ///////// /////////
 SendInput,{ENTER}/// 
 SendInput,{ENTER}/// {@}file{space}{space}{space}FILENAME.h
-SendInput,{ENTER}/// {@}brief{space}               
+SendInput,{ENTER}/// {@}brief{space}{space}        
 SendInput,{ENTER}/// 
 SendInput,{ENTER}/// {@}author{space}lijiancong, pipinstall@163.com
 SendInput,{ENTER}/// {@}date{space}{space}{space}            
@@ -112,6 +116,7 @@ return
 ; 输出/// @details  
 CapsLock & a::
 SetCapsLockState, AlwaysOff
+Send,^1
 SendInput,/// @details{space}{space}
 return
 
@@ -124,6 +129,7 @@ return
 ;(12)
 CapsLock & c::
 SetCapsLockState, AlwaysOff
+Send,^1
 Send, /**{space}{space}*/
 Send, {Left}{Left}{Left}
 return
@@ -156,5 +162,6 @@ return
 ;(18)
 CapsLock & d::
 SetCapsLockState, AlwaysOff
+Send,^1
 Send, /// TODO(lijiancong){space}
 return
