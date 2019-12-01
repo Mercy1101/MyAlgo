@@ -30,7 +30,6 @@
 #include <thread>
 
 #include "log/spdlog/spdlog.h"
-#include "public/MacroDefine.h"  // for DEFAULT_CONFIG_FOLDER_NAME和EFAULT_CONFIG_FOLDER_NAME
 #include "simpleini/SimpleIni.h"
 #include "spdlog/sinks/rotating_file_sink.h"
 #include "utility/utility.h"  // for GetRootPath
@@ -47,7 +46,7 @@ const std::string DEFAULT_PROFILER_LOG_FOLDER_NAME = "profiler";
 /** 默认的log模块配置文件，相对于程序根路径的相对路径和文件名 */
 // const std::string DEFAULT_LOG_CONFIG_FILE_NAME = "config\\conf.ini";
 const std::string DEFAULT_LOG_CONFIG_FILE_NAME =
-    DEFAULT_CONFIG_FOLDER_NAME + "\\" + DEFAULT_CONFIG_FILE_NAME;
+    Lee::DEFAULT_CONFIG_FOLDER_NAME + "\\" + Lee::DEFAULT_CONFIG_FILE_NAME;
 
 /**
  * @brief 定义了日志模块的打印等级。
@@ -64,11 +63,14 @@ enum SPD_LOG_LEVEL : int {
 
 namespace Lee {
 namespace log {
-#undef SWITCH_LOG_NO_FUNCNAME_LINENUMBER  // 定义这个宏来删除在日志后面添加<In
-                                          // Function: Line:>这些信息
-
-constexpr int DEFAULT_LOG_LEVEL_CONF = 2;  ///< 默认log打印等级为info(2)
-constexpr int DEFAULT_FLUSH_LEVEL_CONF = 3;  ///< 默认log刷新文件等级为warn(3)
+#undef SWITCH_LOG_NO_FUNCNAME_LINENUMBER  // 定义这个宏来删除
+                                          // 在日志后面添加
+                                          // <InFunction: Line:>
+                                          // 这些信息
+///< 默认log打印等级为info(2)
+constexpr int DEFAULT_LOG_LEVEL_CONF = 2;
+///< 默认log刷新文件等级为warn(3)
+constexpr int DEFAULT_FLUSH_LEVEL_CONF = 3;
 
 /**
  * @brief               使用spdlog开源库来封装一个新的打印模块

@@ -358,7 +358,7 @@ inline int GetRandom() noexcept {
 /// @warning  线程不安全
 inline int GetRangeRandom(int x, int y) noexcept {
   if (x > y) std::swap(x, y);
-  return (GetRandom() % (y - x + 1)) + x;
+  return (Lee::GetRandom() % (y - x + 1)) + x;
 }
 
 }  // End of namespace Utility_

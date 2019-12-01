@@ -1,13 +1,13 @@
 ﻿#include "init/init.h"
-#include "public/MacroDefine.h"  // for DEFAULT_CONFIG_FOLDER_NAME\DEFAULT_CONFIG_FILE_NAME
+
 #include "utility/utility.h"
 
 void CheckConfigFolder() {
   const auto strRootPath = Lee::GetRootPath();
   const std::string strConfigPath =
-      strRootPath + "\\" + DEFAULT_CONFIG_FOLDER_NAME;
+      strRootPath + "\\" + Lee::DEFAULT_CONFIG_FOLDER_NAME;
   const std::string strConfigPathAndName =
-      strConfigPath + "\\" + DEFAULT_CONFIG_FILE_NAME;
+      strConfigPath + "\\" + Lee::DEFAULT_CONFIG_FILE_NAME;
   /** 检查并创建程序所需要的配置文件和文件夹 */
   /** 首先检查配置文件的路径有没有 */
   if (!Lee::IsFileExist(strConfigPath)) {
