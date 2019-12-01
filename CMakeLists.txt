@@ -143,3 +143,15 @@ target_compile_definitions(${EXECUTABLE_EXE_NAME} PRIVATE _SILENCE_TR1_NAMESPACE
 
 # ADD_DEFINITIONS(-_CRT_SECUER_NO_WARNINGS)
 
+# 设置GCC最高警告级别
+if ( CMAKE_COMPILER_IS_GNUCC )
+    set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -Wall")
+endif()
+# 设置MSVC最高警告级别
+if ( MSVC )
+    set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} /W4")
+    set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} /WX")
+endif()
+
+
+
