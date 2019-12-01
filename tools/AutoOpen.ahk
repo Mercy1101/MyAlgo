@@ -58,11 +58,14 @@ CapsLock & q::
 d = %A_YYYY%-%A_MM%-%A_DD% %A_Hour%:%A_Min%:%A_Sec%
 clipboard = %d%
 SetCapsLockState, AlwaysOff
-Send,^1
+Send,^0
 SendInput,/// @name     {Enter}
 SendInput,/// @brief    {Enter}
+SendInput,///{Enter}
 SendInput,/// @param    {Enter}
+SendInput,///{Enter}
 SendInput,/// @return   {Enter}
+SendInput,///{Enter}
 SendInput,/// @author   Lijiancong, pipinstall@163.com{Enter}
 SendInput,/// @date    {space} 
 Send ^v
@@ -72,21 +75,23 @@ return
 ; 输出/// @note
 CapsLock & n::
 SetCapsLockState, AlwaysOff
-Send,^1
+Send,^0
 SendInput,/// @note    {space}
 return
 
 ; 输出///   @retval
 CapsLock & r::
 SetCapsLockState, AlwaysOff
-Send,^1
-SendInput,///   @retval
+Send,^0
+SendInput,///   @retval{space}
+SendInput,{enter}///
+Send,{up}{right}{right}{right}{right}{right}{right}{right}{right}{right}{right}{right}
 return
 
 ; 输出头文件注释
 CapsLock & p::
 SetCapsLockState, AlwaysOff
-Send,^1
+Send,^0
 ;SendInput,/// Copyright (c) 2019 Lijiancong. All rights reserved.
 ;SendInput,{ENTER}/// 
 ;SendInput,{ENTER}/// Use of this source code is governed by a MIT license
@@ -116,8 +121,11 @@ return
 ; 输出/// @details  
 CapsLock & a::
 SetCapsLockState, AlwaysOff
-Send,^1
+Send,^0
+;SendInput,///{enter}
 SendInput,/// @details{space}{space}
+SendInput,{enter}///
+Send,{up}{right}{right}{right}{right}{right}{right}{right}{right}{right}{right}{right}
 return
 
 ;(11)
@@ -129,7 +137,7 @@ return
 ;(12)
 CapsLock & c::
 SetCapsLockState, AlwaysOff
-Send,^1
+Send,^0
 Send, /**{space}{space}*/
 Send, {Left}{Left}{Left}
 return
@@ -162,6 +170,6 @@ return
 ;(18)
 CapsLock & d::
 SetCapsLockState, AlwaysOff
-Send,^1
+Send,^0
 Send, /// TODO(lijiancong){space}
 return
