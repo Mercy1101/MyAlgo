@@ -1,8 +1,9 @@
-﻿#include <limits>
+﻿#include "utility/utility.h"
+
+#include <limits>
 #include <string>
 
 #include "gtest/gtest.h"
-#include "utility/utility.h"
 
 /**
  * @brief 测试KMP这个函数
@@ -266,6 +267,72 @@ TEST(IsMultiOverFlow, BigNumber_LLongTrue) {
   /** LLONG_MIN * LLONG_MIN 溢出了 */
   x = LLONG_MIN;
   y = LLONG_MIN;
+  EXPECT_TRUE(Lee::IsMultiOverFlow(x, y));
+}
+
+/**
+ * @brief 测试Lee::IsMultiOverFlow()这个函数在unsigned int类型下的测试
+ */
+TEST(IsMultiOverFlow, Simple_Unsigned) {
+  unsigned x = UINT_MAX;
+  unsigned y = UINT_MAX;
+  EXPECT_TRUE(Lee::IsMultiOverFlow(x, y));
+
+  x = 1;
+  y = UINT_MAX;
+  EXPECT_FALSE(Lee::IsMultiOverFlow(x, y));
+
+  x = 2;
+  y = UINT_MAX;
+  EXPECT_TRUE(Lee::IsMultiOverFlow(x, y));
+
+  x = UINT_MAX / 2;
+  y = 2;
+  EXPECT_FALSE(Lee::IsMultiOverFlow(x, y));
+
+  x = UINT_MAX / 2 + 1;
+  y = 2;
+  EXPECT_TRUE(Lee::IsMultiOverFlow(x, y));
+
+  x = UINT_MAX / 2;
+  y = 2;
+  EXPECT_FALSE(Lee::IsMultiOverFlow(x, y));
+
+  x = UINT_MAX / 2 + 1;
+  y = 2;
+  EXPECT_TRUE(Lee::IsMultiOverFlow(x, y));
+}
+
+/**
+ * @brief 测试Lee::IsMultiOverFlow()这个函数在unsigned long类型下的测试
+ */
+TEST(IsMultiOverFlow, Simple_UnsignedLongLong) {
+  unsigned long long x = ULLONG_MAX;
+  unsigned long long y = ULLONG_MAX;
+  EXPECT_TRUE(Lee::IsMultiOverFlow(x, y));
+
+  x = 1;
+  y = ULLONG_MAX;
+  EXPECT_FALSE(Lee::IsMultiOverFlow(x, y));
+
+  x = 2;
+  y = ULLONG_MAX;
+  EXPECT_TRUE(Lee::IsMultiOverFlow(x, y));
+
+  x = ULLONG_MAX / 2;
+  y = 2;
+  EXPECT_FALSE(Lee::IsMultiOverFlow(x, y));
+
+  x = (ULLONG_MAX / 2) + 1;
+  y = 2;
+  EXPECT_TRUE(Lee::IsMultiOverFlow(x, y));
+
+  x = ULLONG_MAX / 5;
+  y = 5;
+  EXPECT_FALSE(Lee::IsMultiOverFlow(x, y));
+
+  x = (ULLONG_MAX / 5) + 1;
+  y = 5;
   EXPECT_TRUE(Lee::IsMultiOverFlow(x, y));
 }
 

@@ -290,10 +290,18 @@ inline bool IsMultiOverFlow(T1 x, T2 y) noexcept {
   static_assert(std::is_same<T1, T2>::value, "IsMultiOverFlow need same type!");
   static_assert(std::is_integral<T1>::value,
                 "IsMultiOverFlow need integral type!");
-  static_assert(std::is_signed<T1>::value, "IsMultiOverFlow need signed type!");
+  // static_assert(std::is_signed<T1>::value, "IsMultiOverFlow need signed
+  // type!");
 
-  long long llTemp = static_cast<long long>(x) * y;
-  return llTemp != static_cast<T1>(llTemp);
+  if constexpr (std::is_unsigned<T1>::value) {
+    unsigned long long overflow_number = static_cast<unsigned long long>(x) * y;
+    return overflow_number != static_cast<T1>(overflow_number);
+  } else if constexpr (std::is_signed<T1>::value) {
+    long long overflow_number = static_cast<long long>(x) * y;
+    return overflow_number != static_cast<T1>(overflow_number);
+  } else {
+    return false;
+  }
 }
 /// IsMultiOverFlow函数的模板特例，用来单独对long long类型进行判断
 template <>
@@ -308,7 +316,23 @@ inline bool IsMultiOverFlow(long long x, long long y) noexcept {
   }
   return false;
 }
+/// IsMultiOverFlow函数的模板特例，用来单独对unsigned long long类型进行判断
+template <>
+inline bool IsMultiOverFlow(unsigned long long x,
+                            unsigned long long y) noexcept {
+  if (x < y) std::swap(x, y);
+  if (0 == y || 0 == x) return false;
+  if (x > (ULLONG_MAX / y)) return true;
+  return false;
+}
 
+template <typename T1, typename T2>
+auto Multiplies_s(T1 x, T2 y) noexcept {
+  static_assert(std::is_same<T1, T2>::value, "Multiplies_s need same type!");
+  static_assert(std::is_integral<T1>::value,
+                "Multiplies_s need integral type!");
+  static_assert(std::is_signed<T1>::value, "Multiplies_s need signed type!");
+}
 /// @name     IsLittleEndian
 /// @brief    判断电脑大小端
 /// @param    NONE
