@@ -14,12 +14,10 @@
 
 #ifndef MYALGO_INCLUDE_TOOLS_UTILITY_DETAIL_MARCO_UTILITY_H_
 #define MYALGO_INCLUDE_TOOLS_UTILITY_DETAIL_MARCO_UTILITY_H_
+#include <string>
 
 namespace Lee {
 inline namespace marco_utility {
-
-#include <string>
-
 /// 长度单位定义
 using KiloMeter = int;   ///< 千米
 using Meter = int;       ///< 米

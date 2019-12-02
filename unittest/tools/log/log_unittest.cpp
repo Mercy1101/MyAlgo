@@ -1,7 +1,8 @@
+#include "log/log.h"
+
 #include <iostream>
 
 #include "gtest/gtest.h"
-#include "log/log.h"
 
 /**
  * @brief 对log模块进行简单的单元测试
