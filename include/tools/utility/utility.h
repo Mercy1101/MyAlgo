@@ -29,6 +29,8 @@
 #include <mutex>
 #include <string>
 #include <type_traits>
+#include <optional>
+#include <functional>
 
 namespace Lee {
 inline namespace Utility_ {
@@ -290,8 +292,6 @@ inline bool IsMultiOverFlow(T1 x, T2 y) noexcept {
   static_assert(std::is_same<T1, T2>::value, "IsMultiOverFlow need same type!");
   static_assert(std::is_integral<T1>::value,
                 "IsMultiOverFlow need integral type!");
-  // static_assert(std::is_signed<T1>::value, "IsMultiOverFlow need signed
-  // type!");
 
   if constexpr (std::is_unsigned<T1>::value) {
     unsigned long long overflow_number = static_cast<unsigned long long>(x) * y;
@@ -327,11 +327,12 @@ inline bool IsMultiOverFlow(unsigned long long x,
 }
 
 template <typename T1, typename T2>
-auto Multiplies_s(T1 x, T2 y) noexcept {
+std::optional<T1> Multiplies_s(T1 x, T2 y) noexcept {
   static_assert(std::is_same<T1, T2>::value, "Multiplies_s need same type!");
   static_assert(std::is_integral<T1>::value,
                 "Multiplies_s need integral type!");
-  static_assert(std::is_signed<T1>::value, "Multiplies_s need signed type!");
+  if (IsMultiOverFlow(x, y)) return {};
+  return x * y;
 }
 /// @name     IsLittleEndian
 /// @brief    判断电脑大小端

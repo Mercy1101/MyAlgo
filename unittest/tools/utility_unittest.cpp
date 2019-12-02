@@ -359,3 +359,19 @@ TEST(power, SimpleTest) {
   /** 不支持负数次幂 */
   // EXPECT_EQ(Lee::power(2, -1), 1);
 }
+
+/**
+ * @brief Lee::Multiplies_s()这个函数简单测试
+ */
+TEST(Multiplies_s, SimpleTest) {
+  auto xx0 = Lee::Multiplies_s(2, 4);
+  EXPECT_TRUE(xx0.has_value());
+  EXPECT_EQ(xx0.value(), 2 * 4);
+
+  auto xx1 = Lee::Multiplies_s(INT_MIN, -1);
+  EXPECT_FALSE(xx1.has_value());
+
+  auto xx2 = Lee::Multiplies_s(INT_MIN / 2, 3);
+  EXPECT_FALSE(xx2.has_value());
+  EXPECT_EQ(xx2.value_or(1), 1);
+}
