@@ -68,13 +68,13 @@ class KMP {
  private:
   KMP() = delete; /** 不可被实例化 */
 
-  static const std::vector<int>&& kmp_next(const std::string& strSubText) {
+  static const std::vector<size_t>&& kmp_next(const std::string& strSubText) {
     static std::mutex Mutex;  ///< 保证静态变量next的线程安全
     std::lock_guard<std::mutex> Lock(Mutex);
 
-    static std::vector<int> next(strSubText.size());
+    static std::vector<size_t> next(strSubText.size());
     next.at(0) = 0;
-    int temp = 0;
+    size_t temp = 0;
     for (size_t i = 1; i < next.size(); i++) {
       temp = next.at(i - 1);
       while (strSubText.at(i) != strSubText.at(temp) && temp > 0)
