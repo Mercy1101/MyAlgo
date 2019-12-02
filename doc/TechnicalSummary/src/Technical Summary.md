@@ -49,6 +49,7 @@
 | V4.3 | 李建聪 | 添加**isalnum函数介绍**小节 | 2019-11-28 19:48:33 |
 | V4.4 | 李建聪 | 添加**std::transform介绍**小节 | 2019-11-29 08:34:55 |
 | V4.5 | 李建聪 | 添加**std::round介绍**小节 | 2019-11-29 08:39:34 |
+| V4.6 | 李建聪 | 添加**std::numeric_limits介绍**小节 | 2019-12-02 11:18:16 |
 
 ### std::string 用法
 
@@ -2632,11 +2633,42 @@ int main()
 
 `std::trunc`  绝对值不大于给定值的最接近整数。
 
+### std::numeric_limits介绍
+
+```c++
+#include <limits>
+#include <iostream>
+ 
+int main() 
+{
+    std::cout << "type\tlowest()\tmin()\t\tmax()\n\n";
+ 
+    std::cout << "uchar\t"
+              << +std::numeric_limits<unsigned char>::lowest() << '\t' << '\t'
+              << +std::numeric_limits<unsigned char>::min() << '\t' << '\t'
+              << +std::numeric_limits<unsigned char>::max() << '\n';
+    std::cout << "int\t"
+              << std::numeric_limits<int>::lowest() << '\t'
+              << std::numeric_limits<int>::min() << '\t'
+              << std::numeric_limits<int>::max() << '\n';
+    std::cout << "float\t"
+              << std::numeric_limits<float>::lowest() << '\t'
+              << std::numeric_limits<float>::min() << '\t'
+              << std::numeric_limits<float>::max() << '\n';
+    std::cout << "double\t"
+              << std::numeric_limits<double>::lowest() << '\t'
+              << std::numeric_limits<double>::min() << '\t'
+              << std::numeric_limits<double>::max() << '\n';
+}
+```
+
+
 ## C++17及其以后的特性
 
 | 版本号 | 作者   | 修改摘要                      | 时间                |
 | ------ | ------ | ----------------------------- | ------------------- |
 | V1.0   | 李建聪 | 添加**std::optional介绍**小节 | 2019-11-28 13:53:55 |
+| V1.1   | 李建聪 | 添加**std::invoke介绍**小节   | 2019-12-02 17:51:18 |
 
 ### std::optional介绍
 
@@ -2698,6 +2730,51 @@ int main ()
     }
 }
 ```
+### std::invoke介绍
+
+调用函数对象的stl,我不太清楚为什么还要封装一个函数调用算法，直接调用不就行了？
+
+```c++
+#include <functional>
+#include <iostream>
+ 
+struct Foo {
+    Foo(int num) : num_(num) {}
+    void print_add(int i) const { std::cout << num_+i << '\n'; }
+    int num_;
+};
+ 
+void print_num(int i)
+{
+    std::cout << i << '\n';
+}
+ 
+struct PrintNum {
+    void operator()(int i) const
+    {
+        std::cout << i << '\n';
+    }
+};
+ 
+int main()
+{
+    // 调用自由函数
+    std::invoke(print_num, -9);
+ 
+    // 调用 lambda
+    std::invoke([]() { print_num(42); });
+ 
+    // 调用成员函数
+    const Foo foo(314159);
+    std::invoke(&Foo::print_add, foo, 1);
+ 
+    // 调用（访问）数据成员
+    std::cout << "num_: " << std::invoke(&Foo::num_, foo) << '\n';
+ 
+    // 调用函数对象
+    std::invoke(PrintNum(), 18);
+}
+```
 
 ## 多线程编程总结
 
@@ -2727,6 +2804,8 @@ int main ()
 ### 异步运算接口
 
 #### std::async介绍
+
+下面是一个很好的并行计算的例子。
 
 ```c++
 #include <future>
