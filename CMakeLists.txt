@@ -30,7 +30,7 @@ set(GTEST_SOURCES
     #src/googletest/gtest-all.cc
     src/gtest/gtest-death-test.cc
     src/gtest/gtest-filepath.cc
-    #src/gtest/gtest-matchers.cc
+    src/gtest/gtest-matchers.cc
     src/gtest/gtest-port.cc
     src/gtest/gtest-printers.cc
     src/gtest/gtest-test-part.cc
