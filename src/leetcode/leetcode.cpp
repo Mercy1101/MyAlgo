@@ -19,7 +19,6 @@ bool isPalindrome(std::string s) {
     if (!::isalnum(*left)) {
       ++left;
     }
-
     else if (!::isalnum(*right)) {
       --right;
     }
