@@ -58,7 +58,8 @@ CapsLock & q::
 d = %A_YYYY%-%A_MM%-%A_DD% %A_Hour%:%A_Min%:%A_Sec%
 clipboard = %d%
 SetCapsLockState, AlwaysOff
-Send,^0
+Send,^{space}
+;Send,^{space}
 SendInput,/// @name     {Enter}
 SendInput,/// @brief    {Enter}
 SendInput,///{Enter}
@@ -75,14 +76,16 @@ return
 ; 输出/// @note
 CapsLock & n::
 SetCapsLockState, AlwaysOff
-Send,^0
+Send,^{space}
+;Send,^{space}
 SendInput,/// @note    {space}
 return
 
 ; 输出///   @retval
 CapsLock & r::
 SetCapsLockState, AlwaysOff
-Send,^0
+Send,^{space}
+;Send,^{space}
 SendInput,///   @retval{space}
 SendInput,{enter}///
 Send,{up}{right}{right}{right}{right}{right}{right}{right}{right}{right}{right}{right}
@@ -91,14 +94,15 @@ return
 ; 输出头文件注释
 CapsLock & p::
 SetCapsLockState, AlwaysOff
-Send,^0
+Send,^{space}
+;Send,^{space}
 ;SendInput,/// Copyright (c) 2019 Lijiancong. All rights reserved.
 ;SendInput,{ENTER}/// 
 ;SendInput,{ENTER}/// Use of this source code is governed by a MIT license
 ;SendInput,{ENTER}/// that can be found in the License file.
-SendInput,/** Copyright (c) 2019, FRITT Inc. All rights reserved. */
-SendInput,{ENTER}
-SendInput,{ENTER}///////// ///////// ///////// ///////// ///////// ///////// ///////// /////////
+SendInput,///////// ///////// ///////// ///////// ///////// ///////// ///////// /////////
+SendInput,{ENTER}/// Copyright (c) 2019, FRITT Inc. All rights reserved.
+;SendInput,{ENTER}///////// ///////// ///////// ///////// ///////// ///////// ///////// /////////
 SendInput,{ENTER}/// 
 SendInput,{ENTER}/// {@}file{space}{space}{space}FILENAME.h
 SendInput,{ENTER}/// {@}brief{space}{space}        
@@ -113,7 +117,7 @@ SendInput,///////// ///////// ///////// ///////// ///////// ///////// ///////// 
 SendInput,{ENTER}
 SendInput,{#}ifndef <PROJECT>_<PATH>_<FILE>_H_{ENTER}
 SendInput,{#}define <PROJECT>_<PATH>_<FILE>_H_{ENTER}
-SendInput,{#}pragma once{ENTER}
+;SendInput,{#}pragma once{ENTER}
 SendInput,{ENTER}
 SendInput,{#}endif  // end of <PROJECT>_<PATH>_<FILE>_H_{ENTER}
 return
@@ -121,7 +125,8 @@ return
 ; 输出/// @details  
 CapsLock & a::
 SetCapsLockState, AlwaysOff
-Send,^0
+Send,^{space}
+;Send,^{space}
 ;SendInput,///{enter}
 SendInput,/// @details{space}{space}
 SendInput,{enter}///
@@ -137,7 +142,8 @@ return
 ;(12)
 CapsLock & c::
 SetCapsLockState, AlwaysOff
-Send,^0
+Send,^{space}
+;Send,^{space}
 Send, /**{space}{space}*/
 Send, {Left}{Left}{Left}
 return
@@ -170,6 +176,7 @@ return
 ;(18)
 CapsLock & d::
 SetCapsLockState, AlwaysOff
-Send,^0
+Send,^{space}
+;Send,^{space}
 Send, /// TODO(lijiancong){space}
 return
