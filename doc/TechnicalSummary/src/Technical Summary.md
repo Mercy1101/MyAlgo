@@ -3822,3 +3822,69 @@ DROP > TRUNCATE > DELETE
 DELETE语句是数据库操作语言，这个操作会被记录在事务日志中，事务提交后才会生效，相应的触发器在执行的时候也将会被触发。
 
 TRUNCATE、DROP是数据库定义语言，操作立即生效，无法回滚，也无法触发触发器。
+
+## MySQL8.0 C++接口介绍
+
+| 版本号 | 作者   | 修改摘要                   | 时间                |
+| ------ | ------ | -------------------------- | ------------------- |
+| V1.0   | 李建聪 | 添加**查询并获取结果**小节 | 2019-12-03 14:57:05 |
+
+### 查询并获取结果
+
+#### 1. 单表查询
+
+```c++
+auto query_return_object = db_instance->getDefaultSchema()	///< 获取默认的数据库
+    .getTable("dial_item").	///< 指定查询哪一张表
+    .select("ScheduleID", "AgentID", "DialNumber").	///< 指定获取哪些字段
+    .where("AgentID = :current_agent_id AND State = :dial_waitting_state")///< 指定查询条件
+    .orderBy("ScheduleID")	///< 指定依ScheduleID字段降序排序
+    .limit(100)	///< 指定多少条
+    .bind("current_agent_id", 10)///< 替换:current_agent_id的值为10
+    .bind("dial_waitting_state", 5)///< 替换:dial_waitting_state的值为5
+    .execute(); ///< 执行该语句
+/// 接下来获取结果
+auto result_set = query_return_object.fetchAll();
+for (const auto &Row : result_set) {
+  int schedule_id = Row[0];	///< 字段	ScheduleID 的值
+  int agent_id = Row[1];	///< 字段	AgentID 的值
+  std::string dial_number(Row[2]);	///< 字段	DialNumber 的值
+}
+```
+
+#### 2. 多表查询（sql语句查询）
+
+注意sql这个接口，不能使用单表查询中的占位符形式来调用bind，否则会抛出异常（**CDK Error: Too many arguments!**）
+
+```c++
+auto query_return_object = db_instance->sql("SELECT ScheduleID, AgentID, DialNumber FROM dial_item WHERE AgentID = ? AND State = ? ORDER BY ScheduleID LIMIT 100;")
+    .bind(10)	///< 替换第一个问号为10
+    .bind(100)	///< 替换第二个问号为100
+    .excute();
+/// 接下来获取结果
+auto result_set = query_return_object.fetchAll();
+for (const auto &Row : result_set) {
+  int schedule_id = Row[0];	///< 字段	ScheduleID 的值
+  int agent_id = Row[1];	///< 字段	AgentID 的值
+  std::string dial_number(Row[2]);	///< 字段	DialNumber 的值
+}
+```
+
+
+
+### 事务
+
+```c++
+try {
+    /// 开始事务
+    db_instance->startTransaction();
+    /// ...执行一些操作
+    /// 事务成功结束
+    db_instance->commit();
+} catch (const std::execption &e) {
+    LOG(LOG_ERROR, "Execption:%s", e.what());
+    /// 回退事务
+    db_instance->rollback();
+}
+```
+
