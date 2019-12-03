@@ -140,12 +140,19 @@ Run, F:\PDF
 return
 
 ;(12)
+;CapsLock & c::
+;SetCapsLockState, AlwaysOff
+;Send,^{space}
+;Send,^{space}
+;Send, /**{space}{space}*/
+;Send, {Left}{Left}{Left}
+;return
+(13)
 CapsLock & c::
 SetCapsLockState, AlwaysOff
 Send,^{space}
-;Send,^{space}
-Send, /**{space}{space}*/
-Send, {Left}{Left}{Left}
+Send,^{space}
+Send, ///{space}
 return
 
 ;(13)
