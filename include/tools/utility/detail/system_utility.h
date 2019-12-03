@@ -71,29 +71,6 @@ inline bool IsFileExist(const std::string& strFilePathAndName) {
 //  return wcstring;
 //}
 
-/// @name     Wchar_tToString
-/// @brief    wchar_t to string
-///
-/// @param    szDst    [in]
-/// @param    wchar    [out]
-///
-/// @return   NONE
-///
-/// @author   Lijiancong, pipinstall@163.com
-/// @date     2019-11-22 10:09:35
-/// @warning  线程不安全
-// inline void Wchar_tToString(std::string& szDst, wchar_t* wchar) {
-//  wchar_t* wText = wchar;
-//  DWORD dwNum = WideCharToMultiByte(CP_OEMCP, NULL, wText, -1, NULL, 0, NULL,
-//                                    FALSE);  // WideCharToMultiByte的运用
-//  char* psText;  // psText为char*的临时数组，作为赋值给std::string的中间变量
-//  psText = new char[dwNum];
-//  WideCharToMultiByte(CP_OEMCP, NULL, wText, -1, psText, dwNum, NULL,
-//                      FALSE);  // WideCharToMultiByte的再次运用
-//  szDst = psText;              // std::string赋值
-//  delete[] psText;             // psText的清除
-//}
-
 /// @name     GetRootPath
 /// @brief    获取当前程序所在的根目录.(windows系统限定)
 ///
@@ -108,7 +85,6 @@ inline std::string GetRootPath() {
   static std::once_flag InstanceFlag;
   static std::string strPathName;
   std::call_once(InstanceFlag, [&]() {
-#if 1
     char szPath[MAX_PATH] = {0};
     if (!GetModuleFileName(NULL, szPath, MAX_PATH)) {
       std::cout << "Cannot GetModuleFileName!Error Code: " << GetLastError()
@@ -119,34 +95,6 @@ inline std::string GetRootPath() {
     std::string Path(szPath);
     auto pos = Path.find_last_of("\\/");
     strPathName = Path.substr(0, pos);
-#else 
-            TCHAR Buffer[MAX_PATH] = {0};
-            DWORD dwRet = GetCurrentDirectory(MAX_PATH, Buffer);
-            if (dwRet == 0)
-            {
-                std::cout << "GetCurrentDirectory failed!" << std::endl;
-                assert(false && "GetCurrentDirectory failed!");
-                strPathName = "";
-            }
-            if (dwRet > MAX_PATH)
-            {
-                std::cout << "Buffer too small; need more characters!" << std::endl;
-                assert(false && "Buffer too small; need more characters!");
-                strPathName = "";
-            }
-            //strPathName = Buffer;
-            Wchar_tToString(strPathName, Buffer);
-#endif
-#if 0
-            char* buffer = _getcwd(NULL, 0);
-            if (NULL == buffer)
-            {
-                assert(false && "Excute GetCurrentRootPath failed!");
-                strPathName = "";
-            }
-            strPathName = buffer;
-            free(buffer);
-#endif
   });
 
   return strPathName;
@@ -185,27 +133,6 @@ inline bool CreateFileFolder(const std::string& strFolderPath) {
 #endif
 #endif
 
-/// @name     StringToWstring
-/// @brief    string to wstring
-///
-/// @param    szDst    [out]
-/// @param    str      [in]
-///
-/// @return   NONE
-///
-/// @author   Lijiancong, pipinstall@163.com
-/// @date     2019-11-22 10:16:52
-/// @warning  线程不安全
-// inline void StringToWstring(std::wstring& szDst, const std::string& str) {
-//  // std::string temp = str;
-//  int len = MultiByteToWideChar(CP_ACP, 0, (LPCSTR)str.c_str(), -1, NULL, 0);
-//  wchar_t* wszUtf8 = new wchar_t[len + 1];
-//  memset(wszUtf8, 0, len * 2 + 2);
-//  MultiByteToWideChar(CP_ACP, 0, (LPCSTR)str.c_str(), -1, (LPWSTR)wszUtf8,
-//  len); szDst = wszUtf8;
-//  // std::wstring r = wszUtf8;
-//  delete[] wszUtf8;
-//}
 }  // end of namespace WindowsSystem_
 }  // end of namespace Utility_
 }  // end of namespace Lee
