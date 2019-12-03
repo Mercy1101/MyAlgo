@@ -311,9 +311,7 @@ inline bool IsMultiOverFlow(long long x, long long y) noexcept {
   if (LLONG_MIN == y && -1 == x) return true;
   if ((y > 0) && (x > (LLONG_MAX / y))) return true;
   if ((x < 0) && (y < (LLONG_MAX / x))) return true;
-  if (x > 0 && y < 0) {
-    if (x > (LLONG_MIN / y)) return true;
-  }
+  if ((x > 0 && y < 0) && (x > (LLONG_MIN / y))) return true;
   return false;
 }
 /// IsMultiOverFlow函数的模板特例，用来单独对unsigned long long类型进行判断
