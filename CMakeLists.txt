@@ -63,6 +63,12 @@ set(UNITTEST_SOURCE
   unittest/leetcode/leetcode_unittest.cpp
 )
 
+# catch2 单元测试的文件
+set(CATCH2_UNITTEST_SOURCE 
+  # gsl库中的 span 测试文件
+  # unittest/gsl/gsl_span_unittest.cpp
+)
+
 
 # 把源文件添加进工程中
 add_executable(${EXECUTABLE_EXE_NAME} ${SOURCES}
@@ -71,6 +77,7 @@ add_executable(${EXECUTABLE_EXE_NAME} ${SOURCES}
                                       ${UNITTEST_SOURCE}
                                       ${SPD_LOG_SOURCES}
                                       ${LEET_CODE_FILE_SOURCES}
+                                      ${CATCH2_UNITTEST_SOURCE}
 )
 
 # 设置包含路径
@@ -149,9 +156,17 @@ if ( CMAKE_COMPILER_IS_GNUCC )
 endif()
 # 设置MSVC最高警告级别
 if ( MSVC )
-    set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} /W4")
-    set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} /WX")
+    set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} /W4") # 设置警告等级为4
+    set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} /WX") # 设置警告视为错误
+    set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} /std:c++latest") # 设置使用最新C++标准
 endif()
 
+#if (MSVC)
+#    include(CheckCXXCompilerFlag)
+#    CHECK_CXX_COMPILER_FLAG("/std:c++latest" _cpp_latest_flag_supported)
+#    if (_cpp_latest_flag_supported)
+#        add_compile_options("/std:c++latest")
+#    endif()
+#endif()
 
 
