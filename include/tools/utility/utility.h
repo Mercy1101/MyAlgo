@@ -201,9 +201,7 @@ struct icast_identity {
 };  ///< 用于implicit_cast函数参数的类型推导
 
 template <typename T>
-inline T implicit_cast(typename icast_identity<T>::type x) {
-  return x;
-}
+inline T implicit_cast(typename icast_identity<T>::type x) { return x; }
 
 /// @name     down_cast
 /// @brief    用于替代dynamic_cast<>()关键字转换基类指针到派生类指针的情况
@@ -220,10 +218,7 @@ inline T implicit_cast(typename icast_identity<T>::type x) {
 /// @date     2019-10-31 14:30:04
 /// @warning  线程安全
 template <typename To, typename From>
-inline To CheckCast(From const& f) {
-  return f;
-}
-
+inline To CheckCast(From const& f) { return f; }
 template <typename To, typename From>
 inline To down_cast(From* f)  // 只接受指针
 {
@@ -346,7 +341,6 @@ inline bool IsLittleEndian() noexcept {
     int i;
     char a[sizeof(int)];
   };
-
   ss Endian;
   Endian.i = 0x0102;
   return Endian.a[0] == 0x02;
@@ -363,7 +357,6 @@ inline int GetRandom() noexcept {
   static std::once_flag InitFlag;
   std::call_once(InitFlag,
                  []() { srand(static_cast<unsigned>(time(nullptr))); });
-
   return rand();
 }
 

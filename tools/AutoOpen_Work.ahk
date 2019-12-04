@@ -59,7 +59,7 @@ d = %A_YYYY%-%A_MM%-%A_DD% %A_Hour%:%A_Min%:%A_Sec%
 clipboard = %d%
 SetCapsLockState, AlwaysOff
 Send,^{space}
-;Send,^{space}
+Send,^{space}
 SendInput,/// @name     {Enter}
 SendInput,/// @brief    {Enter}
 SendInput,///{Enter}
@@ -77,7 +77,8 @@ return
 CapsLock & n::
 SetCapsLockState, AlwaysOff
 Send,^{space}
-;Send,^{space}
+Send,^{space}
+Send,^{space}
 SendInput,/// @note    {space}
 return
 
@@ -95,7 +96,8 @@ return
 CapsLock & p::
 SetCapsLockState, AlwaysOff
 Send,^{space}
-;Send,^{space}
+Send,^{space}
+Send,^{space}
 ;SendInput,/// Copyright (c) 2019 Lijiancong. All rights reserved.
 ;SendInput,{ENTER}/// 
 ;SendInput,{ENTER}/// Use of this source code is governed by a MIT license

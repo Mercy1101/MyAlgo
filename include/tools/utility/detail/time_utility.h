@@ -101,7 +101,7 @@ inline time_t GetCompileTimeStamp() {
              &tm.tm_mday, &tm.tm_year);
 
     std::string Month(Mmm);
-    std::reverse(Month.begin(), Month.end());
+    // std::reverse(Month.begin(), Month.end());
     if (Month.find("Jan") != std::string::npos) {
       tm.tm_mon = 1;
     } else if (Month.find("Feb") != std::string::npos) {
