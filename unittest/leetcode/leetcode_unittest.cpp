@@ -1,33 +1,33 @@
-﻿#include "gtest/gtest.h"
-#include "leetcode.h"
+﻿#include "leetcode.h"
+#include <catch2/catch.hpp>
 
 /**
  * @brief Lee::Leetcode::isPalindrome()函数的简单测试
  */
-TEST(isPalindrome, Simple) {
+TEST_CASE("isPalindrome简单测试", "[leetcode][isPalindrome]") {
   using namespace Lee;
-  EXPECT_TRUE(Leetcode::isPalindrome("a"));
-  EXPECT_TRUE(Leetcode::isPalindrome("aba"));
-  EXPECT_TRUE(Leetcode::isPalindrome("ABa"));
-  EXPECT_TRUE(Leetcode::isPalindrome("A man, a plan, a canal: Panama"));
+  REQUIRE(Leetcode::isPalindrome("a"));
+  REQUIRE(Leetcode::isPalindrome("aba"));
+  REQUIRE(Leetcode::isPalindrome("ABa"));
+  REQUIRE(Leetcode::isPalindrome("A man, a plan, a canal: Panama"));
 
-  EXPECT_FALSE(Leetcode::isPalindrome(","));
-  EXPECT_FALSE(Leetcode::isPalindrome(""));
-  EXPECT_FALSE(Leetcode::isPalindrome("race a car"));
+  REQUIRE_FALSE(Leetcode::isPalindrome(","));
+  REQUIRE_FALSE(Leetcode::isPalindrome(""));
+  REQUIRE_FALSE(Leetcode::isPalindrome("race a car"));
 }
 
 /**
  * @brief Lee::Leetcode::IsValidParentheses()函数的简单测试
  */
-TEST(IsValidParentheses, Simple) {
+TEST_CASE("IsValidParentheses简单测试", "[leetcode][IsValidParentheses]") {
   using namespace Lee;
-  EXPECT_TRUE(Leetcode::IsValidParentheses("((){{}([[]{[]}]())})"));
-  EXPECT_TRUE(Leetcode::IsValidParentheses("()"));
-  EXPECT_TRUE(Leetcode::IsValidParentheses("()[]"));
+  REQUIRE(Leetcode::IsValidParentheses("((){{}([[]{[]}]())})"));
+  REQUIRE(Leetcode::IsValidParentheses("()"));
+  REQUIRE(Leetcode::IsValidParentheses("()[]"));
 
-  EXPECT_FALSE(Leetcode::IsValidParentheses(""));
-  EXPECT_FALSE(Leetcode::IsValidParentheses("(]"));
-  EXPECT_FALSE(Leetcode::IsValidParentheses("([)]"));
-  EXPECT_FALSE(Leetcode::IsValidParentheses("("));
-  EXPECT_FALSE(Leetcode::IsValidParentheses(")"));
+  REQUIRE_FALSE(Leetcode::IsValidParentheses(""));
+  REQUIRE_FALSE(Leetcode::IsValidParentheses("(]"));
+  REQUIRE_FALSE(Leetcode::IsValidParentheses("([)]"));
+  REQUIRE_FALSE(Leetcode::IsValidParentheses("("));
+  REQUIRE_FALSE(Leetcode::IsValidParentheses(")"));
 }

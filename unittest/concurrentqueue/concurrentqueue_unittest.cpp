@@ -1,10 +1,10 @@
-#include <cassert>
+﻿#include <cassert>
 #include <thread>
 
+#include <catch2/catch.hpp>
 #include "concurrentqueue/concurrentqueue.h"
-#include "gtest/gtest.h"
 
-TEST(ConcurrentqueueSample, HelloQueue) {
+TEST_CASE("第一个例子", "ConcurrentqueueSample") {
   moodycamel::ConcurrentQueue<int> q;
 
   for (int i = 0; i != 123; ++i) q.enqueue(i);
@@ -12,11 +12,11 @@ TEST(ConcurrentqueueSample, HelloQueue) {
   int item;
   for (int i = 0; i != 123; ++i) {
     q.try_dequeue(item);
-    ASSERT_TRUE(item == i);
+    REQUIRE(item == i);
   }
 }
 
-TEST(ConcurrentqueueSample, HelloConcurrency) {
+TEST_CASE("并行例子", "ConcurrentqueueSample") {
   moodycamel::ConcurrentQueue<int> q;
   int dequeued[100] = {0};
   std::thread threads[20];
@@ -58,11 +58,10 @@ TEST(ConcurrentqueueSample, HelloConcurrency) {
 
   // Make sure everything went in and came back out!
   for (int i = 0; i != 100; ++i) {
-    ASSERT_TRUE(dequeued[i] == 1);
+    REQUIRE(dequeued[i] == 1);
   }
 }
-
-TEST(ConcurrentqueueSample, BulkUp) {
+TEST_CASE("BulkUp批量例子", "ConcurrentqueueSample") {
   moodycamel::ConcurrentQueue<int> q;
   int dequeued[100] = {0};
   std::thread threads[20];
