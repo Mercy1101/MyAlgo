@@ -1,9 +1,8 @@
 ﻿#include "utility/utility.h"
-
+#include <catch2/catch.hpp>
+#include <cstdlib>  // for RAND_MAX
 #include <limits>
 #include <string>
-
-#include <catch2/catch.hpp>
 
 TEST_CASE("KMP简单测试", "[utility][KMP]") {
   using namespace Lee;
@@ -305,10 +304,10 @@ TEST_CASE("IsMultiOverFlow在unsigned long long 类型下的测试",
   y = 2;
   REQUIRE_FALSE(Lee::IsMultiOverFlow(x, y));
 
-  //x = (ULLONG_MAX / 2) + 1; 为什么这句话警告,算数溢出?
+  // x = (ULLONG_MAX / 2) + 1; 为什么这句话警告,算数溢出?
   ///                         2019-12-05 13:39:24
-  //y = 2;
-  //REQUIRE(Lee::IsMultiOverFlow(x, y));
+  // y = 2;
+  // REQUIRE(Lee::IsMultiOverFlow(x, y));
 
   x = ULLONG_MAX / 5;
   y = 5;
@@ -340,7 +339,7 @@ TEST_CASE("IsMultiOverFlow在简单测试", "[utility][power]") {
   // REQUIRE(Lee::power(2, -1), 1);
 }
 
-TEST_CASE("Multiplies_s简单测试", "[utility][Multiplies_s]") {
+TEST_CASE("Multiplies_s()例子", "[utility][Multiplies_s]") {
   auto xx0 = Lee::Multiplies_s(2, 4);
   REQUIRE(xx0.has_value());
   REQUIRE(xx0.value() == 2 * 4);
@@ -351,4 +350,98 @@ TEST_CASE("Multiplies_s简单测试", "[utility][Multiplies_s]") {
   auto xx2 = Lee::Multiplies_s(INT_MIN / 2, 3);
   REQUIRE_FALSE(xx2.has_value());
   REQUIRE(xx2.value_or(1) == 1);
+}
+
+TEST_CASE("IsLittleEndian()例子", "[utility][IsLittleEndian]") {
+  Lee::IsLittleEndian() ? dbg("电脑是小端的") : dbg("电脑是大端的");
+}
+
+TEST_CASE("GetRandom(), 随机函数测试", "[utility][GetRandom]") {
+  for (int i = 0; i < 1000; ++i) {
+    auto random_number = Lee::GetRandom();
+    CHECK((random_number >= 0 && random_number <= RAND_MAX));
+  }
+}
+
+SCENARIO("GetRandomRange(), 随机函数测试", "[utility][GetRandomRange]") {
+  GIVEN("一个入参的测试") {
+    WHEN("入参为正整数") {
+      THEN("生成的随机数应该大于等于零，小于入参的数值") {
+        for (int i = 0; i < 1000; ++i) {
+          auto random_number = Lee::GetRandomRange(999);
+          REQUIRE((random_number >= 0 && random_number <= 999));
+        }
+        for (int i = 0; i < 1000; ++i) {
+          auto random_number = Lee::GetRandomRange(1);
+          REQUIRE((random_number >= 0 && random_number <= 1));
+        }
+      }
+    }
+    WHEN("入参为零") {
+      THEN("只能生成零") {
+        for (int i = 0; i < 1000; ++i) {
+          auto random_number = Lee::GetRandomRange(0);
+          REQUIRE((random_number >= 0 && random_number <= 0));
+        }
+      }
+    }
+    WHEN("入参为负整数") {
+      THEN("生成的随机数应该小于等于零，大于入参的数值") {
+        for (int i = 0; i < 1000; ++i) {
+          auto random_number = Lee::GetRandomRange(-999);
+          REQUIRE((random_number >= -999 && random_number <= 0));
+        }
+        for (int i = 0; i < 1000; ++i) {
+          auto random_number = Lee::GetRandomRange(-1);
+          REQUIRE((random_number >= -1 && random_number <= 0));
+        }
+      }
+    }
+  }
+  GIVEN("两个入参的测试") {
+    WHEN("入参为正整数") {
+      THEN("生成的随机数应该大于等于较小入参的数值，小于较大入参的数值") {
+        for (int i = 0; i < 1000; ++i) {
+          auto random_number = Lee::GetRandomRange(999, 888);
+          REQUIRE((random_number >= 888 && random_number <= 999));
+        }
+        for (int i = 0; i < 1000; ++i) {
+          auto random_number = Lee::GetRandomRange(1, 2);
+          REQUIRE((random_number >= 1 && random_number <= 2));
+        }
+      }
+    }
+    WHEN("入参相等") {
+      THEN("只能生成该入参") {
+        for (int i = 0; i < 1000; ++i) {
+          auto random_number = Lee::GetRandomRange(999, 999);
+          REQUIRE((random_number >= 999 && random_number <= 999));
+        }
+        for (int i = 0; i < 1000; ++i) {
+          auto random_number = Lee::GetRandomRange(0, 0);
+          REQUIRE((random_number >= 0 && random_number <= 0));
+        }
+        for (int i = 0; i < 1000; ++i) {
+          auto random_number = Lee::GetRandomRange(-1, -1);
+          REQUIRE((random_number >= -1 && random_number <= -1));
+        }
+      }
+    }
+    WHEN("入参为负数整数混合") {
+      THEN("生成[x, y]的数值") {
+        for (int i = 0; i < 1000; ++i) {
+          auto random_number = Lee::GetRandomRange(-999, 999);
+          REQUIRE((random_number >= -999 && random_number <= 999));
+        }
+        for (int i = 0; i < 1000; ++i) {
+          auto random_number = Lee::GetRandomRange(-1, 1);
+          REQUIRE((random_number >= -1 && random_number <= 1));
+        }
+        for (int i = 0; i < 1000; ++i) {
+          auto random_number = Lee::GetRandomRange(0, -100);
+          REQUIRE((random_number >= -100 && random_number <= 0));
+        }
+      }
+    }
+  }
 }
