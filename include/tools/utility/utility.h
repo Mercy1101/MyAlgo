@@ -17,24 +17,29 @@
 
 #ifndef MYALGO_INCLUDE_TOOLS_UTILITY_UTILITY_H_
 #define MYALGO_INCLUDE_TOOLS_UTILITY_UTILITY_H_
-//#pragma once
 
 #include <stdio.h>
 #include <stdlib.h>  // for RAND_MAX
 #include <string.h>  // for strnlen()
 
 #include <cassert>
+#include <chrono>
 #include <ctime>
+#include <functional>
 #include <limits>
 #include <mutex>
 #include <string>
+#include <thread>
 #include <type_traits>
-#include <optional>
-#include <functional>
+
+#include "utility/detail/algorithm_utility.h"  /// 包含algorthm相关的小工具
+#include "utility/detail/dbg.h"                /// 包含打印小工具
+#include "utility/detail/marco_utility.h"  /// 包含相关宏定义的小工具
+#include "utility/detail/system_utility.h"  /// 包含系统相关的小工具
+#include "utility/detail/time_utility.h"    /// 包含time相关的小工具
 
 namespace Lee {
 inline namespace Utility_ {
-
 /// @name     ArraySize
 /// @brief    得出入参数组的长度(如int a0[5]; 5 == ArraySize(a0);)
 ///
@@ -77,7 +82,7 @@ constexpr inline std::size_t ArraySize(T (&)[N]) noexcept {
 ///           在定义变量i的下面写上这句话：
 ///           Lee::ignore_unused(i);
 template <typename... Ts>
-inline constexpr void ignore_unused(Ts const&...) {}
+inline constexpr void ignore_unused(Ts const &...) {}
 template <typename... Ts>
 inline constexpr void ignore_unused() {}
 
@@ -98,7 +103,7 @@ inline constexpr void ignore_unused() {}
 /// @note     这个函数不能用于指向数组指针的delete，
 ///           数组指针应使用函数checked_array_delete
 template <class T>
-inline void checked_delete(T* x) {
+inline void checked_delete(T *x) {
   // intentionally complex - simplification causes regressions
   typedef char type_must_be_complete[sizeof(T) ? 1 : -1];
   (void)sizeof(type_must_be_complete);
@@ -106,7 +111,8 @@ inline void checked_delete(T* x) {
 }
 
 /// @name     checked_array_delete
-/// @brief 完全可以替代关键字delete[],比delete[]多了编译期检查不完整类型的检查。
+/// @brief    完全可以替代关键字delete[],
+///           比delete[]多了编译期检查不完整类型的检查。
 ///
 /// @param    x    [in]    要删除的指针指向的对象
 ///
@@ -118,7 +124,7 @@ inline void checked_delete(T* x) {
 /// @note     这个函数不能用于删除指向非数组指针的对象,
 ///           非数组指针的对象的删除用函数checked_delete
 template <class T>
-inline void checked_array_delete(T* x) {
+inline void checked_array_delete(T *x) {
   typedef char type_must_be_complete[sizeof(T) ? 1 : -1];
   (void)sizeof(type_must_be_complete);
   delete[] x;
@@ -139,7 +145,7 @@ struct checked_deleter {
   typedef void result_type;
 
   template <class T>
-  void operator()(T* x) const {
+  void operator()(T *x) const {
     Lee::checked_delete(x);
   }
 };
@@ -159,7 +165,7 @@ struct checked_array_deleter {
   typedef void result_type;
 
   template <class T>
-  void operator()(T* x) const {
+  void operator()(T *x) const {
     Lee::checked_array_delete(x);
   }
 };
@@ -201,7 +207,9 @@ struct icast_identity {
 };  ///< 用于implicit_cast函数参数的类型推导
 
 template <typename T>
-inline T implicit_cast(typename icast_identity<T>::type x) { return x; }
+inline T implicit_cast(typename icast_identity<T>::type x) {
+  return x;
+}
 
 /// @name     down_cast
 /// @brief    用于替代dynamic_cast<>()关键字转换基类指针到派生类指针的情况
@@ -218,11 +226,13 @@ inline T implicit_cast(typename icast_identity<T>::type x) { return x; }
 /// @date     2019-10-31 14:30:04
 /// @warning  线程安全
 template <typename To, typename From>
-inline To CheckCast(From const& f) { return f; }
+inline To CheckCast(From const &f) {
+  return f;
+}
 template <typename To, typename From>
-inline To down_cast(From* f)  // 只接受指针
+inline To down_cast(From *f)  // 只接受指针
 {
-  if (false) CheckCast<From*, To>(0);               /** 编译期检查 */
+  if (false) CheckCast<From *, To>(0);              /** 编译期检查 */
   assert(f == NULL || dynamic_cast<To>(f) != NULL); /** 运行期检查 */
   return static_cast<To>(f);
 }
@@ -233,8 +243,8 @@ class noncopyable {
   constexpr noncopyable() = default;
   ~noncopyable() = default;
 
-  noncopyable(const noncopyable&) = delete;
-  noncopyable& operator=(const noncopyable&) = delete;
+  noncopyable(const noncopyable &) = delete;
+  noncopyable &operator=(const noncopyable &) = delete;
 };
 
 /// @brief: 不可被拷贝移动的类,如果想要定义一个不可被拷贝的类,继承这个类就行了
@@ -242,13 +252,13 @@ struct non_transferable {
   /// 默认构造函数
   non_transferable() = default;
   /// 复制构造函数不定义
-  non_transferable(non_transferable const&) = delete;
+  non_transferable(non_transferable const &) = delete;
   /// 移动构造函数不定义
-  non_transferable(non_transferable&&) = delete;
+  non_transferable(non_transferable &&) = delete;
   /// 复制赋值符不定义
-  non_transferable& operator=(non_transferable const&) = delete;
+  non_transferable &operator=(non_transferable const &) = delete;
   /// 移动赋值符不定义
-  non_transferable& operator=(non_transferable&&) = delete;
+  non_transferable &operator=(non_transferable &&) = delete;
 };
 
 /// @name     IsMultiOverFlow
@@ -260,7 +270,8 @@ struct non_transferable {
 ///            2. long long类型使用模板特例，采用另一个函数。
 ///            3. 第一个IsMultiOverFlow(T1 x, T2 y)思路是，
 ///               先把他们强制转换成更大的整型然后相乘后再转换回原有的小整型，
-///               如果相乘的结果不等于它转换原有类型的值，说明溢出了，反则没有溢出。
+///               如果相乘的结果不等于它转换原有类型的值，
+///               说明溢出了，反则没有溢出。
 ///            4. long long 类型的模板特例的思路是：首先假设x >= y
 ///               两个参数有一个等于0，就没有溢出。
 ///               再判断：一个参数等于longlong的最小值x,另一个等于-1，则是溢出。
@@ -364,25 +375,47 @@ inline int GetRandom() noexcept {
 /// @brief    生成[x, y]或[y,x]区间中的一个随机数。
 ///
 ///           （生成的最大区间为[INT_MIN, INT_MAX]）
-/// @param    x    [in]    不能输入比INT_MAX大或比INT_MIN的数字
-/// @param    y    [in]    不能输入比INT_MAX大或比INT_MIN的数字
+/// @param    x    [in]    不能输入比INT_MAX大或比INT_MIN小的数字
+/// @param    y    [in]    不能输入比INT_MAX大或比INT_MIN小的数字
 ///
 /// @return   [x, y]或[y, x]区间中的一个随机数
 ///
 /// @author   Lijiancong, pipinstall@163.com
 /// @date     2019-12-01 17:10:53
 /// @warning  线程不安全
-inline int GetRangeRandom(int x, int y) noexcept {
+inline int GetRandomRange(int x, int y) noexcept {
   if (x > y) std::swap(x, y);
   return (Lee::GetRandom() % (y - x + 1)) + x;
 }
 
-}  // End of namespace Utility_
-}  // End of namespace Lee
+/// @name     SleepForRandomMilliSecond
+/// @brief    生成一个随机数，让调用本函数的线程"睡眠随机时间"
+///
+/// @param    range_start [in]
+/// @param    range_end   [in]
+///
+/// @return   NONE
+///
+/// @author   Lijiancong, pipinstall@163.com
+/// @date     2019-12-05 13:31:45
+/// @warning  线程不安全
+inline void SleepForRandomMilliSecond(Lee::MilliSecond range_start,
+                                      Lee::MilliSecond range_end) {
+  constexpr Lee::MilliSecond SLEEP_FOR_RANGE_MAX_MILLISECOND = 30 * 1000; ///< 设置最大时间限制
+  if (range_start > range_start) std::swap(range_start, range_end);
+  if (range_start < 0) range_start = 0;
+  if (range_end < 0) range_end = 0;
+  if (range_end > SLEEP_FOR_RANGE_MAX_MILLISECOND) {
+    range_end = SLEEP_FOR_RANGE_MAX_MILLISECOND;
+  }
+  Lee::MilliSecond sleep_time = Lee::GetRandomRange(
+      static_cast<int>(range_start), static_cast<int>(range_end));
+  std::this_thread::sleep_for(std::chrono::milliseconds(sleep_time));
+}
+inline void SleepForRandomMilliSecond(Lee::MilliSecond range_end) {
+  SleepForRandomMilliSecond(0, range_end);
+}
 
-#include "utility/detail/algorithm_utility.h"  /// 包含algorthm相关的小工具
-#include "utility/detail/marco_utility.h"  /// 包含相关宏定义的小工具
-#include "utility/detail/system_utility.h"  /// 包含系统相关的小工具
-#include "utility/detail/time_utility.h"    /// 包含time相关的小工具
-
+}  // namespace Utility_
+}  // namespace Lee
 #endif  // end of MYALGO_INCLUDE_TOOLS_UTILITY_UTILITY_H_

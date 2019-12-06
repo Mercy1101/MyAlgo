@@ -22,7 +22,6 @@
 #include <io.h>       /// for _access()
 #include <stdio.h>
 #include <stdlib.h>
-
 #include <cassert>
 #include <iostream>
 #include <string>

@@ -18,13 +18,16 @@
 #include <time.h>
 
 #include <cassert>
+#include <chrono>
 #include <ctime>
-#include <mutex>  // for std::call_once()
+#include <limits>     // for std::numeric_limits()
+#include <mutex>      // for std::call_once()
+#include <typeindex>  // for std::typeindex()
+#include <typeinfo>   // for typeid
 
 namespace Lee {
 inline namespace Utility_ {
 inline namespace Time_ {
-
 /// @name     GetCurrentTimeStamp
 /// @brief    获取当前电脑桌面时间的时间戳(距离1970年元月1日零点到现在的秒数)
 ///
@@ -35,11 +38,47 @@ inline namespace Time_ {
 /// @author   Lijiancong, pipinstall@163.com
 /// @date     2019-11-05 09:44:32
 /// @warning  线程安全
-inline int GetCurrentTimeStamp() noexcept {
-  return static_cast<int>(time(nullptr));
+inline Lee::Second GetCurrentTimeStamp() noexcept {
+  auto current_time_s = std::chrono::duration_cast<std::chrono::seconds>(
+                            std::chrono::system_clock::now().time_since_epoch())
+                            .count();
+#undef max  /// 这句话视为了取消window自带的max宏定义,让下面这句话能编译
+  auto int_max_value = std::numeric_limits<Lee::Second>::max();
+  if (current_time_s >
+      int_max_value - static_cast<long long>(30 * 24 * 60 * 60)) {
+    assert(false &&
+           "Excute GetCurrentTimeStamp() failed!(current_time_s overflow!)");
+    return -1;
+  }
+  return static_cast<Lee::Second>(current_time_s);
 }
 
-/// @name     GetCurrentMilliSecond
+/// @name     GetCurrentMilliSecondStamp
+/// @brief    获取当前电脑桌面时间的时间戳(距离1970年元月1日零点到现在的毫秒数)
+///
+/// @param    NONE
+///
+/// @return   当前的时间戳
+///
+/// @author   Lijiancong, pipinstall@163.com
+/// @date     2019-12-06 10:49:06
+/// @warning  线程不安全
+inline Lee::MilliSecond GetCurrentMilliSecondStamp() noexcept {
+  auto current_time_s = std::chrono::duration_cast<std::chrono::milliseconds>(
+                            std::chrono::system_clock::now().time_since_epoch())
+                            .count();
+#undef max  /// 这句话视为了取消window自带的max宏定义,让下面这句话能编译
+  if (current_time_s > std::numeric_limits<Lee::MilliSecond>::max() -
+                           static_cast<long long>(30 * 24 * 60 * 60)) {
+    assert(false &&
+           "Excute GetCurrentMilliSecondStamp() failed!(current_time_s "
+           "overflow!)");
+    return -1;
+  }
+  return static_cast<Lee::MilliSecond>(current_time_s);
+}
+
+/// @name     GetCPUMilliSecond
 /// @brief    获取距离当前程序启动的毫秒数
 ///
 /// @param    NONE
@@ -49,7 +88,7 @@ inline int GetCurrentTimeStamp() noexcept {
 /// @author   Lijiancong, pipinstall@163.com
 /// @date     2019-12-01 20:15:41
 /// @warning  线程不安全
-inline clock_t GetCurrentMilliSecond() noexcept {
+inline clock_t GetCPUMilliSecond() noexcept {
   return (std::clock() * 1000 / CLOCKS_PER_SEC);
 }
 
@@ -64,9 +103,9 @@ inline clock_t GetCurrentMilliSecond() noexcept {
 /// @date     2019-11-05 14:05:04
 /// @warning  线程不安全
 /// @example:
-///     std::cout << GetTimeString(1571290440) << std::endl;
+///     std::cout << Lee::GetTimeString(1571290440) << std::endl;
 ///     输出：2019-10-17 13:34:00
-inline std::string GetTimeString(time_t Time, const char *Format = "%F %T") {
+inline std::string GetTimeString(Lee::Second Time, const char *Format) {
   if (Time < 0) {
     assert(false && "GetTimeString Param Time is invalid!");
     Time = 0;
@@ -78,6 +117,18 @@ inline std::string GetTimeString(time_t Time, const char *Format = "%F %T") {
   char p[32] = {0};
   strftime(p, sizeof(p), Format, &buf);
   return std::string(p);
+}
+inline std::string GetTimeString(Lee::Second Time) {
+  return GetTimeString(Time, "%F %T");
+}
+inline std::string GetTimeString(Lee::MilliSecond Time) {
+  return GetTimeString(static_cast<Lee::Second>(Time / 1000), "%F %T");
+}
+inline std::string GetTimeString(Lee::MilliSecond Time, const char *Format) {
+  return GetTimeString(static_cast<Lee::Second>(Time / 1000), Format);
+}
+inline std::string GetTimeString() {
+  return GetTimeString(Lee::GetCurrentTimeStamp(), "%F %T");
 }
 
 /// @name     GetCompileTimeStamp
@@ -91,9 +142,9 @@ inline std::string GetTimeString(time_t Time, const char *Format = "%F %T") {
 /// @author   Lijiancong, pipinstall@163.com
 /// @date     2019-11-06 10:07:38
 /// @warning  线程安全
-inline time_t GetCompileTimeStamp() {
+inline Lee::Second GetCompileTimeStamp() {
   static std::once_flag InstanceFlag;
-  static time_t CompileTime = 0;
+  static time_t compile_time_s = 0;  ///< 单位为秒
   std::call_once(InstanceFlag, []() {
     tm tm = {0};
     char Mmm[4] = "Jan";
@@ -134,9 +185,13 @@ inline time_t GetCompileTimeStamp() {
     /** 修正参数 */
     tm.tm_year -= 1900;
     tm.tm_mon -= 1;
-    CompileTime = mktime(&tm);
-  });
-  return CompileTime;
+    compile_time_s = mktime(&tm);
+    if (compile_time_s <= 0 || compile_time_s > Lee::GetCurrentTimeStamp()) {
+      assert(false && "GetCompileTimeStamp() is failed!");
+      compile_time_s = -1;
+    }
+  });  /// std::call_once()
+  return static_cast<Lee::Second>(compile_time_s);
 }
 
 /// @name     GetTodaySpecificTimeStamp_Agent
@@ -153,8 +208,8 @@ inline time_t GetCompileTimeStamp() {
 /// @author   Lijiancong, pipinstall@163.com
 /// @date     2019-08-20 16:11:44
 /// @warning  线程不安全
-inline int GetTodaySpecificTimeStamp(const int iHour, const int iMin,
-                                     const int iSec) {
+inline Lee::Second GetTodaySpecificTimeStamp(const int iHour, const int iMin,
+                                             const int iSec) {
   if (iHour < 0 || iHour > 23 || iMin < 0 || iMin > 59 || iSec < 0 ||
       iSec > 59) {
     assert(false && "Invalid Param! GetTodaySpecificTimeStamp Execute fail! ");
@@ -170,8 +225,8 @@ inline int GetTodaySpecificTimeStamp(const int iHour, const int iMin,
   return static_cast<int>(mktime(&stTimer));
 }
 
-}  // end of namespace Time_
-}  // end of namespace Utility_
-}  // end of namespace Lee
+}  // namespace Time_
+}  // namespace Utility_
+}  // namespace Lee
 
 #endif  // end of MYALGO_INCLUDE_TOOLS_UTILITY_DETAIL_TIME_UTILITY_H_
