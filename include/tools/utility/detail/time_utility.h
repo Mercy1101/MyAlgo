@@ -16,7 +16,6 @@
 
 #include <stdio.h>
 #include <time.h>
-
 #include <cassert>
 #include <chrono>
 #include <ctime>
@@ -234,5 +233,3 @@ inline Lee::Second GetTodaySpecificTimeStamp(const int iHour, const int iMin,
 }  // namespace Lee
 
 #endif  // end of MYALGO_INCLUDE_TOOLS_UTILITY_DETAIL_TIME_UTILITY_H_
-
-
