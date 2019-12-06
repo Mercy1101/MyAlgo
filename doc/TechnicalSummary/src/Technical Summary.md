@@ -3835,8 +3835,8 @@ TRUNCATE、DROP是数据库定义语言，操作立即生效，无法回滚，�
 
 ```c++
 auto query_return_object = db_instance->getDefaultSchema()	///< 获取默认的数据库
-    .getTable("dial_item").	///< 指定查询哪一张表
-    .select("ScheduleID", "AgentID", "DialNumber").	///< 指定获取哪些字段
+    .getTable("dial_item")	///< 指定查询哪一张表
+    .select("ScheduleID", "AgentID", "DialNumber")	///< 指定获取哪些字段
     .where("AgentID = :current_agent_id AND State = :dial_waitting_state")///< 指定查询条件
     .orderBy("ScheduleID")	///< 指定依ScheduleID字段降序排序
     .limit(100)	///< 指定多少条
@@ -3869,8 +3869,6 @@ for (const auto &Row : result_set) {
   std::string dial_number(Row[2]);	///< 字段	DialNumber 的值
 }
 ```
-
-
 
 ### 事务
 
