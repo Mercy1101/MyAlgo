@@ -24,18 +24,18 @@ set(SOURCES
 set(INIT_FILE_SOURCES src/init/init.cpp)
 
 # 单元测试模块源文件
-set(GTEST_SOURCES 
-    src/gtest/gtest.cc
+#set(GTEST_SOURCES 
+    #src/gtest/gtest.cc
     #src/googletest/gtest_main.cc
     #src/googletest/gtest-all.cc
-    src/gtest/gtest-death-test.cc
-    src/gtest/gtest-filepath.cc
-    src/gtest/gtest-matchers.cc
-    src/gtest/gtest-port.cc
-    src/gtest/gtest-printers.cc
-    src/gtest/gtest-test-part.cc
-    src/gtest/gtest-typed-test.cc
-)
+    #src/gtest/gtest-death-test.cc
+    #src/gtest/gtest-filepath.cc
+    #src/gtest/gtest-matchers.cc
+    #src/gtest/gtest-port.cc
+    #src/gtest/gtest-printers.cc
+    #src/gtest/gtest-test-part.cc
+    #src/gtest/gtest-typed-test.cc
+#)
 
 # spdlog的一个源文件
 set(SPD_LOG_SOURCES
@@ -63,21 +63,13 @@ set(UNITTEST_SOURCE
   unittest/leetcode/leetcode_unittest.cpp
 )
 
-# catch2 单元测试的文件
-set(CATCH2_UNITTEST_SOURCE 
-  # gsl库中的 span 测试文件
-  # unittest/gsl/gsl_span_unittest.cpp
-)
-
-
 # 把源文件添加进工程中
 add_executable(${EXECUTABLE_EXE_NAME} ${SOURCES}
-                                      ${GTEST_SOURCES}
+                                      #${GTEST_SOURCES}
                                       ${INIT_FILE_SOURCES}
                                       ${UNITTEST_SOURCE}
                                       ${SPD_LOG_SOURCES}
                                       ${LEET_CODE_FILE_SOURCES}
-                                      ${CATCH2_UNITTEST_SOURCE}
 )
 
 # 设置包含路径
@@ -142,6 +134,7 @@ target_compile_definitions(${EXECUTABLE_EXE_NAME} PRIVATE SPDLOG_COMPILED_LIB)
 # 为了屏蔽gtest中使用了TR1产生的警告,定义该宏
 target_compile_definitions(${EXECUTABLE_EXE_NAME} PRIVATE _SILENCE_TR1_NAMESPACE_DEPRECATION_WARNING)
 
+ADD_DEFINITIONS(-DDBG_MACRO_NO_WARNING)
 # debug模式下,定义_DEBUG宏
 #IF (CMAKE_BUILD_TYPE STREQUAL Debug)
 #ADD_DEFINITIONS(CONFIG=Debug -D_DEBUG)
