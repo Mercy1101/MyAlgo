@@ -401,6 +401,43 @@ inline int GetRandomRange(int x, int y) noexcept {
   if (x > y) std::swap(x, y);
   return (Lee::GetRandom() % (y - x + 1)) + x;
 }
+inline int GetRandomRange(int x) noexcept { return GetRandomRange(0, x); }
+
+/// @name
+/// @brief
+///
+/// @param
+///
+/// @return
+///
+/// @author   Lijiancong, pipinstall@163.com
+/// @date     2019-12-06 16:47:28
+/// @warning  线程不安全
+constexpr int DEFAULT_DEVIATION_PERCENT = 0.1;
+template <typename T>
+std::optional<T> GetApproximationNumber(const T &base_number,
+                                        const double &deviation_percent) {
+  if constexpr (std::is_integral(T)) {
+  } else if constexpr (std::is_float(T)) {
+  } else {
+    return {};
+  }
+  double fixed_deviation_percent =
+      (deviation_percent > 1.0 || deviation_percent < 0.1)
+          ? deviation_percent
+          : DEFAULT_DEVIATION_PERCENT;
+}
+
+int deviation_value =
+    static_cast<int>(base_time_perior * fixed_deviation_percent);
+int random_deviation_value =
+    Lee::GetRandomRange(deviation_value, -deviation_value);
+return static_cast<unsigned>(base_time_perior + random_deviation_value);
+}  // namespace Utility_
+unsigned AgentTask::GenerateRandomTimePerior(
+    const Lee::MilliSecond &base_time_perior) {
+  return GenerateRandomTimePerior(base_time_perior, DEFAULT_DEVIATION_PERCENT_);
+}
 
 /// @name     SleepForRandomMilliSecond
 /// @brief    生成一个随机数，让调用本函数的线程"睡眠随机时间"
@@ -431,6 +468,6 @@ inline void SleepForRandomMilliSecond(Lee::MilliSecond range_end) {
   SleepForRandomMilliSecond(0, range_end);
 }
 
-}  // namespace Utility_
+}  // namespace Lee
 }  // namespace Lee
 #endif  // end of MYALGO_INCLUDE_TOOLS_UTILITY_UTILITY_H_
