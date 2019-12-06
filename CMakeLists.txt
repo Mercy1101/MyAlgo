@@ -61,6 +61,9 @@ set(UNITTEST_SOURCE
 
   # leetcode 解法测试
   unittest/leetcode/leetcode_unittest.cpp
+
+  # utility/time的测试单元文件
+  unittest/tools/time_utility_unittest.cpp
 )
 
 # 把源文件添加进工程中

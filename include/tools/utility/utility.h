@@ -28,6 +28,7 @@
 #include <functional>
 #include <limits>
 #include <mutex>
+#include <optional>
 #include <string>
 #include <thread>
 #include <type_traits>
@@ -330,8 +331,21 @@ inline bool IsMultiOverFlow(unsigned long long x,
   return false;
 }
 
+/// @name     Multiplies_s
+/// @brief    对传入的两个参数，实现安全的乘法运算并返回结果
+///           (如果结果溢出了，返回值会为空)
+///
+/// @param    x [in]
+/// @param    y [in]
+///
+/// @return   乘法结果没有溢出的话，.have_value()为真，通过.value()函数获取
+///           乘法结果溢出的话，.have_value()为假
+///
+/// @author   Lijiancong, pipinstall@163.com
+/// @date     2019-12-06 15:28:56
+/// @warning  线程不安全
 template <typename T1, typename T2>
-std::optional<T1> Multiplies_s(T1 x, T2 y) noexcept {
+std::optional<T1> Multiplies_s(const T1 x, const T2 y) noexcept {
   static_assert(std::is_same<T1, T2>::value, "Multiplies_s need same type!");
   static_assert(std::is_integral<T1>::value,
                 "Multiplies_s need integral type!");
@@ -401,7 +415,8 @@ inline int GetRandomRange(int x, int y) noexcept {
 /// @warning  线程不安全
 inline void SleepForRandomMilliSecond(Lee::MilliSecond range_start,
                                       Lee::MilliSecond range_end) {
-  constexpr Lee::MilliSecond SLEEP_FOR_RANGE_MAX_MILLISECOND = 30 * 1000; ///< 设置最大时间限制
+  /// 设置最大时间限制
+  constexpr Lee::MilliSecond SLEEP_FOR_RANGE_MAX_MILLISECOND = 30 * 1000;
   if (range_start > range_start) std::swap(range_start, range_end);
   if (range_start < 0) range_start = 0;
   if (range_end < 0) range_end = 0;

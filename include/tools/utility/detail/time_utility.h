@@ -43,9 +43,9 @@ inline Lee::Second GetCurrentTimeStamp() noexcept {
                             std::chrono::system_clock::now().time_since_epoch())
                             .count();
 #undef max  /// 这句话视为了取消window自带的max宏定义,让下面这句话能编译
-  auto int_max_value = std::numeric_limits<Lee::Second>::max();
   if (current_time_s >
-      int_max_value - static_cast<long long>(30 * 24 * 60 * 60)) {
+      std::numeric_limits<Lee::Second>::max() -
+          static_cast<decltype(current_time_s)>(30 * 24 * 60 * 60)) {
     assert(false &&
            "Excute GetCurrentTimeStamp() failed!(current_time_s overflow!)");
     return -1;
@@ -68,8 +68,9 @@ inline Lee::MilliSecond GetCurrentMilliSecondStamp() noexcept {
                             std::chrono::system_clock::now().time_since_epoch())
                             .count();
 #undef max  /// 这句话视为了取消window自带的max宏定义,让下面这句话能编译
-  if (current_time_s > std::numeric_limits<Lee::MilliSecond>::max() -
-                           static_cast<long long>(30 * 24 * 60 * 60)) {
+  if (current_time_s >
+      std::numeric_limits<Lee::MilliSecond>::max() -
+          static_cast<decltype(current_time_s)>(30 * 24 * 60 * 60)) {
     assert(false &&
            "Excute GetCurrentMilliSecondStamp() failed!(current_time_s "
            "overflow!)");
@@ -120,6 +121,9 @@ inline std::string GetTimeString(Lee::Second Time, const char *Format) {
 }
 inline std::string GetTimeString(Lee::Second Time) {
   return GetTimeString(Time, "%F %T");
+}
+inline std::string GetTimeString(const char *Format) {
+  return GetTimeString(Lee::GetCurrentTimeStamp(), Format);
 }
 inline std::string GetTimeString(Lee::MilliSecond Time) {
   return GetTimeString(static_cast<Lee::Second>(Time / 1000), "%F %T");
@@ -230,3 +234,5 @@ inline Lee::Second GetTodaySpecificTimeStamp(const int iHour, const int iMin,
 }  // namespace Lee
 
 #endif  // end of MYALGO_INCLUDE_TOOLS_UTILITY_DETAIL_TIME_UTILITY_H_
+
+
