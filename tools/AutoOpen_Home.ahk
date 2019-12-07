@@ -10,7 +10,7 @@ return
 
 ;(3)
 !c::
-Run, F:\mannal\cppreference-zh-20181230.chm
+Run, https://zh.cppreference.com/
 return
 
 ;(4)
@@ -144,23 +144,9 @@ return
 
 ;(13)
 !1::
-Run, F:\github\MyAlgo
+Run, D:\github\MyAlgo
 return
 
-;(14)
-!2::
-Run, F:\1WorkStation\SmdWorkStation\smartdialV5.0
-return
-
-;(15)
-!3::
-Run, F:\97
-return
-
-;(16)
-!4::
-Run, F:\100
-return
 
 ;(17)
 !b::
