@@ -1,4 +1,5 @@
 ﻿#include "utility/utility.h"
+
 #include <catch2/catch.hpp>
 #include <cstdlib>  // for RAND_MAX
 #include <limits>
@@ -440,6 +441,101 @@ SCENARIO("GetRandomRange(), 随机函数测试", "[utility][GetRandomRange]") {
         for (int i = 0; i < 1000; ++i) {
           auto random_number = Lee::GetRandomRange(0, -100);
           REQUIRE((random_number >= -100 && random_number <= 0));
+        }
+      }
+    }
+  }
+}
+
+SCENARIO("GetRandomRangeNumberDouble(), 随机浮点数函数测试",
+         "[utility][GetRandomRangeNumberDouble]") {
+  GIVEN("一个入参的测试") {
+    WHEN("入参为正浮点数") {
+      THEN("生成的随机数应该大于等于零，小于入参的数值") {
+        for (int i = 0; i < 1000; ++i) {
+          auto random_number = Lee::GetRandomRangeNumberDouble(999.996);
+          REQUIRE((random_number >= 0.0 && random_number <= 999.996));
+        }
+        for (int i = 0; i < 1000; ++i) {
+          auto random_number = Lee::GetRandomRangeNumberDouble(1.0);
+          REQUIRE((random_number >= 0 && random_number <= 1.0));
+        }
+      }
+    }
+    WHEN("入参为零") {
+      THEN("只能生成零") {
+        for (int i = 0; i < 1000; ++i) {
+          auto random_number = Lee::GetRandomRangeNumberDouble(0);
+          REQUIRE(random_number == Approx(0));
+        }
+      }
+    }
+    WHEN("入参为负浮点数") {
+      THEN("生成的随机数应该小于等于零，大于入参的数值") {
+        for (int i = 0; i < 1000; ++i) {
+          auto random_number = Lee::GetRandomRangeNumberDouble(-999.996);
+          REQUIRE((random_number >= -999.996 && random_number <= 0));
+        }
+        for (int i = 0; i < 1000; ++i) {
+          auto random_number = Lee::GetRandomRangeNumberDouble(-1.0);
+          REQUIRE((random_number >= -1.0 && random_number <= 0.0));
+        }
+      }
+    }
+  }
+  GIVEN("两个入参的测试") {
+    WHEN("入参为正浮点数") {
+      THEN("生成的随机数应该大于等于较小入参的数值，小于较大入参的数值") {
+        for (int i = 0; i < 1000; ++i) {
+          auto random_number =
+              Lee::GetRandomRangeNumberDouble(999.669, 888.669);
+          REQUIRE((random_number >= 888.669 && random_number <= 999.669));
+        }
+        for (int i = 0; i < 1000; ++i) {
+          auto random_number = Lee::GetRandomRangeNumberDouble(1.0, 2.0);
+          REQUIRE((random_number >= 1.0 && random_number <= 2.0));
+        }
+        for (int i = 0; i < 1000; ++i) {
+          auto random_number = Lee::GetRandomRangeNumberDouble(1.0, 0.0);
+          REQUIRE((random_number >= 0.0 && random_number <= 1.0));
+        }
+      }
+    }
+    WHEN("入参相等") {
+      THEN("只能生成该入参") {
+        for (int i = 0; i < 1000; ++i) {
+          auto random_number =
+              Lee::GetRandomRangeNumberDouble(999.997, 999.997);
+          REQUIRE(random_number == Approx(999.997));
+        }
+        for (int i = 0; i < 1000; ++i) {
+          auto random_number = Lee::GetRandomRangeNumberDouble(0.0, 0.0);
+          REQUIRE(random_number == Approx(0.0));
+        }
+        for (int i = 0; i < 1000; ++i) {
+          auto random_number = Lee::GetRandomRangeNumberDouble(-1.0, -1.0);
+          REQUIRE(random_number == Approx(-1.0));
+        }
+      }
+    }
+    WHEN("入参为负数整数混合") {
+      THEN("生成[x, y]的数值") {
+        for (int i = 0; i < 1000; ++i) {
+          auto random_number =
+              Lee::GetRandomRangeNumberDouble(-999.996, 999.996);
+          REQUIRE((random_number >= -999.996 && random_number <= 999.996));
+        }
+        for (int i = 0; i < 1000; ++i) {
+          auto random_number = Lee::GetRandomRangeNumberDouble(-1.0, 1.0);
+          REQUIRE((random_number >= -1.0 && random_number <= 1.0));
+        }
+        for (int i = 0; i < 1000; ++i) {
+          auto random_number = Lee::GetRandomRangeNumberDouble(0.0, -100.0);
+          REQUIRE((random_number >= -100.0 && random_number <= 0.0));
+        }
+        for (int i = 0; i < 1000; ++i) {
+          auto random_number = Lee::GetRandomRangeNumberDouble(-0.001, 0.001);
+          REQUIRE((random_number >= -0.001 && random_number <= 0.001));
         }
       }
     }

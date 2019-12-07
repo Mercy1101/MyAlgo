@@ -29,6 +29,7 @@
 #include <limits>
 #include <mutex>
 #include <optional>
+#include <random>
 #include <string>
 #include <thread>
 #include <type_traits>
@@ -380,15 +381,16 @@ inline bool IsLittleEndian() noexcept {
 /// @warning  线程不安全
 inline int GetRandom() noexcept {
   static std::once_flag InitFlag;
-  std::call_once(InitFlag,
-                 []() { srand(static_cast<unsigned>(time(nullptr))); });
+  std::call_once(InitFlag, []() {
+    srand(static_cast<unsigned>(Lee::GetCurrentMilliSecondStamp()));
+  });
   return rand();
 }
 
 /// @name     GetRangeRandom
 /// @brief    生成[x, y]或[y,x]区间中的一个随机数。
 ///
-///           （生成的最大区间为[INT_MIN, INT_MAX]）
+/// @details  生成的最大区间为[INT_MIN, INT_MAX]
 /// @param    x    [in]    不能输入比INT_MAX大或比INT_MIN小的数字
 /// @param    y    [in]    不能输入比INT_MAX大或比INT_MIN小的数字
 ///
@@ -403,40 +405,56 @@ inline int GetRandomRange(int x, int y) noexcept {
 }
 inline int GetRandomRange(int x) noexcept { return GetRandomRange(0, x); }
 
-/// @name
-/// @brief
+/// @name     GetRandomRangeNumberDouble
+/// @brief    [rang_bound1,rang_bound2]区间中生成一个double类型的浮点数
 ///
-/// @param
+/// @param    rang_bound1 [in]
+/// @param    rang_bound2 [in]
 ///
-/// @return
+/// @return   [rang_bound1,rang_bound2]区间中的浮点数
+///
+/// @author   Lijiancong, pipinstall@163.com
+/// @date     2019-12-07 12:07:27
+/// @warning  线程不安全
+inline double GetRandomRangeNumberDouble(double range_bound1,
+                                         double range_bound2) {
+  if (range_bound1 > range_bound2) std::swap(range_bound1, range_bound2);
+  static std::random_device r;
+  static std::default_random_engine e(r());
+  std::uniform_real_distribution<double> u(range_bound1, range_bound2);
+  return u(e);
+}
+inline double GetRandomRangeNumberDouble(double range_bound) {
+  return Lee::GetRandomRangeNumberDouble(0, range_bound);
+}
+
+/// @name     GetApproximationNumber
+/// @brief    获取一个值的近似值，
+///           这个近似值的误差区间为入参的百分比乘以基数来算出来的
+///
+/// @param    base_number       [in]  数值的基数
+/// @param    deviation_percent [in]  浮动的百分比
+///
+/// @return   返回一个近似值([base_number-base_number*deviation_percent,
+///                          base_number+base_number*deviation_percent])
 ///
 /// @author   Lijiancong, pipinstall@163.com
 /// @date     2019-12-06 16:47:28
 /// @warning  线程不安全
-constexpr int DEFAULT_DEVIATION_PERCENT = 0.1;
 template <typename T>
-std::optional<T> GetApproximationNumber(const T &base_number,
-                                        const double &deviation_percent) {
-  if constexpr (std::is_integral(T)) {
-  } else if constexpr (std::is_float(T)) {
-  } else {
-    return {};
-  }
-  double fixed_deviation_percent =
-      (deviation_percent > 1.0 || deviation_percent < 0.1)
-          ? deviation_percent
-          : DEFAULT_DEVIATION_PERCENT;
+inline T GetApproximationNumber(const T &base_number,
+                                const double &deviation_percent) {
+  static_assert(std::is_integral(T) || std::is_floating_point(T),
+                "GetApproximationNumber need a POD type number!");
+  double range_bound = base_number * deviation_percent;
+  auto random_number = Lee::GetRandomRangeNumberDouble(
+      base_number + range_bound, base_number - range_bound);
+  return static_cast<T>(random_number);
 }
-
-int deviation_value =
-    static_cast<int>(base_time_perior * fixed_deviation_percent);
-int random_deviation_value =
-    Lee::GetRandomRange(deviation_value, -deviation_value);
-return static_cast<unsigned>(base_time_perior + random_deviation_value);
-}  // namespace Utility_
-unsigned AgentTask::GenerateRandomTimePerior(
-    const Lee::MilliSecond &base_time_perior) {
-  return GenerateRandomTimePerior(base_time_perior, DEFAULT_DEVIATION_PERCENT_);
+constexpr double DEFAULT_DEVIATION_PERCENT = 0.1;
+template <typename T>
+inline T GetApproximationNumber(const T &base_number) {
+  Lee::GetApproximationNumber(base_number, DEFAULT_DEVIATION_PERCENT);
 }
 
 /// @name     SleepForRandomMilliSecond
@@ -468,6 +486,6 @@ inline void SleepForRandomMilliSecond(Lee::MilliSecond range_end) {
   SleepForRandomMilliSecond(0, range_end);
 }
 
-}  // namespace Lee
+}  // namespace Utility_
 }  // namespace Lee
 #endif  // end of MYALGO_INCLUDE_TOOLS_UTILITY_UTILITY_H_
