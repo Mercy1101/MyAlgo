@@ -50,6 +50,9 @@
 | V4.4 | 李建聪 | 添加**std::transform介绍**小节 | 2019-11-29 08:34:55 |
 | V4.5 | 李建聪 | 添加**std::round介绍**小节 | 2019-11-29 08:39:34 |
 | V4.6 | 李建聪 | 添加**std::numeric_limits介绍**小节 | 2019-12-02 11:18:16 |
+| V4.7 | 李建聪 | 添加**decltype(auto)**小节 | 2019-12-07 11:20:27 |
+| V4.8 | 李建聪 | 添加**弃用属性（[[deprecated]] attribute）**小节 | 2019-12-07 11:20:29 |
+| V4.9 | 李建聪 | 添加**std::forward介绍**小节 | 2019-12-07 12:52:26 |
 
 ### std::string 用法
 
@@ -335,7 +338,7 @@ f(std::move(a));
 ##### 4.2 左值、右值的重载应用于class的构造问题
 
 
-如果**class XInstance**未提供move语义(没有提供移动构造函数和移动赋值符)，只提供惯常的copy构造函数和拷贝赋值符(copy assignment操作符)，右值引用(rvalue reference)可以调用他们。因此，std::move(**XInstance**)意味着"调用move语义(若有提供的话)，否则调用copy语义(即拷贝一次)"。
+如果**class X Instance**未提供move语义(没有提供移动构造函数和移动赋值符)，只提供惯常的copy构造函数和拷贝赋值符(copy assignment操作符)，右值引用(rvalue reference)可以调用他们。因此，std::move(**XInstance**)意味着"调用move语义(若有提供的话)，否则调用copy语义(即拷贝一次)"。
 
 ```c++
 /// 你不需要也不应该返回std::move()返回值。
@@ -2662,13 +2665,119 @@ int main()
 }
 ```
 
+### decltype(auto)
+
+> The decltype(auto) type-specifier also deduces a type like auto does. However, it deduces
+> return types while keeping their references and cv-qualifiers, while auto will not.
+
+```c++
+const int x = 0;
+auto x1 = x; // int
+decltype(auto) x2 = x; // const int
+int y = 0;
+int& y1 = y;
+auto y2 = y1; // int
+decltype(auto) y3 = y1; // int&
+int&& z = 0;
+auto z1 = std::move(z); // int
+decltype(auto) z2 = std::move(z); // int&&
+```
+
+```c++
+// Note: Especially useful for generic code!
+// Return type is `int`.
+auto f(const int& i) {
+return i;
+}
+// Return type is `const int&`.
+decltype(auto) g(const int& i) {
+return i;
+}
+int x = 123;
+static_assert(std::is_same<const int&, decltype(f(x))>::value == 0);
+static_assert(std::is_same<int, decltype(f(x))>::value == 1);
+static_assert(std::is_same<const int&, decltype(g(x))>::value == 1);
+```
+
+### 弃用属性（[[deprecated]] attribute）
+
+> C++14 introduces the [[deprecated]] attribute to indicate that a unit (function, class, etc) is
+> discouraged and likely yield compilation warnings. If a reason is provided, it will be included in
+> the warnings.
+
+```c++
+[[deprecated]]
+void old_method();
+[[deprecated("Use new_method instead")]]
+void legacy_method();
+```
+
+### std::forward介绍
+
+```c++
+#include <iostream>
+#include <memory>
+#include <utility>
+
+struct A {
+  A(int&& n) { std::cout << "rvalue overload, n=" << n << "\n"; }
+  A(int& n) { std::cout << "lvalue overload, n=" << n << "\n"; }
+};
+
+class B {
+public:
+  template<class T1, class T2, class T3>
+  B(T1&& t1, T2&& t2, T3&& t3) :
+    a1_{ std::forward<T1>(t1) },
+    a2_{ std::forward<T2>(t2) },
+    a3_{ std::forward<T3>(t3) }
+  {
+  }
+
+private:
+  A a1_, a2_, a3_;
+};
+
+template<class T, class U>
+std::unique_ptr<T> make_unique1(U&& u)
+{
+  return std::unique_ptr<T>(new T(std::forward<U>(u)));
+}
+
+template<class T, class... U>
+std::unique_ptr<T> make_unique2(U&&... u)
+{
+  return std::unique_ptr<T>(new T(std::forward<U>(u)...));
+}
+
+int main()
+{
+  auto p1 = make_unique1<A>(2); // 右值
+  int i = 1;
+  auto p2 = make_unique1<A>(i); // 左值
+
+  std::cout << "B\n";
+  auto t = make_unique2<B>(2, i, 3);
+}
+```
+
+
 
 ## C++17及其以后的特性
 
-| 版本号 | 作者   | 修改摘要                      | 时间                |
-| ------ | ------ | ----------------------------- | ------------------- |
-| V1.0   | 李建聪 | 添加**std::optional介绍**小节 | 2019-11-28 13:53:55 |
-| V1.1   | 李建聪 | 添加**std::invoke介绍**小节   | 2019-12-02 17:51:18 |
+| 版本号 | 作者   | 修改摘要                                                     | 时间                |
+| ------ | ------ | ------------------------------------------------------------ | ------------------- |
+| V1.0   | 李建聪 | 添加**std::optional介绍**小节                                | 2019-11-28 13:53:55 |
+| V1.1   | 李建聪 | 添加**std::invoke介绍**小节                                  | 2019-12-02 17:51:18 |
+| V1.2   | 李建聪 | 添加**结构绑定（Structured bindings）**小节                  | 2019-12-07 10:57:48 |
+| V1.3   | 李建聪 | 添加**判断语句中的初始化(Selection statements with initializer)**小节 | 2019-12-07 10:57:49 |
+| V1.4   | 李建聪 | 添加**新属性标识符(New standard attributes)**小节            | 2019-12-07 10:57:50 |
+| V1.5   | 李建聪 | 添加**std::variant介绍**小节                                 | 2019-12-07 10:57:51 |
+| V1.6   | 李建聪 | 添加**std::any介绍 **小节                                    | 2019-12-07 11:16:58 |
+| V1.7   | 李建聪 | 添加**std::string_view介绍**小节                             | 2019-12-07 11:16:59 |
+| V1.8   | 李建聪 | 添加**std::apply介绍**小节                                   | 2019-12-07 11:16:59 |
+| V1.9   | 李建聪 | 添加**std::map和std::set的切片移动（Splicing for maps and sets）**小节 | 2019-12-07 11:17:00 |
+| V2.0   | 李建聪 | 添加**并行算法**小节                                         | 2019-12-07 11:17:01 |
 
 ### std::optional介绍
 
@@ -2775,6 +2884,211 @@ int main()
     std::invoke(PrintNum(), 18);
 }
 ```
+
+```c++
+template <typename Callable>
+class Proxy {
+Callable c;
+public:
+Proxy(Callable c): c(c) {}
+template <class... Args>
+decltype(auto) operator()(Args&&... args) {
+// ...
+return std::invoke(c, std::forward<Args>(args)...);
+}
+```
+
+### 结构绑定（Structured bindings）
+
+```c++
+using Coordinate = std::pair<int, int>;
+Coordinate origin() {
+return Coordinate{0, 0};
+}
+const auto [ x, y ] = origin();
+x; // == 0
+y; // == 0
+```
+
+```c++
+std::unordered_map<std::string, int> mapping {
+{"a", 1},
+{"b", 2},
+{"c", 3},
+};
+// Destructure by reference.
+for (const auto& [key, value] : mapping) {
+// Do something with key and value
+}
+```
+
+###  判断语句中的初始化(Selection statements with initializer)
+
+[详细介绍](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/p0305r1.html)
+
+[官网解释](https://en.cppreference.com/w/cpp/language/if)
+
+```c++
+{
+std::lock_guard<std::mutex> lk(mx);
+if (v.empty()) v.push_back(val);
+}
+// vs.
+if (std::lock_guard<std::mutex> lk(mx); v.empty()) {
+v.push_back(val);
+}
+```
+
+```c++
+Foo gadget(args);
+switch (auto s = gadget.status()) {
+case OK: gadget.zip(); break;
+case Bad: throw BadFoo(s.message());
+}
+// vs.
+switch (Foo gadget(args); auto s = gadget.status()) {
+case OK: gadget.zip(); break;
+case Bad: throw BadFoo(s.message());
+}
+```
+
+### 新属性标识符(New standard attributes)
+
+```c++
+// Will warn if return of foo() is ignored
+[[nodiscard]] int foo();
+int main() {
+    int a {1};
+    switch (a) {
+        // Indicates that falling through on case 1 is intentional
+        case 1: [[fallthrough]]
+        case 2:
+        	// Indicates that b might be unused, such as on production builds
+        	[[maybe_unused]] int b = foo();
+        	assert(b > 0);
+        break;
+    }
+}
+```
+
+### std::variant介绍
+
+类似联合体的容器
+
+```c++
+std::variant<int, double> v {12};
+std::get<int>(v); // == 12
+std::get<0>(v); // == 12
+v = 12.0;
+std::get<double>(v); // == 12.0
+std::get<1>(v); // == 12.0
+```
+
+### std::any介绍
+
+一个类型安全的容器，可以包含任意单个类型。
+
+```c++
+std::any x {5};
+x.has_value() // == true
+std::any_cast<int>(x) // == 5
+std::any_cast<int&>(x) = 10;
+std::any_cast<int>(x) // == 10
+```
+
+### std::string_view介绍
+
+一个string的引用，好处是没有复制拷贝的操作，但要注意原引用的生命周期。
+
+```c++
+// Regular strings.
+std::string_view cppstr {"foo"};
+// Wide strings.
+std::wstring_view wcstr_v {L"baz"};
+// Character arrays.
+char array[3] = {'b', 'a', 'r'};
+std::string_view array_v(array, std::size(array));
+```
+
+```c++
+std::string str {" trim me"};
+std::string_view v {str};
+v.remove_prefix(std::min(v.find_first_not_of(" "), v.size()));
+str; // == " trim me"
+v; // == "trim me"
+```
+
+### std::apply介绍
+
+用一个tuple类型的参数来调用一个可调用对象。
+
+```c++
+auto add = [](int x, int y) {
+return x + y;
+};
+std::apply(add, std::make_tuple(1, 2)); // == 3
+```
+
+### std::map和std::set的切片移动（Splicing for maps and sets）
+
+* 从一个map中移动元素到另一个map
+
+```c++
+std::map<int, string> src {{1, "one"}, {2, "two"}, {3, "buckle my shoe"}};
+std::map<int, string> dst {{3, "three"}};
+dst.insert(src.extract(src.find(1))); // Cheap remove and insert of { 1, "one" }
+										///from `src` to `dst`.
+dst.insert(src.extract(2)); // Cheap remove and insert of { 2, "two" } from
+							///	`src` to `dst`.
+// dst == { { 1, "one" }, { 2, "two" }, { 3, "three" } };
+```
+* 合并两个set
+```c++
+std::set<int> src {1, 3, 5};
+std::set<int> dst {2, 4, 5};
+dst.merge(src);
+// src == { 5 }
+// dst == { 1, 2, 3, 4, 5 }
+```
+
+* 移动一个生命周期结束的元素到另一个容器
+
+```c++
+auto elementFactory() {
+std::set<...> s;
+s.emplace(...);
+return s.extract(s.begin());
+}
+s2.insert(elementFactory());
+```
+
+* 改变一个map元素的key值
+
+```c++
+std::map<int, string> m {{1, "one"}, {2, "two"}, {3, "three"}};
+auto e = m.extract(2);
+e.key() = 4;
+m.insert(std::move(e));
+// m == { { 1, "one" }, { 3, "three" }, { 4, "two" } }
+```
+
+### 并行算法
+
+> Many of the STL algorithms, such as the copy , find and sort methods, started to support the
+> parallel execution policies: seq , par and par_unseq which translate to "sequentially", "parallel"
+> and "parallel unsequenced".
+
+```c++
+std::vector<int> longVector;
+// Find element using parallel execution policy
+auto result1 = std::find(std::execution::par, std::begin(longVector),
+std::end(longVector), 2);
+// Sort elements using sequential execution policy
+auto result2 = std::sort(std::execution::seq, std::begin(longVector),
+std::end(longVector));
+```
+
+
 
 ## 多线程编程总结
 
