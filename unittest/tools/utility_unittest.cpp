@@ -454,11 +454,15 @@ SCENARIO("GetRandomRangeNumberDouble(), 随机浮点数函数测试",
       THEN("生成的随机数应该大于等于零，小于入参的数值") {
         for (int i = 0; i < 1000; ++i) {
           auto random_number = Lee::GetRandomRangeNumberDouble(999.996);
+          auto random_number2 = Lee::GetRandomRangeNumberDouble(999.996);
           REQUIRE((random_number >= 0.0 && random_number <= 999.996));
+          REQUIRE(random_number != random_number2);
         }
         for (int i = 0; i < 1000; ++i) {
           auto random_number = Lee::GetRandomRangeNumberDouble(1.0);
+          auto random_number2 = Lee::GetRandomRangeNumberDouble(1.0);
           REQUIRE((random_number >= 0 && random_number <= 1.0));
+          REQUIRE(random_number != random_number2);
         }
       }
     }
@@ -474,11 +478,15 @@ SCENARIO("GetRandomRangeNumberDouble(), 随机浮点数函数测试",
       THEN("生成的随机数应该小于等于零，大于入参的数值") {
         for (int i = 0; i < 1000; ++i) {
           auto random_number = Lee::GetRandomRangeNumberDouble(-999.996);
+          auto random_number2 = Lee::GetRandomRangeNumberDouble(-999.996);
           REQUIRE((random_number >= -999.996 && random_number <= 0));
+          REQUIRE(random_number != random_number2);
         }
         for (int i = 0; i < 1000; ++i) {
           auto random_number = Lee::GetRandomRangeNumberDouble(-1.0);
+          auto random_number2 = Lee::GetRandomRangeNumberDouble(-1.0);
           REQUIRE((random_number >= -1.0 && random_number <= 0.0));
+          REQUIRE(random_number != random_number2);
         }
       }
     }
@@ -489,15 +497,22 @@ SCENARIO("GetRandomRangeNumberDouble(), 随机浮点数函数测试",
         for (int i = 0; i < 1000; ++i) {
           auto random_number =
               Lee::GetRandomRangeNumberDouble(999.669, 888.669);
+          auto random_number2 =
+              Lee::GetRandomRangeNumberDouble(999.669, 888.669);
           REQUIRE((random_number >= 888.669 && random_number <= 999.669));
+          REQUIRE(random_number != random_number2);
         }
         for (int i = 0; i < 1000; ++i) {
           auto random_number = Lee::GetRandomRangeNumberDouble(1.0, 2.0);
+          auto random_number2 = Lee::GetRandomRangeNumberDouble(1.0, 2.0);
           REQUIRE((random_number >= 1.0 && random_number <= 2.0));
+          REQUIRE(random_number != random_number2);
         }
         for (int i = 0; i < 1000; ++i) {
           auto random_number = Lee::GetRandomRangeNumberDouble(1.0, 0.0);
+          auto random_number2 = Lee::GetRandomRangeNumberDouble(1.0, 0.0);
           REQUIRE((random_number >= 0.0 && random_number <= 1.0));
+          REQUIRE(random_number != random_number2);
         }
       }
     }
@@ -523,19 +538,28 @@ SCENARIO("GetRandomRangeNumberDouble(), 随机浮点数函数测试",
         for (int i = 0; i < 1000; ++i) {
           auto random_number =
               Lee::GetRandomRangeNumberDouble(-999.996, 999.996);
+          auto random_number2 =
+              Lee::GetRandomRangeNumberDouble(-999.996, 999.996);
           REQUIRE((random_number >= -999.996 && random_number <= 999.996));
+          REQUIRE(random_number != random_number2);
         }
         for (int i = 0; i < 1000; ++i) {
           auto random_number = Lee::GetRandomRangeNumberDouble(-1.0, 1.0);
+          auto random_number2 = Lee::GetRandomRangeNumberDouble(-1.0, 1.0);
           REQUIRE((random_number >= -1.0 && random_number <= 1.0));
+          REQUIRE(random_number != random_number2);
         }
         for (int i = 0; i < 1000; ++i) {
           auto random_number = Lee::GetRandomRangeNumberDouble(0.0, -100.0);
+          auto random_number2 = Lee::GetRandomRangeNumberDouble(0.0, -100.0);
           REQUIRE((random_number >= -100.0 && random_number <= 0.0));
+          REQUIRE(random_number != random_number2);
         }
         for (int i = 0; i < 1000; ++i) {
           auto random_number = Lee::GetRandomRangeNumberDouble(-0.001, 0.001);
+          auto random_number2 = Lee::GetRandomRangeNumberDouble(-0.001, 0.001);
           REQUIRE((random_number >= -0.001 && random_number <= 0.001));
+          REQUIRE(random_number != random_number2);
         }
       }
     }
