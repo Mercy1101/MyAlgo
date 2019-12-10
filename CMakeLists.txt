@@ -23,20 +23,6 @@ set(SOURCES
 # 初始化文件
 set(INIT_FILE_SOURCES src/init/init.cpp)
 
-# 单元测试模块源文件
-#set(GTEST_SOURCES 
-    #src/gtest/gtest.cc
-    #src/googletest/gtest_main.cc
-    #src/googletest/gtest-all.cc
-    #src/gtest/gtest-death-test.cc
-    #src/gtest/gtest-filepath.cc
-    #src/gtest/gtest-matchers.cc
-    #src/gtest/gtest-port.cc
-    #src/gtest/gtest-printers.cc
-    #src/gtest/gtest-test-part.cc
-    #src/gtest/gtest-typed-test.cc
-#)
-
 # spdlog的一个源文件
 set(SPD_LOG_SOURCES
     include/tools/log/spdlog.cpp
@@ -44,6 +30,9 @@ set(SPD_LOG_SOURCES
 
 # leetcode源文件
 set(LEET_CODE_FILE_SOURCES src/leetcode/leetcode.cpp)
+
+# tools文件夹下的源文件
+set(TOOLS_FILE_SOURCES src/tools/data_struct/print_data_struct.cpp)
 
 # 单元测试的文件
 set(UNITTEST_SOURCE
@@ -64,6 +53,9 @@ set(UNITTEST_SOURCE
 
   # utility/time的测试单元文件
   unittest/tools/time_utility_unittest.cpp
+
+  # utility/time的测试单元文件
+  unittest/tools/data_struct/print_data_struct_unittest.cpp
 )
 
 # 把源文件添加进工程中
@@ -73,6 +65,7 @@ add_executable(${EXECUTABLE_EXE_NAME} ${SOURCES}
                                       ${UNITTEST_SOURCE}
                                       ${SPD_LOG_SOURCES}
                                       ${LEET_CODE_FILE_SOURCES}
+                                      ${TOOLS_FILE_SOURCES}
 )
 
 # 设置包含路径
