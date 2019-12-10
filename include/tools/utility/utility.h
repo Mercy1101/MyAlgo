@@ -355,10 +355,13 @@ std::optional<T1> Multiplies_s(const T1 x, const T2 y) noexcept {
 }
 /// @name     IsLittleEndian
 /// @brief    判断电脑大小端
+/// 
 /// @param    NONE
+/// 
 /// @return   是否是小端
 ///   @retval true     小端
 ///   @retval false    大端
+/// 
 /// @author   Lijiancong, pipinstall@163.com
 /// @date     2019-12-01 18:45:21
 /// @warning  线程不安全
@@ -374,8 +377,11 @@ inline bool IsLittleEndian() noexcept {
 
 /// @name     GetRandomNumber
 /// @brief    获取[0, RNAD_MAX]中一个随机数。
+/// 
 /// @param    NONE
+/// 
 /// @return   [0, RNAD_MAX]中一个随机数
+/// 
 /// @author   Lijiancong, pipinstall@163.com
 /// @date     2019-12-01 17:12:37
 /// @warning  线程不安全
@@ -391,6 +397,7 @@ inline int GetRandom() noexcept {
 /// @brief    生成[x, y]或[y,x]区间中的一个随机数。
 ///
 /// @details  生成的最大区间为[INT_MIN, INT_MAX]
+/// 
 /// @param    x    [in]    不能输入比INT_MAX大或比INT_MIN小的数字
 /// @param    y    [in]    不能输入比INT_MAX大或比INT_MIN小的数字
 ///
@@ -440,7 +447,7 @@ inline double GetRandomRangeNumberDouble(double range_bound) {
 ///
 /// @author   Lijiancong, pipinstall@163.com
 /// @date     2019-12-06 16:47:28
-/// @warning  线程不安全
+/// @warning  线程安全
 template <typename T>
 inline T GetApproximationNumber(const T &base_number,
                                 const double &deviation_percent) {
