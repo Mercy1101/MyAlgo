@@ -6,6 +6,8 @@ set(EXECUTABLE_EXE_NAME MyAlgo)
 
 # 可执行文件生成路径
 set(EXECUTABLE_OUTPUT_PATH ../bin)
+# 测试可执行文件运行路径
+# set(UNIT_TEST_BIN_OUTPUT_DIR ${EXECUTABLE_OUTPUT_PATH})
 
 # 设置工程名称
 project (${EXECUTABLE_EXE_NAME})
@@ -128,15 +130,10 @@ endif(MSVC)
 # 定义这个宏,是为了正常编译spdlog
 target_compile_definitions(${EXECUTABLE_EXE_NAME} PRIVATE SPDLOG_COMPILED_LIB)
 # 为了屏蔽gtest中使用了TR1产生的警告,定义该宏
-target_compile_definitions(${EXECUTABLE_EXE_NAME} PRIVATE _SILENCE_TR1_NAMESPACE_DEPRECATION_WARNING)
+# target_compile_definitions(${EXECUTABLE_EXE_NAME} PRIVATE _SILENCE_TR1_NAMESPACE_DEPRECATION_WARNING)
 
+# 定义这个宏为了避免dbg文件中的警告
 ADD_DEFINITIONS(-DDBG_MACRO_NO_WARNING)
-# debug模式下,定义_DEBUG宏
-#IF (CMAKE_BUILD_TYPE STREQUAL Debug)
-#ADD_DEFINITIONS(CONFIG=Debug -D_DEBUG)
-#ENDIF()
-
-
 # ADD_DEFINITIONS(-_CRT_SECUER_NO_WARNINGS)
 
 # 设置GCC最高警告级别
@@ -150,12 +147,9 @@ if ( MSVC )
     set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} /std:c++latest") # 设置使用最新C++标准
 endif()
 
-#if (MSVC)
-#    include(CheckCXXCompilerFlag)
-#    CHECK_CXX_COMPILER_FLAG("/std:c++latest" _cpp_latest_flag_supported)
-#    if (_cpp_latest_flag_supported)
-#        add_compile_options("/std:c++latest")
-#    endif()
-#endif()
+
+#enable_testing()
+# add_test(NAME MyAlgo COMMAND MyAlgo WORKING_DIRECTORY ${UNIT_TEST_BIN_OUTPUT_DIR})
+#add_test(NAME MyAlgo COMMAND -C Release WORKING_DIRECTORY ${UNIT_TEST_BIN_OUTPUT_DIR})
 
 
