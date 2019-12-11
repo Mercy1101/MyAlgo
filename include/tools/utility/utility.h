@@ -355,13 +355,13 @@ std::optional<T1> Multiplies_s(const T1 x, const T2 y) noexcept {
 }
 /// @name     IsLittleEndian
 /// @brief    判断电脑大小端
-/// 
+///
 /// @param    NONE
-/// 
+///
 /// @return   是否是小端
 ///   @retval true     小端
 ///   @retval false    大端
-/// 
+///
 /// @author   Lijiancong, pipinstall@163.com
 /// @date     2019-12-01 18:45:21
 /// @warning  线程不安全
@@ -377,11 +377,11 @@ inline bool IsLittleEndian() noexcept {
 
 /// @name     GetRandomNumber
 /// @brief    获取[0, RNAD_MAX]中一个随机数。
-/// 
+///
 /// @param    NONE
-/// 
+///
 /// @return   [0, RNAD_MAX]中一个随机数
-/// 
+///
 /// @author   Lijiancong, pipinstall@163.com
 /// @date     2019-12-01 17:12:37
 /// @warning  线程不安全
@@ -397,7 +397,7 @@ inline int GetRandom() noexcept {
 /// @brief    生成[x, y]或[y,x]区间中的一个随机数。
 ///
 /// @details  生成的最大区间为[INT_MIN, INT_MAX]
-/// 
+///
 /// @param    x    [in]    不能输入比INT_MAX大或比INT_MIN小的数字
 /// @param    y    [in]    不能输入比INT_MAX大或比INT_MIN小的数字
 ///
@@ -442,7 +442,7 @@ inline double GetRandomRangeNumberDouble(double range_bound) {
 /// @param    base_number       [in]  数值的基数
 /// @param    deviation_percent [in]  浮动的百分比
 ///
-/// @return   返回一个近似值([base_number-base_number*deviation_percent,
+/// @return   返回一个近似值(区间：[base_number-base_number*deviation_percent,
 ///                          base_number+base_number*deviation_percent])
 ///
 /// @author   Lijiancong, pipinstall@163.com
@@ -464,6 +464,41 @@ inline T GetApproximationNumber(const T &base_number) {
   Lee::GetApproximationNumber(base_number, DEFAULT_DEVIATION_PERCENT);
 }
 
+/// @name     GetRandomRangeNumber_WithoutRepeat
+/// @brief    生成不重复随机数并放入入参的容器，但是不保证能够生成够数目
+///
+/// @param    bound1  [in]  生成随机数的区间
+/// @param    bound2  [in]  生成随机数的区间
+/// @param    limit_number  [in]  限定最多生成几个数字
+/// @param    random_number_vector  [out]  传出的随机数的容器
+///
+/// @return
+///   @retval true  生成等于limit_number数量的不重复随机数
+///   @retval false 生成了少于limit_number数量的不重复随机数
+///
+/// @author   Lijiancong, pipinstall@163.com
+/// @date     2019-12-10 17:38:28
+/// @warning
+template <typename T>
+bool GetRandomRangeNumber_WithoutRepeat(const T &bound1, const T &bound2,
+                                        const int &limit_number,
+                                        std::vector<T> *random_number_vector) {
+  static_assert(std::is_integral(T),
+                "GetRandomRangeNumber_WithoutRepeat need integral param!");
+  random_number_vector->reserve(limit_number);
+  for (int i = 0; i < limit_number; ++i) {
+    random_number_vector->emplace_back(Lee::GetRandomRange(bound1, bound2));
+  }
+  std::sort(random_number_vector->begin(), random_number_vector->end());
+  auto last =
+      std::unique(random_number_vector->begin(), random_number_vector->end());
+  random_number_vector->erase(last, random_number_vector->end());
+  /// 打乱容器
+  std::random_shuffle(random_number_vector);
+  /// 如果生成的数量小于限定的数值，则返回false
+  return random_number_vector->size() == limit_number;
+}
+
 /// @name     SleepForRandomMilliSecond
 /// @brief    生成一个随机数，让调用本函数的线程"睡眠随机时间"
 ///
@@ -483,6 +518,7 @@ inline void SleepForRandomMilliSecond(Lee::MilliSecond range_start,
   if (range_start < 0) range_start = 0;
   if (range_end < 0) range_end = 0;
   if (range_end > SLEEP_FOR_RANGE_MAX_MILLISECOND) {
+    assert("range_end is too large!" && false);
     range_end = SLEEP_FOR_RANGE_MAX_MILLISECOND;
   }
   Lee::MilliSecond sleep_time = Lee::GetRandomRange(
