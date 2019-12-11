@@ -1,10 +1,10 @@
-﻿#include <cassert>
-#include <thread>
-
+﻿#include "concurrentqueue/concurrentqueue.h"
+#include <cassert>
 #include <catch2/catch.hpp>
-#include "concurrentqueue/concurrentqueue.h"
+#include <thread>
+#include "utility/utility.h"
 
-TEST_CASE("第一个例子", "ConcurrentqueueSample") {
+TEST_CASE("第一个例子", "[Concurrentqueue][Sample]") {
   moodycamel::ConcurrentQueue<int> q;
 
   for (int i = 0; i != 123; ++i) q.enqueue(i);
@@ -16,7 +16,7 @@ TEST_CASE("第一个例子", "ConcurrentqueueSample") {
   }
 }
 
-TEST_CASE("并行例子", "ConcurrentqueueSample") {
+TEST_CASE("并行例子", "[Concurrentqueue][Sample]") {
   moodycamel::ConcurrentQueue<int> q;
   int dequeued[100] = {0};
   std::thread threads[20];
@@ -61,7 +61,7 @@ TEST_CASE("并行例子", "ConcurrentqueueSample") {
     REQUIRE(dequeued[i] == 1);
   }
 }
-TEST_CASE("BulkUp批量例子", "ConcurrentqueueSample") {
+TEST_CASE("BulkUp批量例子", "[Concurrentqueue][Sample]") {
   moodycamel::ConcurrentQueue<int> q;
   int dequeued[100] = {0};
   std::thread threads[20];
@@ -109,4 +109,17 @@ TEST_CASE("BulkUp批量例子", "ConcurrentqueueSample") {
   for (int i = 0; i != 100; ++i) {
     assert(dequeued[i] == 1);
   }
+}
+
+TEST_CASE("dequeue大于队列值的结果", "[Concurrentqueue][Sample]") {
+  moodycamel::ConcurrentQueue<int> q;
+  int items[5];
+  for (int j = 0; j != Lee::ArraySize(items); ++j) {
+    items[j] = 10 + j;
+  }
+  /// 注意下面这句话的第二个参数,如果该数值超过了items所拥有的元素个数,将会将垃圾值入列
+  q.enqueue_bulk(items, Lee::ArraySize(items));
+  int items2[11];
+  auto count = q.try_dequeue_bulk(items2, 10);
+  REQUIRE(count == Lee::ArraySize(items));
 }
