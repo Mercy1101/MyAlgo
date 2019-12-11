@@ -5,20 +5,20 @@
 namespace Lee {
 inline namespace data_struct {
 inline namespace print_data_struct {
-const char g_letter[32] = {'0', '1', '2', '3', '4', '5', '6', '7',
-                           '8', '9', 'a', 'b', 'c', 'd', 'e', 'f',
-                           'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n',
-                           'o', 'p', 'q', 'r', 's', 't', 'u', 'v'};
+const char g_letter[36] = {'0', '1', '2', '3', '4', '5', '6', '7', '8',
+                           '9', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h',
+                           'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q',
+                           'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'};
 
 void PrintSpace(const int &space_number) {
   for (int i = 0; i < space_number - 1; ++i) {
     std::cout << ' ';
   }
 }
-void PrintElement(const int &element_number) {
-  if (element_number > 31) {
-    PrintElement(element_number - 31);
-    return;
+
+void PrintElement(size_t element_number) {
+  while (element_number > Lee::ArraySize(g_letter) - 1) {
+    element_number -= (Lee::ArraySize(g_letter) - 1);
   }
   std::cout << g_letter[element_number];
 }
