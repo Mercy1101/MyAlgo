@@ -24,8 +24,8 @@
 #include <vector>
 
 namespace Lee {
-inline namespace Utility_ {
-inline namespace Algorithm_ {
+inline namespace utility {
+inline namespace algorithm {
 
 /**
 @brief 一个用来查找字符串首个匹配子串的位置的静态类，只有一个接口Search()
