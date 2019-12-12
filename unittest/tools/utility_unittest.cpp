@@ -447,20 +447,104 @@ SCENARIO("GetRandomRange(), 随机函数测试", "[utility][GetRandomRange]") {
   }
 }
 
-SCENARIO("GetRandomRangeNumberDouble(), 随机浮点数函数测试",
-         "[utility][GetRandomRangeNumberDouble]") {
+SCENARIO("GetRangeRandomNumberInt(), 等概率生成整数函数测试",
+         "[utility][GetRangeRandomNumberFloat]") {
+  GIVEN("一个入参的测试") {
+    WHEN("入参为正整数") {
+      THEN("生成的随机数应该大于等于零，小于入参的数值") {
+        for (int i = 0; i < 1000; ++i) {
+          auto random_number = Lee::GetRangeRandomNumberInt(999);
+          REQUIRE((random_number >= 0 && random_number <= 999));
+        }
+        for (int i = 0; i < 1000; ++i) {
+          auto random_number = Lee::GetRangeRandomNumberInt(1);
+          REQUIRE((random_number >= 0 && random_number <= 1));
+        }
+      }
+    }
+    WHEN("入参为零") {
+      THEN("只能生成零") {
+        for (int i = 0; i < 1000; ++i) {
+          auto random_number = Lee::GetRangeRandomNumberInt(0);
+          REQUIRE((random_number >= 0 && random_number <= 0));
+        }
+      }
+    }
+    WHEN("入参为负整数") {
+      THEN("生成的随机数应该小于等于零，大于入参的数值") {
+        for (int i = 0; i < 1000; ++i) {
+          auto random_number = Lee::GetRangeRandomNumberInt(-999);
+          REQUIRE((random_number >= -999 && random_number <= 0));
+        }
+        for (int i = 0; i < 1000; ++i) {
+          auto random_number = Lee::GetRangeRandomNumberInt(-1);
+          REQUIRE((random_number >= -1 && random_number <= 0));
+        }
+      }
+    }
+  }
+  GIVEN("两个入参的测试") {
+    WHEN("入参为正整数") {
+      THEN("生成的随机数应该大于等于较小入参的数值，小于较大入参的数值") {
+        for (int i = 0; i < 1000; ++i) {
+          auto random_number = Lee::GetRangeRandomNumberInt(999, 888);
+          REQUIRE((random_number >= 888 && random_number <= 999));
+        }
+        for (int i = 0; i < 1000; ++i) {
+          auto random_number = Lee::GetRangeRandomNumberInt(1, 2);
+          REQUIRE((random_number >= 1 && random_number <= 2));
+        }
+      }
+    }
+    WHEN("入参相等") {
+      THEN("只能生成该入参") {
+        for (int i = 0; i < 1000; ++i) {
+          auto random_number = Lee::GetRangeRandomNumberInt(999, 999);
+          REQUIRE((random_number >= 999 && random_number <= 999));
+        }
+        for (int i = 0; i < 1000; ++i) {
+          auto random_number = Lee::GetRangeRandomNumberInt(0, 0);
+          REQUIRE((random_number >= 0 && random_number <= 0));
+        }
+        for (int i = 0; i < 1000; ++i) {
+          auto random_number = Lee::GetRangeRandomNumberInt(-1, -1);
+          REQUIRE((random_number >= -1 && random_number <= -1));
+        }
+      }
+    }
+    WHEN("入参为负数整数混合") {
+      THEN("生成[x, y]的数值") {
+        for (int i = 0; i < 1000; ++i) {
+          auto random_number = Lee::GetRangeRandomNumberInt(-999, 999);
+          REQUIRE((random_number >= -999 && random_number <= 999));
+        }
+        for (int i = 0; i < 1000; ++i) {
+          auto random_number = Lee::GetRangeRandomNumberInt(-1, 1);
+          REQUIRE((random_number >= -1 && random_number <= 1));
+        }
+        for (int i = 0; i < 1000; ++i) {
+          auto random_number = Lee::GetRangeRandomNumberInt(0, -100);
+          REQUIRE((random_number >= -100 && random_number <= 0));
+        }
+      }
+    }
+  }
+}
+
+SCENARIO("GetRangeRandomNumberFloat(), 等概率生成实数(浮点数)函数测试",
+         "[utility][GetRangeRandomNumberFloat]") {
   GIVEN("一个入参的测试") {
     WHEN("入参为正浮点数") {
       THEN("生成的随机数应该大于等于零，小于入参的数值") {
         for (int i = 0; i < 1000; ++i) {
-          auto random_number = Lee::GetRandomRangeNumberDouble(999.996);
-          auto random_number2 = Lee::GetRandomRangeNumberDouble(999.996);
+          auto random_number = Lee::GetRangeRandomNumberFloat(999.996);
+          auto random_number2 = Lee::GetRangeRandomNumberFloat(999.996);
           REQUIRE((random_number >= 0.0 && random_number <= 999.996));
           REQUIRE(random_number != random_number2);
         }
         for (int i = 0; i < 1000; ++i) {
-          auto random_number = Lee::GetRandomRangeNumberDouble(1.0);
-          auto random_number2 = Lee::GetRandomRangeNumberDouble(1.0);
+          auto random_number = Lee::GetRangeRandomNumberFloat(1.0);
+          auto random_number2 = Lee::GetRangeRandomNumberFloat(1.0);
           REQUIRE((random_number >= 0 && random_number <= 1.0));
           REQUIRE(random_number != random_number2);
         }
@@ -469,7 +553,7 @@ SCENARIO("GetRandomRangeNumberDouble(), 随机浮点数函数测试",
     WHEN("入参为零") {
       THEN("只能生成零") {
         for (int i = 0; i < 1000; ++i) {
-          auto random_number = Lee::GetRandomRangeNumberDouble(0);
+          auto random_number = Lee::GetRangeRandomNumberFloat(0);
           REQUIRE(random_number == Approx(0));
         }
       }
@@ -477,14 +561,14 @@ SCENARIO("GetRandomRangeNumberDouble(), 随机浮点数函数测试",
     WHEN("入参为负浮点数") {
       THEN("生成的随机数应该小于等于零，大于入参的数值") {
         for (int i = 0; i < 1000; ++i) {
-          auto random_number = Lee::GetRandomRangeNumberDouble(-999.996);
-          auto random_number2 = Lee::GetRandomRangeNumberDouble(-999.996);
+          auto random_number = Lee::GetRangeRandomNumberFloat(-999.996);
+          auto random_number2 = Lee::GetRangeRandomNumberFloat(-999.996);
           REQUIRE((random_number >= -999.996 && random_number <= 0));
           REQUIRE(random_number != random_number2);
         }
         for (int i = 0; i < 1000; ++i) {
-          auto random_number = Lee::GetRandomRangeNumberDouble(-1.0);
-          auto random_number2 = Lee::GetRandomRangeNumberDouble(-1.0);
+          auto random_number = Lee::GetRangeRandomNumberFloat(-1.0);
+          auto random_number2 = Lee::GetRangeRandomNumberFloat(-1.0);
           REQUIRE((random_number >= -1.0 && random_number <= 0.0));
           REQUIRE(random_number != random_number2);
         }
@@ -495,22 +579,21 @@ SCENARIO("GetRandomRangeNumberDouble(), 随机浮点数函数测试",
     WHEN("入参为正浮点数") {
       THEN("生成的随机数应该大于等于较小入参的数值，小于较大入参的数值") {
         for (int i = 0; i < 1000; ++i) {
-          auto random_number =
-              Lee::GetRandomRangeNumberDouble(999.669, 888.669);
+          auto random_number = Lee::GetRangeRandomNumberFloat(999.669, 888.669);
           auto random_number2 =
-              Lee::GetRandomRangeNumberDouble(999.669, 888.669);
+              Lee::GetRangeRandomNumberFloat(999.669, 888.669);
           REQUIRE((random_number >= 888.669 && random_number <= 999.669));
           REQUIRE(random_number != random_number2);
         }
         for (int i = 0; i < 1000; ++i) {
-          auto random_number = Lee::GetRandomRangeNumberDouble(1.0, 2.0);
-          auto random_number2 = Lee::GetRandomRangeNumberDouble(1.0, 2.0);
+          auto random_number = Lee::GetRangeRandomNumberFloat(1.0, 2.0);
+          auto random_number2 = Lee::GetRangeRandomNumberFloat(1.0, 2.0);
           REQUIRE((random_number >= 1.0 && random_number <= 2.0));
           REQUIRE(random_number != random_number2);
         }
         for (int i = 0; i < 1000; ++i) {
-          auto random_number = Lee::GetRandomRangeNumberDouble(1.0, 0.0);
-          auto random_number2 = Lee::GetRandomRangeNumberDouble(1.0, 0.0);
+          auto random_number = Lee::GetRangeRandomNumberFloat(1.0, 0.0);
+          auto random_number2 = Lee::GetRangeRandomNumberFloat(1.0, 0.0);
           REQUIRE((random_number >= 0.0 && random_number <= 1.0));
           REQUIRE(random_number != random_number2);
         }
@@ -519,16 +602,15 @@ SCENARIO("GetRandomRangeNumberDouble(), 随机浮点数函数测试",
     WHEN("入参相等") {
       THEN("只能生成该入参") {
         for (int i = 0; i < 1000; ++i) {
-          auto random_number =
-              Lee::GetRandomRangeNumberDouble(999.997, 999.997);
+          auto random_number = Lee::GetRangeRandomNumberFloat(999.997, 999.997);
           REQUIRE(random_number == Approx(999.997));
         }
         for (int i = 0; i < 1000; ++i) {
-          auto random_number = Lee::GetRandomRangeNumberDouble(0.0, 0.0);
+          auto random_number = Lee::GetRangeRandomNumberFloat(0.0, 0.0);
           REQUIRE(random_number == Approx(0.0));
         }
         for (int i = 0; i < 1000; ++i) {
-          auto random_number = Lee::GetRandomRangeNumberDouble(-1.0, -1.0);
+          auto random_number = Lee::GetRangeRandomNumberFloat(-1.0, -1.0);
           REQUIRE(random_number == Approx(-1.0));
         }
       }
@@ -537,27 +619,27 @@ SCENARIO("GetRandomRangeNumberDouble(), 随机浮点数函数测试",
       THEN("生成[x, y]的数值") {
         for (int i = 0; i < 1000; ++i) {
           auto random_number =
-              Lee::GetRandomRangeNumberDouble(-999.996, 999.996);
+              Lee::GetRangeRandomNumberFloat(-999.996, 999.996);
           auto random_number2 =
-              Lee::GetRandomRangeNumberDouble(-999.996, 999.996);
+              Lee::GetRangeRandomNumberFloat(-999.996, 999.996);
           REQUIRE((random_number >= -999.996 && random_number <= 999.996));
           REQUIRE(random_number != random_number2);
         }
         for (int i = 0; i < 1000; ++i) {
-          auto random_number = Lee::GetRandomRangeNumberDouble(-1.0, 1.0);
-          auto random_number2 = Lee::GetRandomRangeNumberDouble(-1.0, 1.0);
+          auto random_number = Lee::GetRangeRandomNumberFloat(-1.0, 1.0);
+          auto random_number2 = Lee::GetRangeRandomNumberFloat(-1.0, 1.0);
           REQUIRE((random_number >= -1.0 && random_number <= 1.0));
           REQUIRE(random_number != random_number2);
         }
         for (int i = 0; i < 1000; ++i) {
-          auto random_number = Lee::GetRandomRangeNumberDouble(0.0, -100.0);
-          auto random_number2 = Lee::GetRandomRangeNumberDouble(0.0, -100.0);
+          auto random_number = Lee::GetRangeRandomNumberFloat(0.0, -100.0);
+          auto random_number2 = Lee::GetRangeRandomNumberFloat(0.0, -100.0);
           REQUIRE((random_number >= -100.0 && random_number <= 0.0));
           REQUIRE(random_number != random_number2);
         }
         for (int i = 0; i < 1000; ++i) {
-          auto random_number = Lee::GetRandomRangeNumberDouble(-0.001, 0.001);
-          auto random_number2 = Lee::GetRandomRangeNumberDouble(-0.001, 0.001);
+          auto random_number = Lee::GetRangeRandomNumberFloat(-0.001, 0.001);
+          auto random_number2 = Lee::GetRangeRandomNumberFloat(-0.001, 0.001);
           REQUIRE((random_number >= -0.001 && random_number <= 0.001));
           REQUIRE(random_number != random_number2);
         }

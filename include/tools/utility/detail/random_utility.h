@@ -15,6 +15,7 @@
 #include <mutex>
 #include <random>
 #include <string>
+#include <type_traits>
 #include "utility/detail/time_utility.h"  // for GetCurrentMilliSecondStamp()
 
 namespace Lee {
@@ -57,27 +58,57 @@ inline int GetRandomRange(int x, int y) noexcept {
 }
 inline int GetRandomRange(int x) noexcept { return GetRandomRange(0, x); }
 
-/// @name     GetRandomRangeNumberDouble
-/// @brief    [rang_bound1,rang_bound2]区间中生成一个double类型的浮点数
+/// @name     GetRangeRandomNumberFloat
+/// @brief    等概率获取一个区间中的实数值
 ///
-/// @param    rang_bound1 [in]
-/// @param    rang_bound2 [in]
+/// @param    range_bound1 [in]
+/// @param    range_bound2 [in]
 ///
 /// @return   [rang_bound1,rang_bound2]区间中的浮点数
 ///
 /// @author   Lijiancong, pipinstall@163.com
 /// @date     2019-12-07 12:07:27
 /// @warning  线程不安全
-inline double GetRandomRangeNumberDouble(double range_bound1,
-                                         double range_bound2) {
+template <typename T = double>
+inline T GetRangeRandomNumberFloat(T range_bound1, T range_bound2) {
+  static_assert(std::is_floating_point<T>() && !std::is_const<T>(),
+                "GetRangeRandomNumberFloat need floating_point and "
+                "non-const type Param");
   if (range_bound1 > range_bound2) std::swap(range_bound1, range_bound2);
   static std::random_device r;
   static std::default_random_engine e(r());
-  std::uniform_real_distribution<double> u(range_bound1, range_bound2);
+  std::uniform_real_distribution<T> u(range_bound1, range_bound2);
   return u(e);
 }
-inline double GetRandomRangeNumberDouble(double range_bound) {
-  return Lee::GetRandomRangeNumberDouble(0, range_bound);
+inline double GetRangeRandomNumberFloat(double range_end) {
+  return Lee::GetRangeRandomNumberFloat(0.0, range_end);
+}
+
+/// @name     GetRandomRangeNumberInt
+/// @brief    等概率获取一个区间中的整数值
+///
+/// @param    range_bound1 [in]
+/// @param    range_bound2 [in]
+///
+/// @return   [range_bound1,range_bound2]区间中的实数
+///
+/// @author   Lijiancong, pipinstall@163.com
+/// @date     2019-12-12 16:13:37
+/// @warning  线程不安全
+template <typename T = int>
+inline T GetRangeRandomNumberInt(T range_bound1, T range_bound2) {
+  static_assert(
+      std::is_integral<T>() && !std::is_const<T>(),
+      "GetRangeRandomNumberInt need integral and non-const type Param!");
+  if (range_bound1 > range_bound2) std::swap(range_bound1, range_bound2);
+  static std::random_device r;
+  static std::default_random_engine e(r());
+  std::uniform_int_distribution<T> u(range_bound1, range_bound2);
+  return u(e);
+}
+
+inline int GetRangeRandomNumberInt(int range_end) {
+  return Lee::GetRangeRandomNumberInt(0, range_end);
 }
 
 /// @name     GetApproximationNumber
