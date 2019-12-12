@@ -314,12 +314,12 @@ class SpdLogInstance {
     SI_Error rc = ini.LoadFile(acFile);
     if (rc < 0) return false;
     // get the value of a key
-    std::string strLogLevel = ini.GetValue("LogConfig", "spd_log_level", NULL);
+    std::string strLogLevel = ini.GetValue("SpdLogConfig", "spd_log_level", NULL);
     iLogLevelConf =
         strLogLevel.empty() ? DEFAULT_LOG_LEVEL_CONF : std::stoi(strLogLevel);
 
     std::string strFlushLevel =
-        ini.GetValue("LogConfig", "spd_flush_level", NULL);
+        ini.GetValue("SpdLogConfig", "spd_flush_level", NULL);
     int iLogFlushLevel = strLogLevel.empty() ? DEFAULT_FLUSH_LEVEL_CONF
                                              : std::stoi(strFlushLevel);
 
