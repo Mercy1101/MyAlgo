@@ -14,8 +14,8 @@
 
 #ifndef MYALGO_INCLUDE_TOOLS_UTILITY_DETAIL_MARCO_UTILITY_H_
 #define MYALGO_INCLUDE_TOOLS_UTILITY_DETAIL_MARCO_UTILITY_H_
-#include <string>
 
+#include <string>
 
 // A macro to disallow operator=
 // This should be used in the private: declarations for a class.
@@ -37,6 +37,8 @@ using Millimeter = int;  ///< 毫米
 using Kilogram = int;  ///< 千克
 using Gram = int;      ///< 克
 /// 时间单位定义
+using Hour = int; ///< 时
+using Minute = int; ///< 分
 using Second = int;             ///< 秒
 using MilliSecond = long long;  ///< 毫秒
 
