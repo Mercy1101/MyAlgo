@@ -1,11 +1,11 @@
 ﻿;(1)
 !g::
-Run, F:\github
+Run, D:\github
 return
 
 ;(2)
 !w::
-Run, F:\1WorkStation
+Run, D:\1WorkStation
 return
 
 ;(3)
