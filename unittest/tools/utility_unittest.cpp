@@ -4,6 +4,7 @@
 #include <cstdlib>  // for RAND_MAX
 #include <limits>
 #include <string>
+#include "utility/detail/dbg.h"
 
 TEST_CASE("KMP简单测试", "[utility][KMP]") {
   using namespace Lee;
@@ -369,11 +370,11 @@ SCENARIO("GetRandomRange(), 随机函数测试", "[utility][GetRandomRange]") {
     WHEN("入参为正整数") {
       THEN("生成的随机数应该大于等于零，小于入参的数值") {
         for (int i = 0; i < 1000; ++i) {
-          auto random_number = Lee::GetRandomRange(999);
+          auto random_number = Lee::GetRangeRandom(999);
           REQUIRE((random_number >= 0 && random_number <= 999));
         }
         for (int i = 0; i < 1000; ++i) {
-          auto random_number = Lee::GetRandomRange(1);
+          auto random_number = Lee::GetRangeRandom(1);
           REQUIRE((random_number >= 0 && random_number <= 1));
         }
       }
@@ -381,7 +382,7 @@ SCENARIO("GetRandomRange(), 随机函数测试", "[utility][GetRandomRange]") {
     WHEN("入参为零") {
       THEN("只能生成零") {
         for (int i = 0; i < 1000; ++i) {
-          auto random_number = Lee::GetRandomRange(0);
+          auto random_number = Lee::GetRangeRandom(0);
           REQUIRE((random_number >= 0 && random_number <= 0));
         }
       }
@@ -389,11 +390,11 @@ SCENARIO("GetRandomRange(), 随机函数测试", "[utility][GetRandomRange]") {
     WHEN("入参为负整数") {
       THEN("生成的随机数应该小于等于零，大于入参的数值") {
         for (int i = 0; i < 1000; ++i) {
-          auto random_number = Lee::GetRandomRange(-999);
+          auto random_number = Lee::GetRangeRandom(-999);
           REQUIRE((random_number >= -999 && random_number <= 0));
         }
         for (int i = 0; i < 1000; ++i) {
-          auto random_number = Lee::GetRandomRange(-1);
+          auto random_number = Lee::GetRangeRandom(-1);
           REQUIRE((random_number >= -1 && random_number <= 0));
         }
       }
@@ -403,11 +404,11 @@ SCENARIO("GetRandomRange(), 随机函数测试", "[utility][GetRandomRange]") {
     WHEN("入参为正整数") {
       THEN("生成的随机数应该大于等于较小入参的数值，小于较大入参的数值") {
         for (int i = 0; i < 1000; ++i) {
-          auto random_number = Lee::GetRandomRange(999, 888);
+          auto random_number = Lee::GetRangeRandom(999, 888);
           REQUIRE((random_number >= 888 && random_number <= 999));
         }
         for (int i = 0; i < 1000; ++i) {
-          auto random_number = Lee::GetRandomRange(1, 2);
+          auto random_number = Lee::GetRangeRandom(1, 2);
           REQUIRE((random_number >= 1 && random_number <= 2));
         }
       }
@@ -415,15 +416,15 @@ SCENARIO("GetRandomRange(), 随机函数测试", "[utility][GetRandomRange]") {
     WHEN("入参相等") {
       THEN("只能生成该入参") {
         for (int i = 0; i < 1000; ++i) {
-          auto random_number = Lee::GetRandomRange(999, 999);
+          auto random_number = Lee::GetRangeRandom(999, 999);
           REQUIRE((random_number >= 999 && random_number <= 999));
         }
         for (int i = 0; i < 1000; ++i) {
-          auto random_number = Lee::GetRandomRange(0, 0);
+          auto random_number = Lee::GetRangeRandom(0, 0);
           REQUIRE((random_number >= 0 && random_number <= 0));
         }
         for (int i = 0; i < 1000; ++i) {
-          auto random_number = Lee::GetRandomRange(-1, -1);
+          auto random_number = Lee::GetRangeRandom(-1, -1);
           REQUIRE((random_number >= -1 && random_number <= -1));
         }
       }
@@ -431,15 +432,15 @@ SCENARIO("GetRandomRange(), 随机函数测试", "[utility][GetRandomRange]") {
     WHEN("入参为负数整数混合") {
       THEN("生成[x, y]的数值") {
         for (int i = 0; i < 1000; ++i) {
-          auto random_number = Lee::GetRandomRange(-999, 999);
+          auto random_number = Lee::GetRangeRandom(-999, 999);
           REQUIRE((random_number >= -999 && random_number <= 999));
         }
         for (int i = 0; i < 1000; ++i) {
-          auto random_number = Lee::GetRandomRange(-1, 1);
+          auto random_number = Lee::GetRangeRandom(-1, 1);
           REQUIRE((random_number >= -1 && random_number <= 1));
         }
         for (int i = 0; i < 1000; ++i) {
-          auto random_number = Lee::GetRandomRange(0, -100);
+          auto random_number = Lee::GetRangeRandom(0, -100);
           REQUIRE((random_number >= -100 && random_number <= 0));
         }
       }
@@ -646,4 +647,11 @@ SCENARIO("GetRangeRandomNumberFloat(), 等概率生成实数(浮点数)函数测
       }
     }
   }
+}
+
+TEST_CASE("Lee::GetRandomPassWord 的例子展示", "[utility][GetRandomPassWord]"){
+  dbg(Lee::GetRandomPassWord(8));
+  dbg(Lee::GetRandomPassWord(16));
+  dbg(Lee::GetRandomPassWord(32));
+  dbg(Lee::GetRandomPassWord(64));
 }
