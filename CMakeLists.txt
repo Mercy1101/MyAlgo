@@ -70,7 +70,7 @@ add_executable(${EXECUTABLE_EXE_NAME} ${SOURCES}
                                       ${SPD_LOG_SOURCES}
                                       ${LEET_CODE_FILE_SOURCES}
                                       ${TOOLS_FILE_SOURCES}
-                                      ${MD5_SOURCE}
+                                      #${MD5_SOURCE}
 )
 
 # 设置包含路径
@@ -78,10 +78,6 @@ target_include_directories(${EXECUTABLE_EXE_NAME}
     PRIVATE 
         ${PROJECT_SOURCE_DIR}/include
 
-        # 单元测试模块的包含路径
-        ${PROJECT_SOURCE_DIR}/include/gtest
-        ${PROJECT_SOURCE_DIR}/src/gtest
-        
         # 无锁消息池队列实现
         ${PROJECT_SOURCE_DIR}/include/concurrentqueue
         
@@ -92,7 +88,7 @@ target_include_directories(${EXECUTABLE_EXE_NAME}
         ${PROJECT_SOURCE_DIR}/include/leetcode
 
         # md5的头文件路径
-        ${PROJECT_SOURCE_DIR}/include/md5
+        #${PROJECT_SOURCE_DIR}/include/md5
 
         # boost库的包含路径
         #$ENV{BOOST_ROOT}
