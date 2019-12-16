@@ -36,6 +36,9 @@ set(LEET_CODE_FILE_SOURCES src/leetcode/leetcode.cpp)
 # tools文件夹下的源文件
 set(TOOLS_FILE_SOURCES src/tools/data_struct/print_data_struct.cpp)
 
+# md5 的源文件
+set(MD5_SOURCE src/md5/md5.cpp)
+
 # 单元测试的文件
 set(UNITTEST_SOURCE
   # 自己实现的Singleton的单元测试文件
@@ -62,12 +65,12 @@ set(UNITTEST_SOURCE
 
 # 把源文件添加进工程中
 add_executable(${EXECUTABLE_EXE_NAME} ${SOURCES}
-                                      #${GTEST_SOURCES}
                                       ${INIT_FILE_SOURCES}
                                       ${UNITTEST_SOURCE}
                                       ${SPD_LOG_SOURCES}
                                       ${LEET_CODE_FILE_SOURCES}
                                       ${TOOLS_FILE_SOURCES}
+                                      ${MD5_SOURCE}
 )
 
 # 设置包含路径
@@ -87,6 +90,9 @@ target_include_directories(${EXECUTABLE_EXE_NAME}
 
         # leetcode 文件的头文件路径
         ${PROJECT_SOURCE_DIR}/include/leetcode
+
+        # md5的头文件路径
+        ${PROJECT_SOURCE_DIR}/include/md5
 
         # boost库的包含路径
         #$ENV{BOOST_ROOT}
