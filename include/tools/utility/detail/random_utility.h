@@ -21,7 +21,7 @@
 namespace Lee {
 inline namespace utility {
 inline namespace random {
-/// @name     GetRandomNumber
+/// @name     GetRandom
 /// @brief    获取[0, RNAD_MAX]中一个随机数。
 ///
 /// @param    NONE
@@ -52,11 +52,11 @@ inline int GetRandom() noexcept {
 /// @author   Lijiancong, pipinstall@163.com
 /// @date     2019-12-01 17:10:53
 /// @warning  线程不安全
-inline int GetRandomRange(int x, int y) noexcept {
+inline int GetRangeRandom(int x, int y) noexcept {
   if (x > y) std::swap(x, y);
   return (Lee::GetRandom() % (y - x + 1)) + x;
 }
-inline int GetRandomRange(int x) noexcept { return GetRandomRange(0, x); }
+inline int GetRangeRandom(int x) noexcept { return GetRangeRandom(0, x); }
 
 /// @name     GetRangeRandomNumberFloat
 /// @brief    等概率获取一个区间中的实数值
@@ -226,6 +226,33 @@ class RandomSequenceOfUnique {
                       0x5bf03635);
   }
 };
+
+/// @name     GetRandomPassWord
+/// @brief    获取一个确定长度的随机密码,包含数字和大小写字母
+///
+/// @param    length  [in]  想要获取的密码长度
+///
+/// @return   生成好的密码
+///
+/// @author   Lijiancong, pipinstall@163.com
+/// @date     2019-12-16 08:54:04
+/// @warning  线程不安全
+inline std::string GetRandomPassWord(const int &length) {
+  static const char letter[62] = {
+      '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c',
+      'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p',
+      'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C',
+      'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P',
+      'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'};
+  std::string password;
+  for (int i = 0; i < length; ++i) {
+    auto index =
+        Lee::GetRangeRandomNumberInt(62 - 1);
+    password += letter[index];
+  }
+  return password;
+}
+inline std::string GetRandomPassWord() { return GetRandomPassWord(6); }
 
 }  // namespace random
 }  // namespace utility

@@ -53,7 +53,7 @@ inline Lee::Second GetCurrentTimeStamp() noexcept {
 }
 
 /// @name     GetCurrentMilliSecondStamp
-/// @brief    获取当前电脑桌面时间的时间戳(距离1970年元月1日零点到现在的毫秒数)
+/// @brief    获取当前电脑桌面时间的时间戳(距离1970年1月1日零点到现在的毫秒数)
 ///
 /// @param    NONE
 ///

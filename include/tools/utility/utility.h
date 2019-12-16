@@ -21,7 +21,6 @@
 #include <stdio.h>
 #include <stdlib.h>  // for RAND_MAX
 #include <string.h>  // for strnlen()
-
 #include <cassert>
 #include <chrono>
 #include <ctime>
@@ -399,7 +398,7 @@ inline void SleepForRandomMilliSecond(Lee::MilliSecond range_start,
     assert("range_end is too large!" && false);
     range_end = SLEEP_FOR_RANGE_MAX_MILLISECOND;
   }
-  Lee::MilliSecond sleep_time = Lee::GetRandomRange(
+  Lee::MilliSecond sleep_time = Lee::GetRangeRandom(
       static_cast<int>(range_start), static_cast<int>(range_end));
   std::this_thread::sleep_for(std::chrono::milliseconds(sleep_time));
 }
