@@ -53,6 +53,7 @@
 | V4.7 | 李建聪 | 添加**decltype(auto)**小节 | 2019-12-07 11:20:27 |
 | V4.8 | 李建聪 | 添加**弃用属性（[[deprecated]] attribute）**小节 | 2019-12-07 11:20:29 |
 | V4.9 | 李建聪 | 添加**std::forward介绍**小节 | 2019-12-07 12:52:26 |
+| V5.0 | 李建聪 | 添加**std::declval介绍**小节 | 2019-12-17 09:11:39 |
 
 ### std::string 用法
 
@@ -2758,6 +2759,34 @@ int main()
 
   std::cout << "B\n";
   auto t = make_unique2<B>(2, i, 3);
+}
+```
+
+### std::declval介绍
+
+将任意类型 `T` 转换成引用类型，令在 decltype 表达式中不必经过构造函数就能使用成员函数。
+
+通常在模板中使用 `declval` ，模板接受的模板实参通常可能无构造函数，但有同一成员函数，均返回所需类型。
+
+```C++
+#include <utility>
+#include <iostream>
+ 
+struct Default { int foo() const { return 1; } };
+ 
+struct NonDefault
+{
+    NonDefault(const NonDefault&) { }
+    int foo() const { return 1; }
+};
+ 
+int main()
+{
+    decltype(Default().foo()) n1 = 1;                   // n1 的类型是 int
+//  decltype(NonDefault().foo()) n2 = n1;               // 错误：无默认构造函数
+    decltype(std::declval<NonDefault>().foo()) n2 = n1; // n2 的类型是 int
+    std::cout << "n1 = " << n1 << '\n'
+              << "n2 = " << n2 << '\n';
 }
 ```
 
