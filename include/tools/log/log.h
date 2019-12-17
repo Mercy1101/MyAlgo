@@ -32,7 +32,9 @@
 #include "log/spdlog/spdlog.h"
 #include "simpleini/SimpleIni.h"
 #include "spdlog/sinks/rotating_file_sink.h"
-#include "utility/utility.h"  // for GetRootPath
+//#include "utility/utility.h"  // for GetRootPath
+#include "utility/detail/marco_utility.h"
+#include "utility/detail/system_utility.h"
 
 /** 所有日志模块相对于程序根路径下的默认文件夹名称 */
 const std::string DEFAULT_LOG_ROOT_PATH = "log";
@@ -314,7 +316,8 @@ class SpdLogInstance {
     SI_Error rc = ini.LoadFile(acFile);
     if (rc < 0) return false;
     // get the value of a key
-    std::string strLogLevel = ini.GetValue("SpdLogConfig", "spd_log_level", NULL);
+    std::string strLogLevel =
+        ini.GetValue("SpdLogConfig", "spd_log_level", NULL);
     iLogLevelConf =
         strLogLevel.empty() ? DEFAULT_LOG_LEVEL_CONF : std::stoi(strLogLevel);
 
