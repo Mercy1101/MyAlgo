@@ -43,6 +43,7 @@ License (MIT):
 #include <tuple>
 #include <type_traits>
 #include <vector>
+#include "log/log.h"
 
 #if defined(__unix__) || (defined(__APPLE__) && defined(__MACH__))
 #include <unistd.h>
@@ -56,13 +57,9 @@ License (MIT):
 namespace dbg_macro {
 
 #if defined(__unix__) || (defined(__APPLE__) && defined(__MACH__))
-inline bool isColorizedOutputEnabled() {
-  return isatty(fileno(stderr));
-}
+inline bool isColorizedOutputEnabled() { return isatty(fileno(stderr)); }
 #else
-inline bool isColorizedOutputEnabled() {
-  return true;
-}
+inline bool isColorizedOutputEnabled() { return true; }
 #endif
 
 namespace pretty_function {
@@ -138,17 +135,13 @@ std::string type_name() {
   return get_type_name(type_tag<T>{});
 }
 
-inline std::string get_type_name(type_tag<short>) {
-  return "short";
-}
+inline std::string get_type_name(type_tag<short>) { return "short"; }
 
 inline std::string get_type_name(type_tag<unsigned short>) {
   return "unsigned short";
 }
 
-inline std::string get_type_name(type_tag<long>) {
-  return "long";
-}
+inline std::string get_type_name(type_tag<long>) { return "long"; }
 
 inline std::string get_type_name(type_tag<unsigned long>) {
   return "unsigned long";
@@ -177,10 +170,7 @@ struct nonesuch {
 template <typename...>
 using void_t = void;
 
-template <class Default,
-          class AlwaysVoid,
-          template <class...>
-          class Op,
+template <class Default, class AlwaysVoid, template <class...> class Op,
           class... Args>
 struct detector {
   using value_t = std::false_type;
@@ -196,8 +186,9 @@ struct detector<Default, void_t<Op<Args...>>, Op, Args...> {
 }  // namespace detail_detector
 
 template <template <class...> class Op, class... Args>
-using is_detected = typename detail_detector::
-    detector<detail_detector::nonesuch, void, Op, Args...>::value_t;
+using is_detected =
+    typename detail_detector::detector<detail_detector::nonesuch, void, Op,
+                                       Args...>::value_t;
 
 namespace detail {
 
@@ -424,9 +415,7 @@ inline bool pretty_print(std::ostream& stream,
 
 class DebugOutput {
  public:
-  DebugOutput(const char* filepath,
-              int line,
-              const char* function_name,
+  DebugOutput(const char* filepath, int line, const char* function_name,
               const char* expression)
       : m_use_colorized_output(isColorizedOutputEnabled()),
         m_filepath(filepath),
@@ -447,8 +436,8 @@ class DebugOutput {
     const bool print_expr_and_type = pretty_print(stream_value, ref);
 
     std::stringstream output;
-    output << ansi(ANSI_DEBUG) << "[" << m_filepath << ":" << m_line << " ("
-           << m_function_name << ")] " << ansi(ANSI_RESET);
+    // output << ansi(ANSI_DEBUG) << "[" << m_filepath << ":" << m_line << " ("
+    //        << m_function_name << ")] " << ansi(ANSI_RESET);
     if (print_expr_and_type) {
       output << ansi(ANSI_EXPRESSION) << m_expression << ansi(ANSI_RESET)
              << " = ";
@@ -457,8 +446,10 @@ class DebugOutput {
     if (print_expr_and_type) {
       output << " (" << ansi(ANSI_TYPE) << type << ansi(ANSI_RESET) << ")";
     }
-    output << std::endl;
-    std::cerr << output.str();
+    // output << std::endl;
+    //    std::cerr << output.str();
+    // LOG_NO_FUNCTIONNAME(LOG_INFO, output.str());
+    spdlog::info(output.str());
 
     return std::forward<T>(value);
   }
@@ -497,6 +488,15 @@ T&& identity(T&& t) {
 }
 
 }  // namespace dbg_macro
+
+//#if 0
+#ifdef _DEBUG
+#undef DBG_MACRO_DISABLE
+#else
+#ifndef DBG_MACRO_DISABLE
+#define DBG_MACRO_DISABLE
+#endif
+#endif
 
 #ifndef DBG_MACRO_DISABLE
 // We use a variadic macro to support commas inside expressions (e.g.
