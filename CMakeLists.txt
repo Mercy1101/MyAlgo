@@ -36,31 +36,32 @@ set(LEET_CODE_FILE_SOURCES src/leetcode/leetcode.cpp)
 # tools文件夹下的源文件
 set(TOOLS_FILE_SOURCES src/tools/data_struct/print_data_struct.cpp)
 
-# md5 的源文件
-set(MD5_SOURCE src/md5/md5.cpp)
-
 # 单元测试的文件
 set(UNITTEST_SOURCE
-  # 自己实现的Singleton的单元测试文件
+  # 自己实现的 Singleton 的单元测试文件
   unittest/tools/designpattern/Singleton_unittest.cpp
 
-  # 自己封装的log模块的单元测试文件
+  # 自己封装的 log 模块的单元测试文件
   unittest/tools/log/log_unittest.cpp
 
-  # 自己写的工具集utility的单元测试文件
+  # 自己写的工具集utility 的单元测试文件
   unittest/tools/utility_unittest.cpp
 
-  # 开源库concurrentqueue的例子
+  # 开源库 concurrentqueue 的例子
   unittest/concurrentqueue/concurrentqueue_unittest.cpp
 
   # leetcode 解法测试
   unittest/leetcode/leetcode_unittest.cpp
 
-  # utility/time的测试单元文件
+  # utility/time 的测试单元文件
   unittest/tools/time_utility_unittest.cpp
 
-  # utility/time的测试单元文件
+  # utility/print_data_struct 的测试单元文件
   unittest/tools/data_struct/print_data_struct_unittest.cpp
+
+  # utility/binary_tree 的测试单元文件
+  unittest/tools/data_struct/binary_tree_unittest.cpp
+
 )
 
 # 把源文件添加进工程中
@@ -86,9 +87,6 @@ target_include_directories(${EXECUTABLE_EXE_NAME}
 
         # leetcode 文件的头文件路径
         ${PROJECT_SOURCE_DIR}/include/leetcode
-
-        # md5的头文件路径
-        #${PROJECT_SOURCE_DIR}/include/md5
 
         # boost库的包含路径
         #$ENV{BOOST_ROOT}
