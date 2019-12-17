@@ -22,6 +22,7 @@
 #include <mutex>
 #include <string>
 #include <vector>
+#include <cassert>
 
 namespace Lee {
 inline namespace utility {
