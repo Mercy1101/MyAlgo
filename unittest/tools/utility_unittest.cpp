@@ -1,5 +1,4 @@
 ﻿#include "utility/utility.h"
-
 #include <catch2/catch.hpp>
 #include <cstdlib>  // for RAND_MAX
 #include <limits>

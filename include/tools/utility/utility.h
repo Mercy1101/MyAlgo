@@ -406,6 +406,6 @@ inline void SleepForRandomMilliSecond(Lee::MilliSecond range_end) {
   SleepForRandomMilliSecond(0, range_end);
 }
 
-}  // namespace Utility_
+}  // namespace utility
 }  // namespace Lee
 #endif  // end of MYALGO_INCLUDE_TOOLS_UTILITY_UTILITY_H_
