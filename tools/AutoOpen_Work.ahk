@@ -167,12 +167,12 @@ Run, F:\1WorkStation\SmdWorkStation\smartdialV5.0
 return
 
 ;(15)
-!3::
+!4::
 Run, F:\97
 return
 
 ;(16)
-!4::
+!5::
 Run, F:\100
 return
 
