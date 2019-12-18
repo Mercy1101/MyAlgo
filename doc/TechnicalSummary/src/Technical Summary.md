@@ -3509,6 +3509,8 @@ int main()
 | V2.1   | 李建聪 | 增加小节**MySQL列出不同的值**                            | 2019-11-05 13:36:05 |
 | V2.2   | 李建聪 | 增加小节**对称数组实现itoa**                             | 2019-11-15 14:38:26 |
 | V2.3   | 李建聪 | 增加小节**产生随机数**                                   | 2019-11-15 14:39:24 |
+| V2.4   | 李建聪 | 增加小节**MySQL查询不重复记录**                          | 2019-12-18 14:48:30 |
+| V2.5   | 李建聪 | 增加小节**MySQL查询某项字段的所有结果出现的次数**        | 2019-12-18 15:03:12 |
 
 ### 如何求得一个数组的长度
 
@@ -3537,8 +3539,6 @@ constexpr inline std::size_t ArraySize(T (&)[N]) noexcept
 **函数ArraySize()的优点**：由于采用了自动类型推导，当一个指针被传入时在编译器期间就会产生错误，从而大大减少了调试和查找错误的难度。相较老式的ARRAY_SIZE(x)更加容易使用且出错概率更小。
 
 **函数ArraySize()的缺点**：只可以传入原生数组，容器（如std::array, std::vector和std::string）的大小还是使用容器自带的.size()函数。当然ARRAY_SIZE(x)也无法提供该功能，所以仍推荐使用ArraySize()。
-
-
 
 完整例子：
 
@@ -4165,6 +4165,28 @@ DROP > TRUNCATE > DELETE
 DELETE语句是数据库操作语言，这个操作会被记录在事务日志中，事务提交后才会生效，相应的触发器在执行的时候也将会被触发。
 
 TRUNCATE、DROP是数据库定义语言，操作立即生效，无法回滚，也无法触发触发器。
+
+### MySQL中查询不重复记录
+
+比如查询dialhistory_x表中有几种DialResult.
+
+```sql
+SELECT DISTINCT DialResult FROM dialhistory_x;
+```
+
+结果如下:
+
+![MySQL_DISTINCT](.\picture\MySQL_DISTINCT.png)
+
+### MySQL查询某项字段的所有结果出现的次数
+
+```sql
+SELECT DialResult, COUNT(*) FROM dialhistory_x GROUP BY DialResult;
+```
+
+结果如下:
+
+![MySQL_DISTINCT](.\picture\MySQL_COUNT.png)
 
 ## 数据结构与算法
 
