@@ -13,7 +13,7 @@
 
 #include <utility/detail/dbg.h>
 #include <algorithm>  // for std::max
-#include <atomic> 
+#include <atomic>
 
 namespace Lee {
 inline namespace data_struct {
@@ -38,7 +38,13 @@ struct BinaryTreeNode {
   inline static std::atomic<int> construct_count = 0;
 };
 
-/// 二叉树的实现
+/// @name     Binary_Tree
+/// @brief    二叉树的实现
+/// @details  设计的思想是, 数值大的放右边,数值小的放左边,相等的值不会重复插入
+///
+/// @author   Lijiancong, pipinstall@163.com
+/// @date     2019-12-18 09:36:23
+/// @warning  线程不安全
 template <typename T>
 class Binary_Tree {
  public:
@@ -80,21 +86,108 @@ class Binary_Tree {
         return;
       }
     }
-
     if (data < last_data_ptr->data) {
       last_data_ptr->left = new BinaryTreeNode<T>(data);
     } else if (last_data_ptr->data < data) {
       last_data_ptr->right = new BinaryTreeNode<T>(data);
-    } else {  /// 相等的情况暂时什么都不做
+    } else {
+      /// 相等的情况暂时什么都不做
       return;
     }
   }
+  /// @name     FindMax
+  /// @brief    寻找最右节点, 即数值最大的节点
+  ///
+  /// @param    node_ptr  [in]  从哪个节点开始找
+  ///
+  /// @return   寻找最右节点, 即数值最大的节点的地址
+  ///
+  /// @author   Lijiancong, pipinstall@163.com
+  /// @date     2019-12-18 10:55:33
+  /// @warning  线程不安全
+  BinaryTreeNode<T> *FindMax(BinaryTreeNode<T> *node_ptr) {
+    if (nullptr != node_ptr) {
+      while (nullptr != node_ptr->right) {
+        node_ptr = node_ptr->right;
+      }
+    }
+    return node_ptr;
+  }
+  BinaryTreeNode<T> *FindMax() { FindMax(root_); }
 
-  void Delete() {}
-  void Update() {}
-  void Find() {}
+  /// @name     Delete
+  /// @brief    删除某个特定节点
+  ///
+  /// @param    data  [in]
+  ///
+  /// @return   删除成功与否
+  ///
+  /// @author   Lijiancong, pipinstall@163.com
+  /// @date     2019-12-18 08:48:47
+  /// @warning  线程不安全
+  bool Delete(const T &data) {
+    auto node_ptr = Find(data);
+    if (node_ptr != nullptr) {
+      if (nullptr != node_ptr->left && nullptr != node_ptr->right) {
+        /// 双子树的节点的删除, 使用该节点的最右节点来代替本节点
+        auto max_node = FindMax(node_ptr);
+        auto pre_max_node = Find_Previously(max_node);
+        auto pre_delete_node_ptr = Find_Previously(node_ptr);
+        if (data > pre_delete_node_ptr->data) {
+          pre_delete_node_ptr->right = pre_max_node->right;
+        } else if (data < pre_delete_node_ptr->data) {
+          pre_delete_node_ptr->left = pre_max_node->right;
+        }
+        max_node->right = node_ptr->right;
+        if (nullptr == max_node->left) {
+          max_node->left = node_ptr->left;
+        } else {
+          /// TODO(lijiancong) 这里写的很丑陋, 回头要重写
+          /// 当找寻到的最右节点有左子树时把该左子树完全取出,再重新插入
+          std::vector<T> data_vector;
+          GetData(max_node->left, data_vector);
+          for (const auto &it : data_vector) {
+            this->Insert(it);
+          }
+        }
+
+        pre_max_node->right = nullptr;
+      } else {
+        /// 树叶或单子树节点的删除
+      }
+    } else {
+      /// 没找到该节点就直接返回成功
+      return true;
+    }
+    delete node_ptr;
+  }
+
+  /// @name     Find
+  /// @brief    查询某个数值在不在本二叉树内
+  ///
+  /// @param    data  [in]
+  ///
+  /// @return   返回指向拥有这个值的节点的地址,找不到则返回nullptr
+  ///
+  /// @author   Lijiancong, pipinstall@163.com
+  /// @date     2019-12-18 08:59:05
+  /// @warning  线程不安全
+  BinaryTreeNode<T> *Find(const T &data) const {
+    auto node_ptr = GetRootNode();
+    while (node_ptr != nullptr) {
+      if (data == node_ptr->data) {
+        return node_ptr;
+      } else if (data > node_ptr->data) {
+        node_ptr = node_ptr->right;
+      } else if (data < node_ptr->data) {
+        node_ptr = node_ptr->left;
+      }
+    }
+    return nullptr;
+  }
+
   /// @name     Size
-  /// @brief    获取本实例的所有元素个数
+  /// @brief    获取一棵树的所有元素个数
   ///
   /// @param    node  [in]
   ///
@@ -103,8 +196,8 @@ class Binary_Tree {
   /// @author   Lijiancong, pipinstall@163.com
   /// @date     2019-12-17 14:10:14
   /// @warning  线程不安全
-  int Size() { return Size(root_); }
-  int Size(const BinaryTreeNode<T> *node) {
+  int Size() const { return Size(root_); }
+  int Size(const BinaryTreeNode<T> *node) const {
     if (node == nullptr) {
       return 0;
     } else {
@@ -142,6 +235,28 @@ class Binary_Tree {
   }
   int GetHeight() const { return GetHeight(root_); }
 
+  /// @name     GetData
+  /// @brief    获取所有节点的data, 并放入容器中
+  ///
+  /// @param    node          [in]
+  /// @param    data_vector   [out]
+  ///
+  /// @return   NONE
+  ///
+  /// @author   Lijiancong, pipinstall@163.com
+  /// @date     2019-12-18 13:25:28
+  /// @warning  线程不安全
+  void GetData(BinaryTreeNode<T> *node, std::vector<T> *data_vector) {
+    while (nullptr != node) {
+      data_vector->emplace_back(node->data);
+      GetData(node->left, data_vector);
+      GetData(node->right, data_vector);
+    }
+  }
+  void GetData(std::vector<T> *data_vector) { GetData(root_, data_vector); }
+
+  void Update() {}
+
  private:
   BinaryTreeNode<T> *root_;  ///< 根节点
   /// @name     Destory
@@ -162,6 +277,36 @@ class Binary_Tree {
       Destory(data_ptr->right);
       delete data_ptr;
     }
+  }
+
+  /// @name     Find_Previously
+  /// @brief    查询指向某个数值节点的上一个节点的指针
+  ///
+  /// @param    data  [in]
+  ///
+  /// @return   有这个节点,则返回这个节点的上一个节点的指针,找不到则返回nullptr
+  ///
+  /// @author   Lijiancong, pipinstall@163.com
+  /// @date     2019-12-18 08:59:05
+  /// @warning  线程不安全
+  BinaryTreeNode<T> *Find_Previously(const T &data) const {
+    auto node_ptr = GetRootNode();
+    auto last_node_ptr = node_ptr;
+    while (node_ptr != nullptr) {
+      if (data == node_ptr->data) {
+        return last_node_ptr;
+      } else if (data > node_ptr->data) {
+        last_node_ptr = node_ptr;
+        node_ptr = node_ptr->right;
+      } else if (data < node_ptr->data) {
+        last_node_ptr = node_ptr;
+        node_ptr = node_ptr->left;
+      }
+    }
+    return nullptr;
+  }
+  BinaryTreeNode<T> *Find_Previously(BinaryTreeNode<T> *node) const {
+    return Find_Previously(node->data);
   }
 };  // namespace binary_tree
 
