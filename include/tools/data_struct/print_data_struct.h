@@ -17,7 +17,7 @@
 namespace Lee {
 inline namespace data_struct {
 inline namespace print_data_struct {
-/// @name     PrintCompleteTree
+/// @name     PrintCompleteBinaryTree
 /// @brief    打印一个完整的树，树的深度不超过5
 ///
 /// @param    depth [in]  树的深度
@@ -27,7 +27,7 @@ inline namespace print_data_struct {
 /// @author   Lijiancong, pipinstall@163.com
 /// @date     2019-12-10 13:53:10
 /// @warning  线程不安全
-void PrintCompleteTree(const int &depth);
+void PrintCompleteBinaryTree(const int &depth);
 
 
 }  // namespace print_data_struct

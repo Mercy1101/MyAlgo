@@ -29,7 +29,7 @@ void PrintLine(const int &line_number) {
   }
 }
 
-void PrintCompleteTree(const int &depth) {
+void PrintCompleteBinaryTree(const int &depth) {
   std::cout << "\n";
   if (depth == 0 || depth > 6) {
     std::cout << "Invalid Depth Param!"
