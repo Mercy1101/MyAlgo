@@ -1,5 +1,8 @@
 ﻿///////// ///////// ///////// ///////// ///////// ///////// ///////// /////////
-/// Copyright (c) 2019, FRITT Inc. All rights reserved.
+/// Copyright (c) 2019 Lijiancong. All rights reserved.
+///
+/// Use of this source code is governed by a MIT license
+/// that can be found in the License file.
 ///
 /// @file   binary_tree.h
 /// @brief  二叉树的实现

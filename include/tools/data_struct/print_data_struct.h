@@ -1,5 +1,8 @@
 ﻿///////// ///////// ///////// ///////// ///////// ///////// ///////// /////////
-/// Copyright (c) 2019, FRITT Inc. All rights reserved.
+/// Copyright (c) 2019 Lijiancong. All rights reserved.
+///
+/// Use of this source code is governed by a MIT license
+/// that can be found in the License file.
 ///
 /// @file   print_data_struct.h
 /// @brief  这个文件主要写如何打印数据结构的函数

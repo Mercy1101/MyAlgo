@@ -17,7 +17,6 @@
 * @note
 */
 ///////// ///////// ///////// ///////// ///////// ///////// ///////// /////////
-#pragma once
 #ifndef TOOLS_LOG_LOG_H
 #define TOOLS_LOG_LOG_H
 

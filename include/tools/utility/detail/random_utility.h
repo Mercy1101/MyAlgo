@@ -1,5 +1,8 @@
 ﻿///////// ///////// ///////// ///////// ///////// ///////// ///////// /////////
-/// Copyright (c) 2019, FRITT Inc. All rights reserved.
+/// Copyright (c) 2019 Lijiancong. All rights reserved.
+///
+/// Use of this source code is governed by a MIT license
+/// that can be found in the License file.
 ///
 /// @file   random_utility.h
 /// @brief  这个文件中主要放置一些生成随机数的函数
