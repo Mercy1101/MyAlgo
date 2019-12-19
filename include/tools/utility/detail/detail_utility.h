@@ -31,7 +31,8 @@
 #include "utility/detail/random_utility.h"
 
 namespace Lee {
-inline namespace Utility_ {
+inline namespace utility {
+inline namespace detail {
 /// @name     ArraySize
 /// @brief    得出入参数组的长度(如int a0[5]; 5 == ArraySize(a0);)
 ///
@@ -395,7 +396,8 @@ inline void SleepForRandomMilliSecond(Lee::MilliSecond range_end) {
   SleepForRandomMilliSecond(0, range_end);
 }
 
-}  // namespace Utility_
+}  // namespace detail
+}  // namespace utility
 }  // namespace Lee
 
 #endif  // end of MYALGO_INCLUDE_TOOLS_UTILITY_DETAIL_DETAIL_UTILITY_H_

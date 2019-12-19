@@ -27,17 +27,16 @@
 #include <string>
 
 namespace Lee {
-inline namespace Utility_ {
-inline namespace WindowsSystem_ {
-
+inline namespace utility {
+inline namespace system {
 /// @name     IsFileExist
 /// @brief    判断一个文件是否存在
 ///
 /// @param    strFilePathAndName  [in]    文件完整路径和文件名
 ///
-/// @return              存在与否
-///  @retval             true    存在
-///  @retval             false   不存在
+/// @return   存在与否
+///  @retval  true    存在
+///  @retval  false   不存在
 ///
 /// @author   Lijiancong, pipinstall@163.com
 /// @date     2019-11-05 13:54:29
@@ -104,10 +103,10 @@ inline std::string GetRootPath() {
 ///
 /// @param    strFolderPath   [in]    要创建目录的绝对路径
 ///
-/// @return              创建成功与否
-///  @retval             true    创建成功
-///  @retval             false   创建失败
-///                      (入参为空或目录已经存在或该目录的上一级目录不存在)
+/// @return   创建成功与否
+///  @retval  true    创建成功
+///  @retval  false   创建失败
+///           (入参为空或目录已经存在或该目录的上一级目录不存在)
 ///
 /// @author   Lijiancong, pipinstall@163.com
 /// @date     2019-11-06 15:13:34
@@ -128,12 +127,12 @@ inline bool CreateFileFolder(const std::string& strFolderPath) {
   _CrtSetDbgFlag(_CRTDBG_LEAK_CHECK_DF | _CrtSetDbgFlag(_CRTDBG_REPORT_FLAG)); \
   _CrtDumpMemoryLeaks()
 #else
-#define CHECK_MEMORY_LEAK() nulllptr
+#define CHECK_MEMORY_LEAK() nullptr
 #endif
 #endif
 
-}  // end of namespace WindowsSystem_
-}  // end of namespace Utility_
-}  // end of namespace Lee
+}  // namespace system
+}  // namespace utility
+}  // namespace Lee
 
 #endif  // end of MYALGO_INCLUDE_TOOLS_UTILITY_DETAIL_SYSTEM_UTILITY_H_

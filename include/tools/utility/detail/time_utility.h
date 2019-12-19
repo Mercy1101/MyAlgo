@@ -19,14 +19,15 @@
 #include <cassert>
 #include <chrono>
 #include <ctime>
-#include <limits>     // for std::numeric_limits()
-#include <mutex>      // for std::call_once()
-#include <typeindex>  // for std::typeindex()
-#include <typeinfo>   // for typeid
+#include <limits>                          // for std::numeric_limits()
+#include <mutex>                           // for std::call_once()
+#include <typeindex>                       // for std::typeindex()
+#include <typeinfo>                        // for typeid
+#include "utility/detail/marco_utility.h"  // for Lee::Second
 
 namespace Lee {
-inline namespace Utility_ {
-inline namespace Time_ {
+inline namespace utility {
+inline namespace time {
 /// @name     GetCurrentTimeStamp
 /// @brief    获取当前电脑桌面时间的时间戳(距离1970年元月1日零点到现在的秒数)
 ///
@@ -219,7 +220,7 @@ inline Lee::Second GetTodaySpecificTimeStamp(const int iHour, const int iMin,
     return 0;
   }
 
-  time_t t = time(nullptr);
+  time_t t = ::time(nullptr);
   tm stTimer = {0};
   localtime_s(&stTimer, &t);
   stTimer.tm_hour = iHour;
@@ -228,8 +229,8 @@ inline Lee::Second GetTodaySpecificTimeStamp(const int iHour, const int iMin,
   return static_cast<int>(mktime(&stTimer));
 }
 
-}  // namespace Time_
-}  // namespace Utility_
+}  // namespace time
+}  // namespace utility
 }  // namespace Lee
 
 #endif  // end of MYALGO_INCLUDE_TOOLS_UTILITY_DETAIL_TIME_UTILITY_H_

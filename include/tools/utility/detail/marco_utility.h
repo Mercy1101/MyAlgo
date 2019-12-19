@@ -27,8 +27,15 @@
   type(type const &) = delete;                 \
   MYALGO_DISALLOW_ASSIGN_(type)
 
+/// 定义std::lock_guard的简写
+#define LOCK_GUARD(mutex) std::lock_guard<std::mutex> LoCk__(mutex)
+
+/// 定义一个布尔值转字符串的宏
+#define BOOL_TO_STRING(bool) (bool ? "true" : "false")
+
 namespace Lee {
-inline namespace marco_utility {
+inline namespace utility {
+inline namespace marco {
 /// 长度单位定义
 using KiloMeter = int;   ///< 千米
 using Meter = int;       ///< 米
@@ -37,8 +44,8 @@ using Millimeter = int;  ///< 毫米
 using Kilogram = int;  ///< 千克
 using Gram = int;      ///< 克
 /// 时间单位定义
-using Hour = int; ///< 时
-using Minute = int; ///< 分
+using Hour = int;               ///< 时
+using Minute = int;             ///< 分
 using Second = int;             ///< 秒
 using MilliSecond = long long;  ///< 毫秒
 
@@ -52,8 +59,8 @@ const std::string DEFAULT_CONFIG_FILE_NAME = "conf.ini";
 /** 默认日志根文件夹 */
 const std::string DEFAULT_LOG_FILE_FOLDER = "log";
 
-
-}  // namespace marco_utility
-}  // end of namespace Lee
+}  // namespace marco
+}  // namespace utility
+}  // namespace Lee
 
 #endif  // end of MYALGO_INCLUDE_TOOLS_UTILITY_DETAIL_MARCO_UTILITY_H_
