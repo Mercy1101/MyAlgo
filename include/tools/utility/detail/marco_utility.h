@@ -42,6 +42,9 @@ using Minute = int; ///< 分
 using Second = int;             ///< 秒
 using MilliSecond = long long;  ///< 毫秒
 
+/// lock_guard的缩写定义
+using scoped_lock = std::lock_guard<std::mutex>;
+
 /** 默认的配置文件放置的路径（根目录下的文件夹名） */
 const std::string DEFAULT_CONFIG_FOLDER_NAME = "config";
 /** 默认的配置文件名 */
