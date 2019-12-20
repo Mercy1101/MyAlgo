@@ -121,7 +121,7 @@ static inline void SpdLogProfiler(const char* LogText, ...) {
     /** 检查路径有没有创建 */
     auto strPath = Lee::GetRootPath();
     const std::string strLogRootFolder =
-        strPath + "\\" + DEFAULT_LOG_FILE_FOLDER;
+        strPath + "\\" + Lee::DEFAULT_LOG_FILE_FOLDER;
     if (!Lee::IsFileExist(strLogRootFolder)) {
       if (!Lee::CreateFileFolder(strLogRootFolder)) {
         std::cout << "Path " << strLogRootFolder << "is not exist!"
@@ -173,18 +173,18 @@ class ProfilerInstance {
         duringTime(0),
         startTime(SteadyClock::now()),
         finishTime(SteadyClock::now()) {
-    SpdLogProfiler("Profiler is Running in %s Line: %d Memory: %d KB(%d MB)\n{",
-                   sFunc.c_str(), iLine, memory(), memory(MemoryUnit::KB_));
+    SpdLogProfiler("Profiler is Running in %s Line: %d Memory: %u KB(%u MB)\n{",
+                   sFunc.c_str(), iLine, memory(), memory(MemoryUnit::MB_));
     start();
   }
 
   ~ProfilerInstance() {
     finish();
     SpdLogProfiler(
-        "\n1Function: %s \nSpand Time: %.3fms( %.3fs) \nMemory: %d KB(%d MB) \n"
+        "\n1Function: %s \nSpand Time: %.3fms( %.3fs) \nMemory: %u KB(%u MB) \n"
         "In File: %s  LINE: %d\nEnd of Function: %s\n}\n",
         m_Func.c_str(), millisecond(), second(), memory(),
-        memory(MemoryUnit::KB_), m_File.c_str(), m_Line, m_Func.c_str());
+        memory(MemoryUnit::MB_), m_File.c_str(), m_Line, m_Func.c_str());
   }
 
  private:

@@ -98,6 +98,10 @@ class SpdLogInstance {
   static void WriteSpdLog(const std::string &strFuncName, const int iLineNumber,
                           const enum SPD_LOG_LEVEL &eLogLevel,
                           const char *szFormat, ...) {
+    if (strlen(szFormat) > 1024 * 2) {
+      assert(false && "LOG text is too large!");
+    }
+
     va_list valog;
     va_start(valog, szFormat);
     char acLog[1024 * 2] = {0};
@@ -240,7 +244,7 @@ class SpdLogInstance {
     /** 检查路径有没有创建 */
     const auto strPath = Lee::GetRootPath();
     const std::string strLogRootFolder =
-        strPath + "\\" + DEFAULT_LOG_FILE_FOLDER;
+        strPath + "\\" + Lee::DEFAULT_LOG_FILE_FOLDER;
     if (!Lee::IsFileExist(strLogRootFolder)) {
       if (!Lee::CreateFileFolder(strLogRootFolder)) {
         std::cout << "Path " << strLogRootFolder << "is not exist!"
