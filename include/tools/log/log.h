@@ -96,7 +96,7 @@ class SpdLogInstance {
   * @note
   */
   static void WriteSpdLog(const std::string &strFuncName, const int iLineNumber,
-                          const enum SPD_LOG_LEVEL &eLogLevel,
+                          const SPD_LOG_LEVEL &eLogLevel,
                           const char *szFormat, ...) {
     if (strlen(szFormat) > 1024 * 2) {
       assert(false && "LOG text is too large!");
@@ -268,7 +268,7 @@ class SpdLogInstance {
     sptrDetailLogger = spdlog::rotating_logger_mt("detail", strDetailLogPath,
                                                   1048576 * 50, 10);
 
-    enum spdlog::level::level_enum eFlushLevel =
+    spdlog::level::level_enum eFlushLevel =
         spdlog::level::level_enum::warn;
     /** 读取配置中的日志等级 */
     if (!ReadLogConfig(DEFAULT_LOG_CONFIG_FILE_NAME, iLogLevelConf,
