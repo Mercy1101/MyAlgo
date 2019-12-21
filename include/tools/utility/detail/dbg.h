@@ -43,6 +43,7 @@ License (MIT):
 #include <tuple>
 #include <type_traits>
 #include <vector>
+
 #include "log/log.h"
 
 #if defined(__unix__) || (defined(__APPLE__) && defined(__MACH__))
@@ -489,8 +490,8 @@ T&& identity(T&& t) {
 
 }  // namespace dbg_macro
 
-//#if 0
-#ifdef _DEBUG
+#if 0
+//#ifdef _DEBUG
 #undef DBG_MACRO_DISABLE
 #else
 #ifndef DBG_MACRO_DISABLE
