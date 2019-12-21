@@ -15,6 +15,7 @@
 #define MYALGO_INCLUDE_TOOLS_DATASTRUCT_BINARY_TREE_H_
 
 #include <utility/detail/dbg.h>
+
 #include <algorithm>  // for std::max
 #include <atomic>
 
@@ -25,11 +26,11 @@ inline namespace binary_tree {
 template <typename T>
 struct BinaryTreeNode {
   BinaryTreeNode(const T &data) : data(data), left(nullptr), right(nullptr) {
-    dbg("construct in %d", this);
+    // dbg("construct in %d", this);
     ++construct_count;
   }
   ~BinaryTreeNode() {
-    dbg("desconstruct in %d", this);
+    // dbg("desconstruct in %d", this);
     --construct_count;
   }
   T data;
@@ -57,6 +58,13 @@ class Binary_Tree {
  public:
   Binary_Tree(const T &data) : root_(new BinaryTreeNode<T>(data)) {
     ++construct_count;
+  }
+  Binary_Tree(const std::initializer_list<T> &init_list) {
+    ++construct_count;
+    root_ = new BinaryTreeNode<T>(*init_list.begin());
+    for (const auto &it : init_list) {
+      this->Insert(it);
+    }
   }
   ~Binary_Tree() {
     Destory<T>(root_);
@@ -148,21 +156,46 @@ class Binary_Tree {
           /// TODO(lijiancong) 这里写的很丑陋, 回头要重写
           /// 当找寻到的最右节点有左子树时把该左子树完全取出,再重新插入
           std::vector<T> data_vector;
-          GetData(max_node->left, data_vector);
+          GetData(max_node->left, &data_vector);
           for (const auto &it : data_vector) {
             this->Insert(it);
           }
         }
-
+        delete node_ptr;
         pre_max_node->right = nullptr;
+      } else if (nullptr == node_ptr->left && nullptr == node_ptr->right) {
+        /// 树叶节点的删除
+        auto pre_delete_node_ptr = Find_Previously(node_ptr);
+        if (data > pre_delete_node_ptr->data) {
+          node_ptr = pre_delete_node_ptr->right;
+          pre_delete_node_ptr->right = nullptr;
+        } else if (data < pre_delete_node_ptr->data) {
+          node_ptr = pre_delete_node_ptr->left;
+          pre_delete_node_ptr->left = nullptr;
+        } else {
+          /// 相等情况不考虑
+        }
+        delete node_ptr;
       } else {
-        /// 树叶或单子树节点的删除
+        /// 单子树删除
+        auto pre_delete_node_ptr = Find_Previously(node_ptr);
+        if (data > pre_delete_node_ptr->data) {
+          auto data_ptr = pre_delete_node_ptr->right;
+          pre_delete_node_ptr->right = Find(data);
+          delete data_ptr;
+        } else if (data < pre_delete_node_ptr->data) {
+          auto data_ptr = pre_delete_node_ptr->left;
+          pre_delete_node_ptr->left = Find(data);
+          delete data_ptr;
+        } else {
+          /// 相等情况不考虑
+        }
       }
     } else {
       /// 没找到该节点就直接返回成功
       return true;
     }
-    delete node_ptr;
+    return true;
   }
 
   /// @name     Find

@@ -1,5 +1,6 @@
-﻿#include "data_struct/binary_tree.h"
-#include <catch2/catch.hpp>
+﻿#include <catch2/catch.hpp>
+
+#include "data_struct/binary_tree.h"
 #include "profiler/Profiler.h"
 
 SCENARIO("binary_tree, 二叉树的测试", "[data_struct][binary_tree]") {
@@ -14,6 +15,17 @@ SCENARIO("binary_tree, 二叉树的测试", "[data_struct][binary_tree]") {
         REQUIRE(tree.GetRootNode()->left == nullptr);
         REQUIRE(tree.GetRootNode()->right == nullptr);
       }
+    }
+    WHEN("使用初始化链表来构造一个二叉树") {
+      Lee::Binary_Tree<int> tree{1};
+      REQUIRE(tree.Size() == 1);
+      REQUIRE(tree.GetHeight() == 0);
+      REQUIRE(tree.GetRootNode()->data == 1);
+
+      Lee::Binary_Tree<int> tree2{5, 6, 1, 3, 4, 7, 8, 9, 10};
+      REQUIRE(tree2.Size() == 9);
+      REQUIRE(5 == tree2.GetHeight());
+      REQUIRE(tree2.GetRootNode()->data == 5);
     }
     WHEN("创建一个二叉树测试用例结束时") {
       THEN("树本身和树节点, 应该被正确析构") {
@@ -53,7 +65,6 @@ SCENARIO("binary_tree, 二叉树的测试", "[data_struct][binary_tree]") {
         node_ptr = node_ptr->right;
         REQUIRE(5 == node_ptr->data);
         REQUIRE(nullptr == node_ptr->left);
-        // node_ptr = node_ptr->right;
       }
     }
     WHEN("Insert函数测试结束时") {
@@ -197,7 +208,9 @@ SCENARIO("binary_tree, 二叉树的测试", "[data_struct][binary_tree]") {
         REQUIRE(Lee::BinaryTreeNode<int>::construct_count == 0);
       }
     }
+  }
 
+  GIVEN("测试Find函数") {
     WHEN("Find函数测试, 在树中找寻特定的值") {
       Lee::Binary_Tree<int> tree(5);
       THEN("找寻数值为5的节点是否存在") {
@@ -270,6 +283,75 @@ SCENARIO("binary_tree, 二叉树的测试", "[data_struct][binary_tree]") {
         REQUIRE(Lee::Binary_Tree<int>::construct_count == 0);
         REQUIRE(Lee::BinaryTreeNode<int>::construct_count == 0);
       }
+    }
+  }
+
+  GIVEN("Delete函数测试") {
+    WHEN("删除一个树叶（没有子节点），然后再删除一个") {
+      Lee::Binary_Tree<int> delete_tree(5);
+      delete_tree.Insert(2);
+      delete_tree.Insert(7);
+      delete_tree.Insert(1);
+      delete_tree.Insert(3);
+      delete_tree.Insert(6);
+      delete_tree.Insert(8);
+      delete_tree.Insert(4);
+      /// 删除一个树叶
+      delete_tree.Delete(4);
+      THEN("现在的树有七个节点组成， 高度而2") {
+        REQUIRE(Lee::Binary_Tree<int>::construct_count == 1);
+        REQUIRE(Lee::BinaryTreeNode<int>::construct_count == 7);
+        REQUIRE(delete_tree.GetHeight() == 2);
+      }
+      THEN("删除后是一个完全二叉树") {
+        auto node_ptr = delete_tree.GetRootNode();
+        /// root
+        REQUIRE(node_ptr->data == 5);
+        /// 第二层
+        REQUIRE(node_ptr->left->data == 2);
+        REQUIRE(node_ptr->right->data == 7);
+        /// 第三层
+        REQUIRE(node_ptr->left->left->data == 1);
+        REQUIRE(node_ptr->left->right->data == 3);
+        REQUIRE(node_ptr->right->left->data == 6);
+        REQUIRE(node_ptr->right->right->data == 8);
+        /// 第四层全部为空
+        REQUIRE(node_ptr->left->left->left == nullptr);
+        REQUIRE(node_ptr->left->left->right == nullptr);
+        REQUIRE(node_ptr->left->right->left == nullptr);
+        REQUIRE(node_ptr->left->right->right == nullptr);
+        REQUIRE(node_ptr->right->left->left == nullptr);
+        REQUIRE(node_ptr->right->left->right == nullptr);
+        REQUIRE(node_ptr->right->right->left == nullptr);
+        REQUIRE(node_ptr->right->right->right == nullptr);
+      }
+      //   /// 删除一个拥有两个节点的节点
+      //   delete_tree.Delete(2);
+      //   THEN("拥有六个节点, 高度仍为2") {
+      //     REQUIRE(Lee::Binary_Tree<int>::construct_count == 1);
+      //     REQUIRE(Lee::BinaryTreeNode<int>::construct_count == 6);
+      //     REQUIRE(delete_tree.GetHeight() == 2);
+      //   }
+      //   THEN("接下来判断树节点的有效性") {
+      //     auto node_ptr = delete_tree.GetRootNode();
+      //     /// root
+      //     REQUIRE(node_ptr->data == 5);
+      //     /// 第二层
+      //     REQUIRE(node_ptr->left->data == 3);
+      //     REQUIRE(node_ptr->right->data == 7);
+      //     /// 第三层
+      //     REQUIRE(node_ptr->left->left->data == 1);
+      //     REQUIRE(node_ptr->left->right == nullptr);
+      //     REQUIRE(node_ptr->right->left->data == 6);
+      //     REQUIRE(node_ptr->right->right->data == 8);
+      //     /// 第四层全部为空
+      //     REQUIRE(node_ptr->left->left->left == nullptr);
+      //     REQUIRE(node_ptr->left->left->right == nullptr);
+      //     REQUIRE(node_ptr->right->left->left == nullptr);
+      //     REQUIRE(node_ptr->right->left->right == nullptr);
+      //     REQUIRE(node_ptr->right->right->left == nullptr);
+      //     REQUIRE(node_ptr->right->right->right == nullptr);
+      //   }
     }
   }
 }
