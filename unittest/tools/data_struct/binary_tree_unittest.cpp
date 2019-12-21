@@ -1,6 +1,7 @@
-﻿#include <catch2/catch.hpp>
+﻿#include "data_struct/binary_tree.h"
 
-#include "data_struct/binary_tree.h"
+#include <catch2/catch.hpp>
+
 #include "profiler/Profiler.h"
 
 SCENARIO("binary_tree, 二叉树的测试", "[data_struct][binary_tree]") {
@@ -36,12 +37,7 @@ SCENARIO("binary_tree, 二叉树的测试", "[data_struct][binary_tree]") {
   }
   GIVEN("Insert函数测试") {
     WHEN("创建一个二叉树, 并插入5个数值") {
-      Lee::Binary_Tree<int> insert_tree(1);
-      insert_tree.Insert(2);
-      insert_tree.Insert(3);
-      insert_tree.Insert(4);
-      insert_tree.Insert(5);
-      insert_tree.Insert(6);
+      Lee::Binary_Tree<int> insert_tree{1, 2, 3, 4, 5, 6};
       THEN("这个树被实例化了一次, 节点不为空,高度为5,且元素个数为6") {
         REQUIRE(Lee::Binary_Tree<int>::construct_count == 1);
         REQUIRE(Lee::BinaryTreeNode<int>::construct_count == 6);
@@ -75,14 +71,7 @@ SCENARIO("binary_tree, 二叉树的测试", "[data_struct][binary_tree]") {
     }
 
     WHEN("创建一个二叉树, 并插入8个不重复数值") {
-      Lee::Binary_Tree<int> insert_tree(5);
-      insert_tree.Insert(2);
-      insert_tree.Insert(7);
-      insert_tree.Insert(1);
-      insert_tree.Insert(3);
-      insert_tree.Insert(6);
-      insert_tree.Insert(8);
-      insert_tree.Insert(4);
+      Lee::Binary_Tree<int> insert_tree{5, 2, 7, 1, 3, 6, 8, 4};
       THEN("这个树被实例化了一次, 节点不为空,高度为3,且元素个数为8") {
         REQUIRE(Lee::Binary_Tree<int>::construct_count == 1);
         REQUIRE(Lee::BinaryTreeNode<int>::construct_count == 8);
@@ -122,14 +111,7 @@ SCENARIO("binary_tree, 二叉树的测试", "[data_struct][binary_tree]") {
       }
     }
     WHEN("创建一个二叉树, 并插入8个相同的数值") {
-      Lee::Binary_Tree<int> insert_tree(5);
-      insert_tree.Insert(5);
-      insert_tree.Insert(5);
-      insert_tree.Insert(5);
-      insert_tree.Insert(5);
-      insert_tree.Insert(5);
-      insert_tree.Insert(5);
-      insert_tree.Insert(5);
+      Lee::Binary_Tree<int> insert_tree{5, 5, 5, 5, 5, 5, 5, 5};
       THEN("这个树被实例化了一次, 节点不为空, 高度为0,且元素个数为1") {
         REQUIRE(Lee::Binary_Tree<int>::construct_count == 1);
         REQUIRE(Lee::BinaryTreeNode<int>::construct_count == 1);
@@ -153,14 +135,7 @@ SCENARIO("binary_tree, 二叉树的测试", "[data_struct][binary_tree]") {
       }
     }
     WHEN("创建一个二叉树, 并插入7个不重复的数值, 再插入7个重复数值") {
-      Lee::Binary_Tree<int> insert_tree(5);
-      insert_tree.Insert(2);
-      insert_tree.Insert(7);
-      insert_tree.Insert(1);
-      insert_tree.Insert(3);
-      insert_tree.Insert(6);
-      insert_tree.Insert(8);
-      insert_tree.Insert(4);
+      Lee::Binary_Tree<int> insert_tree{5, 2, 7, 1, 3, 6, 8, 4};
       /// 插入重复数值
       insert_tree.Insert(5);
       insert_tree.Insert(2);
@@ -288,14 +263,7 @@ SCENARIO("binary_tree, 二叉树的测试", "[data_struct][binary_tree]") {
 
   GIVEN("Delete函数测试") {
     WHEN("删除一个树叶（没有子节点），然后再删除一个") {
-      Lee::Binary_Tree<int> delete_tree(5);
-      delete_tree.Insert(2);
-      delete_tree.Insert(7);
-      delete_tree.Insert(1);
-      delete_tree.Insert(3);
-      delete_tree.Insert(6);
-      delete_tree.Insert(8);
-      delete_tree.Insert(4);
+      Lee::Binary_Tree<int> delete_tree{5, 2, 7, 1, 3, 6, 8, 4};
       /// 删除一个树叶
       delete_tree.Delete(4);
       THEN("现在的树有七个节点组成， 高度而2") {
