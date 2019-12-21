@@ -1,16 +1,16 @@
 ﻿;(1)
 !g::
-Run, F:\github
+Run, D:\github
 return
 
 ;(2)
 !w::
-Run, F:\1WorkStation
+Run, D:\1WorkStation
 return
 
 ;(3)
 !c::
-Run, F:\mannal\cppreference-zh-20181230.chm
+Run, D:\mannal\cppreference-zh-20181230.chm
 return
 
 ;(4)
@@ -135,9 +135,9 @@ Send,{up}{right}{right}{right}{right}{right}{right}{right}{right}{right}{right}{
 return
 
 ;(11)
-!f::
+!F::
 SetCapsLockState, AlwaysOff
-Run, F:\PDF
+Run, D:\PDF
 return
 
 ;(12)
@@ -158,22 +158,22 @@ return
 
 ;(13)
 !1::
-Run, F:\github\MyAlgo
+Run, D:\github\MyAlgo
 return
 
 ;(14)
 !2::
-Run, F:\1WorkStation\SmdWorkStation\smartdialV5.0
+Run, D:\1WorkStation\SmdWorkStation\smartdialV5.0
 return
 
 ;(15)
 !4::
-Run, F:\97
+Run, D:\97
 return
 
 ;(16)
 !5::
-Run, F:\97\每日简报
+Run, D:\97\每日简报
 return
 
 ;(17)
