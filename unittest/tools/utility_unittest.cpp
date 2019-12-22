@@ -1,9 +1,10 @@
-﻿#include "utility/utility.h"
-#include <catch2/catch.hpp>
+﻿#include <catch2/catch.hpp>
 #include <cstdlib>  // for RAND_MAX
 #include <limits>
 #include <string>
-#include "utility/detail/dbg.h"
+
+//#include "utility/thirdparty/dbg.h"
+#include "utility/utility.h"
 
 TEST_CASE("KMP简单测试", "[utility][KMP]") {
   using namespace Lee;
@@ -648,7 +649,7 @@ SCENARIO("GetRangeRandomNumberFloat(), 等概率生成实数(浮点数)函数测
   }
 }
 
-TEST_CASE("Lee::GetRandomPassWord 的例子展示", "[utility][GetRandomPassWord]"){
+TEST_CASE("Lee::GetRandomPassWord 的例子展示", "[utility][GetRandomPassWord]") {
   dbg(Lee::GetRandomPassWord(8));
   dbg(Lee::GetRandomPassWord(16));
   dbg(Lee::GetRandomPassWord(32));
