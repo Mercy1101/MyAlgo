@@ -13,7 +13,10 @@
 #define MYALGO_INCLUDE_TOOLS_DATASTRUCT_BINARY_TREE_SAMPLE_H_
 
 #include <atomic>
+#include <initializer_list>
 #include <iostream>
+
+#include "utility/detail/dbg.h"
 
 namespace Lee {
 inline namespace data_struct {
@@ -22,7 +25,13 @@ inline namespace binary_tree {
 template <typename Comparable>
 class BinarySearchTree {
  public:
-  BinarySearchTree() : root{nullptr};
+  BinarySearchTree() : root{nullptr} {}
+  BinarySearchTree(const std::initializer_list<Comparable> &data_list)
+      : root{nullptr} {
+    for (const int &it : data_list) {
+      this->insert(it);
+    }
+  }
   /**
    * Copy constructor
    */
@@ -33,7 +42,10 @@ class BinarySearchTree {
     root = clone(rhs.root);
   }
 
-  ~BinarySearchTree() { makeEmpty(); }
+  ~BinarySearchTree() {
+    makeEmpty();
+    dbg((BinaryNode::node_count == 0));
+  }
 
   const Comparable &findMin() const { findMin(root); }
   const Comparable &findMax() const { findMax(root); }
@@ -45,7 +57,7 @@ class BinarySearchTree {
   bool isEmpty() const { return nullptr == root; };
   void printTree(std::ostream &out = std::cout) const { printTree(root, out); }
 
-  void makeEmpty() { makeEmpty(root) }
+  void makeEmpty() { makeEmpty(root); }
   /**
    * Insert x into the tree; duplicates are ignored.
    */
@@ -57,8 +69,22 @@ class BinarySearchTree {
    */
   void remove(const Comparable &x) { remove(x, root); }
 
-  BinarySearchTree &operator=(const BinarySearchTree &rhs);
-  BinarySearchTree &operator=(BinarySearchTree &&rhs);
+  BinarySearchTree &operator=(const BinarySearchTree &rhs) {
+    /// 假设这里的入参是自己则什么也不做
+    if (this == &rhs) {
+      return this;
+    }
+    this->makeEmpty();
+    this->clone(rhs.root);
+  }
+  BinarySearchTree &operator=(BinarySearchTree &&rhs) {
+    /// 假设这里的入参是自己则什么也不做
+    if (this == &rhs) {
+      return this;
+    }
+    this->makeEmpty();
+    this->clone(rhs.root);
+  }
 
  private:
   struct BinaryNode {
@@ -71,6 +97,9 @@ class BinarySearchTree {
 
     BinaryNode(Comparable &&theElement, BinaryNode *lt, BinaryNode *rt)
         : element{std::move(theElement)}, left{lt}, right{rt} {}
+
+    ~BinaryNode() { ++node_count; }
+    inline static std::atomic<int> node_count = 0;
   };
 
   BinaryNode *root;
