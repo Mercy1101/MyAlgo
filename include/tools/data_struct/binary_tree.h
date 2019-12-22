@@ -14,10 +14,10 @@
 #ifndef MYALGO_INCLUDE_TOOLS_DATASTRUCT_BINARY_TREE_H_
 #define MYALGO_INCLUDE_TOOLS_DATASTRUCT_BINARY_TREE_H_
 
-#include <utility/detail/dbg.h>
-
 #include <algorithm>  // for std::max
 #include <atomic>
+#include <initializer_list>
+#include <vector>
 
 namespace Lee {
 inline namespace data_struct {
