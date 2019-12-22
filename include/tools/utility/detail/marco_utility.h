@@ -18,8 +18,6 @@
 #include <string>
 #include <vector>
 
-#include "utility/thirdparty/dbg.h"
-
 // A macro to disallow operator=
 // This should be used in the private: declarations for a class.
 #define MYALGO_DISALLOW_ASSIGN_(type) void operator=(type const &) = delete
@@ -35,10 +33,6 @@
 
 /// 定义一个布尔值转字符串的宏
 #define BOOL_TO_STRING(bool) (bool ? "true" : "false")
-
-/// 打印vector容器的宏
-#define VECTOR_PRINT(vec) \
-  for (const auto &it : (vec)) dbg(it);
 
 namespace Lee {
 inline namespace utility {
