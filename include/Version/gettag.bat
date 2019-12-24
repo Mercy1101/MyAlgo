@@ -1,4 +1,3 @@
-@echo off
 ::获取最近一次的label
 for /F %%i in ('git describe --tags') do ( set tag=%%i)
 
