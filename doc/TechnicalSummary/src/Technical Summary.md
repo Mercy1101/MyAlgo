@@ -3511,6 +3511,7 @@ int main()
 | V2.3   | 李建聪 | 增加小节**产生随机数**                                   | 2019-11-15 14:39:24 |
 | V2.4   | 李建聪 | 增加小节**MySQL查询不重复记录**                          | 2019-12-18 14:48:30 |
 | V2.5   | 李建聪 | 增加小节**MySQL查询某项字段的所有结果出现的次数**        | 2019-12-18 15:03:12 |
+| V2.6   | 李建聪 | 增加小节**MySQL中INSTR函数介绍**小节                     | 2019-12-24 16:05:27 |
 
 ### 如何求得一个数组的长度
 
@@ -4187,6 +4188,16 @@ SELECT DialResult, COUNT(*) FROM dialhistory_x GROUP BY DialResult;
 结果如下:
 
 ![MySQL_DISTINCT](.\picture\MySQL_COUNT.png)
+
+### MySQL中INSTR函数介绍
+
+查询一条记录，该记录的 KeyWord 字段中包含了"拨完号后"的子串，并返回该条记录的 DetailCode 字段。
+
+```sql
+SELECT DetailCode FROM sr_result_cfg WHERE INSTR(KeyWord, "拨完号后")>0;
+```
+
+
 
 ## 数据结构与算法
 
