@@ -200,6 +200,6 @@ static void quicksort(T list[], int begin, int end) {
 
 }  // namespace algorithm
 }  // namespace utility
-}  // end of namespace Lee
+}  // namespace Lee
 
 #endif  // end of MYALGO_INCLUDE_TOOLS_UTILITY_DETAIL_ALGORITHM_UTILITY_H_

@@ -98,7 +98,7 @@ class BinarySearchTree {
     BinaryNode(Comparable &&theElement, BinaryNode *lt, BinaryNode *rt)
         : element{std::move(theElement)}, left{lt}, right{rt} {}
 
-    ~BinaryNode() { ++node_count; }
+    ~BinaryNode() { --node_count; }
     inline static std::atomic<int> node_count = 0;
   };
 
