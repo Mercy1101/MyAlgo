@@ -3,14 +3,10 @@
 
 #pragma once
 
-#ifndef SPDLOG_H
-#include "spdlog/spdlog.h"
-#endif
-
 #if defined(_WIN32)
 
-#include "spdlog/details/null_mutex.h"
-#include "spdlog/sinks/base_sink.h"
+#include <spdlog/details/null_mutex.h>
+#include <spdlog/sinks/base_sink.h>
 
 #include <winbase.h>
 
@@ -32,8 +28,8 @@ protected:
     void sink_it_(const details::log_msg &msg) override
     {
 
-        fmt::memory_buffer formatted;
-        sink::formatter_->format(msg, formatted);
+        memory_buf_t formatted;
+        base_sink<Mutex>::formatter_->format(msg, formatted);
         OutputDebugStringA(fmt::to_string(formatted).c_str());
     }
 

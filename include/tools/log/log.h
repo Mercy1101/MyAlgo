@@ -30,10 +30,11 @@
 
 #include "log/spdlog/spdlog.h"
 #include "simpleini/SimpleIni.h"
-#include "spdlog/sinks/rotating_file_sink.h"
-//#include "utility/utility.h"  // for GetRootPath
+#include "log/spdlog/sinks/rotating_file_sink.h"
 #include "utility/detail/marco_utility.h"
 #include "utility/detail/system_utility.h"
+#include "log/spdlog/async.h"
+#include "log/spdlog/sinks/basic_file_sink.h"
 
 /** 所有日志模块相对于程序根路径下的默认文件夹名称 */
 const std::string DEFAULT_LOG_ROOT_PATH = "log";
@@ -106,7 +107,6 @@ class SpdLogInstance {
     va_start(valog, szFormat);
     char acLog[1024 * 2] = {0};
     vsprintf_s(acLog, sizeof(acLog), szFormat, valog);
-    // std::cout << "in>>" << acLog << std::endl;
     std::string strLog(acLog);
 
 #ifndef SWITCH_LOG_NO_FUNCNAME_LINENUMBER
@@ -238,7 +238,6 @@ class SpdLogInstance {
 
   * @note
   */
-
   static void InitSpdLogger(std::shared_ptr<spdlog::logger> &sptrDetailLogger,
                             int &iLogLevelConf) {
     /** 检查路径有没有创建 */
@@ -265,8 +264,11 @@ class SpdLogInstance {
       }
     }
     strDetailLogPath += "\\detail.log";
-    sptrDetailLogger = spdlog::rotating_logger_mt("detail", strDetailLogPath,
-                                                  1048576 * 50, 10);
+     sptrDetailLogger = spdlog::rotating_logger_mt("detail", strDetailLogPath,
+                                                   1048576 * 50, 10);
+    
+      //sptrDetailLogger = spdlog::basic_logger_mt<spdlog::async_factory>(
+      //"async_detail_logger", "logs/async_log.txt");
 
     spdlog::level::level_enum eFlushLevel = spdlog::level::level_enum::warn;
     /** 读取配置中的日志等级 */

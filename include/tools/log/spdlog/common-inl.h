@@ -1,10 +1,10 @@
-// Copyright(c) 2015-present Gabi Melman & spdlog contributors.
+// Copyright(c) 2015-present, Gabi Melman & spdlog contributors.
 // Distributed under the MIT License (http://opensource.org/licenses/MIT)
 
 #pragma once
 
 #ifndef SPDLOG_HEADER_ONLY
-#include "spdlog/common.h"
+#include <spdlog/common.h>
 #endif
 
 namespace spdlog {
@@ -44,7 +44,7 @@ SPDLOG_INLINE spdlog_ex::spdlog_ex(std::string msg)
 
 SPDLOG_INLINE spdlog_ex::spdlog_ex(const std::string &msg, int last_errno)
 {
-    fmt::memory_buffer outbuf;
+    memory_buf_t outbuf;
     fmt::format_system_error(outbuf, last_errno, msg);
     msg_ = fmt::to_string(outbuf);
 }

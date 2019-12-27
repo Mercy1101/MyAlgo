@@ -28,6 +28,12 @@ set(INIT_FILE_SOURCES src/init/init.cpp)
 # spdlog的一个源文件
 set(SPD_LOG_SOURCES
     include/tools/log/spdlog.cpp
+    include/tools/log/stdout_sinks.cpp
+    include/tools/log/spdlog.cpp
+    include/tools/log/fmt.cpp
+    include/tools/log/file_sinks.cpp
+    include/tools/log/color_sinks.cpp
+    include/tools/log/async.cpp
 )
 
 # leetcode源文件
@@ -68,10 +74,9 @@ set(UNITTEST_SOURCE
 add_executable(${EXECUTABLE_EXE_NAME} ${SOURCES}
                                       ${INIT_FILE_SOURCES}
                                       ${UNITTEST_SOURCE}
-                                      ${SPD_LOG_SOURCES}
+                                      #${SPD_LOG_SOURCES}
                                       ${LEET_CODE_FILE_SOURCES}
                                       ${TOOLS_FILE_SOURCES}
-                                      #${MD5_SOURCE}
 )
 
 # 设置包含路径
@@ -87,6 +92,9 @@ target_include_directories(${EXECUTABLE_EXE_NAME}
 
         # leetcode 文件的头文件路径
         ${PROJECT_SOURCE_DIR}/include/leetcode
+
+        # 添加spdlog模块的包含路径
+        ${PROJECT_SOURCE_DIR}/include/tools/log
 
         # boost库的包含路径
         #$ENV{BOOST_ROOT}
@@ -128,9 +136,8 @@ endforeach()
 endif(MSVC)
 
 # 定义这个宏,是为了正常编译spdlog
-target_compile_definitions(${EXECUTABLE_EXE_NAME} PRIVATE SPDLOG_COMPILED_LIB)
-# 为了屏蔽gtest中使用了TR1产生的警告,定义该宏
-# target_compile_definitions(${EXECUTABLE_EXE_NAME} PRIVATE _SILENCE_TR1_NAMESPACE_DEPRECATION_WARNING)
+#target_compile_definitions(${EXECUTABLE_EXE_NAME} PRIVATE SPDLOG_COMPILED_LIB)
+#target_compile_definitions(${EXECUTABLE_EXE_NAME} PRIVATE SPDLOG_HEADER_ONLY)
 
 # 定义这个宏为了避免dbg文件中的警告
 ADD_DEFINITIONS(-DDBG_MACRO_NO_WARNING)
