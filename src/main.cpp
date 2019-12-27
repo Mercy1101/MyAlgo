@@ -44,7 +44,7 @@
 int main(int argc, char** argv) {
   PrintVersion();
   CheckConfigFolder();
-  
+
   Catch::Session().run(argc, argv);
   system("pause");
   return 0;
