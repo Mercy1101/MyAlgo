@@ -72,7 +72,7 @@ class BinarySearchTree {
   BinarySearchTree &operator=(const BinarySearchTree &rhs) {
     /// 假设这里的入参是自己则什么也不做
     if (this == &rhs) {
-      return this;
+      return *this;
     }
     this->makeEmpty();
     this->clone(rhs.root);
@@ -80,7 +80,7 @@ class BinarySearchTree {
   BinarySearchTree &operator=(BinarySearchTree &&rhs) {
     /// 假设这里的入参是自己则什么也不做
     if (this == &rhs) {
-      return this;
+      return *this;
     }
     this->makeEmpty();
     this->clone(rhs.root);
