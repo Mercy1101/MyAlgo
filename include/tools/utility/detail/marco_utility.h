@@ -29,10 +29,14 @@
   MYALGO_DISALLOW_ASSIGN_(type)
 
 /// 定义std::lock_guard的简写
-#define LOCK_GUARD(mutex) std::lock_guard<std::mutex> LoCk__(mutex)
+#define LOCK_GUARD(type) std::lock_guard<std::mutex> LoCk__(type)
 
 /// 定义一个布尔值转字符串的宏
-#define BOOL_TO_STRING(bool) (bool ? "true" : "false")
+#define BOOL_TO_STRING(type) ((type) ? "true" : "false")
+
+/// 打印vector容器的宏
+// #define VECTOR_PRINT(vec) \
+//   for (const auto &it : (vec)) dbg(it);
 
 namespace Lee {
 inline namespace utility {
