@@ -51,7 +51,7 @@ set(UNITTEST_SOURCE
   unittest/tools/log/log_unittest.cpp
 
   # 自己写的工具集utility 的单元测试文件
-  unittest/tools/utility_unittest.cpp
+  unittest/tools/utility/utility_unittest.cpp
 
   # 开源库 concurrentqueue 的例子
   unittest/concurrentqueue/concurrentqueue_unittest.cpp
@@ -60,7 +60,7 @@ set(UNITTEST_SOURCE
   unittest/leetcode/leetcode_unittest.cpp
 
   # utility/time 的测试单元文件
-  unittest/tools/time_utility_unittest.cpp
+  unittest/tools/utility/time_utility_unittest.cpp
 
   # utility/print_data_struct 的测试单元文件
   unittest/tools/data_struct/print_data_struct_unittest.cpp
@@ -68,6 +68,8 @@ set(UNITTEST_SOURCE
   # utility/binary_tree 的测试单元文件
   unittest/tools/data_struct/binary_tree_unittest.cpp
 
+  # utility/file_line_reader 的测试单元文件
+  unittest/tools/utility/file_line_reader_utility_unittest.cpp
 )
 
 # 把源文件添加进工程中
