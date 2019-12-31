@@ -46,7 +46,6 @@ const std::string DEFAULT_DETAIL_LOG_FOLDER_NAME = "detail";
 const std::string DEFAULT_PROFILER_LOG_FOLDER_NAME = "profiler";
 
 /** 默认的log模块配置文件，相对于程序根路径的相对路径和文件名 */
-// const std::string DEFAULT_LOG_CONFIG_FILE_NAME = "config\\conf.ini";
 const std::string DEFAULT_LOG_CONFIG_FILE_NAME =
     Lee::DEFAULT_CONFIG_FOLDER_NAME + "\\" + Lee::DEFAULT_CONFIG_FILE_NAME;
 
@@ -82,18 +81,19 @@ constexpr int DEFAULT_FLUSH_LEVEL_CONF = 3;
 class SpdLogInstance {
  public:
   /**
-  * @name                WriteSpdLog
-  * @brief 主要进行C语言字符串整合为string型，传给日志打印函数，进行打印
+  * @name     WriteSpdLog
+  * @brief    主要进行C语言字符串整合为string型，
+  *           传给日志打印函数，进行打印
 
-  * @param               strFuncName  [in]    调用该函数的函数名称
-  * @param               iLineNumber  [in]    在第几行调用该函数
-  * @param               eLogLevel    [in]    打印等级
-  * @param               szFormat     [in]    日志信息，C型字符串
+  * @param    strFuncName  [in]    调用该函数的函数名称
+  * @param    iLineNumber  [in]    在第几行调用该函数
+  * @param    eLogLevel    [in]    打印等级
+  * @param    szFormat     [in]    日志信息，C型字符串
 
-  * @return              NONE
-  * @author              Lijiancong, pipinstall@163.com
-  * @date                2019-09-17 11:03:46
-  * @warning             线程安全
+  * @return   NONE
+  * @author   Lijiancong, pipinstall@163.com
+  * @date     2019-09-17 11:03:46
+  * @warning  线程安全
   * @note
   */
   static void WriteSpdLog(const std::string &strFuncName, const int iLineNumber,
