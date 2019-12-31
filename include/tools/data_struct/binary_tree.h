@@ -68,8 +68,9 @@ class Binary_Tree {
 
   void Insert(const Comparable &data) { Insert(data, root_); }
   void Destory() { Destory(root_); }
-
   Tree GetRoot() const { return root_; }
+  Position FindMin() { return FindMin(root_); }
+  Tree Delete(const Comparable &data) { return Delete(data, root_); };
 
  private:
   /// @name     Insert
@@ -135,30 +136,68 @@ class Binary_Tree {
   /// @name     FindMin
   /// @brief    找寻树中最小的元素
   ///
-  /// @param
+  /// @param    NONE
   ///
-  /// @return
+  /// @return   返回最小节点的位置
   ///
   /// @author   Lijiancong, pipinstall@163.com
   /// @date     2019-12-29 18:14:11
   /// @warning  线程不安全
-  Position FindMin() {}
+  Position FindMin(const Tree tree) {
+    if (nullptr == tree) {
+      return nullptr;
+    }
+    auto node_ptr = tree;
+    while (node_ptr->left != nullptr) {
+      node_ptr = node_ptr->left;
+    }
+    return node_ptr;
+  }
 
   /// @name     Delete
   /// @brief    删除某特定元素
   ///
-  /// @param
+  /// @param    data  [in]  要删除的特定元素
+  /// @param    tree  [out] 要修改的树节点指针
   ///
-  /// @return
+  /// @return   树节点
   ///
   /// @author   Lijiancong, pipinstall@163.com
   /// @date     2019-12-29 18:11:41
   /// @warning  线程不安全
-  void Delete() {}
+  void Delete(const Comparable &data, Tree tree) {}
+
+  /// @name     Transplant
+  /// @brief    把一颗子树挪到另一个节点下面
+  ///
+  /// @param    tree      [in] 
+  /// @param    node_from [in] 
+  /// @param    node_to   [in] 
+  ///
+  /// @return
+  ///
+  /// @author   Lijiancong, pipinstall@163.com
+  /// @date     2019-12-31 11:09:41
+  /// @warning  线程不安全
+  void Transplant(Tree tree, BinaryTreeNode *node_from,
+                  BinaryTreeNode *node_to) {
+    if (nullptr == node_from->parent) {
+      Destory(root_);
+      tree.root_ = node_to;
+    } else if (node_from == node_from->parent->left) {
+      Destroy(node_from->parent->left);
+      node_from->parent->left = node_to;
+    } else {
+      node_from->parent->right = node_to;
+    }
+    if (nullptr == node_to) {
+      node_to->parent = node_from->parent;
+    }
+  }
 
  private:
   Tree root_;
-};  // namespace binary_tree
+};
 
 }  // namespace binary_tree
 }  // namespace data_struct
