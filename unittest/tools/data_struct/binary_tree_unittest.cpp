@@ -83,7 +83,7 @@ SCENARIO("binary_tree 二叉树的FindMin函数测试", "[data_struct][binary_tr
   }  ///< GIVEN
   REQUIRE(Lee::Binary_Tree<int>::BinaryTreeNode::construct_count == 0);
 }  ///< SCENARIO
-
+#if 0
 SCENARIO("binary_tree 二叉树的Delete函数测试", "[data_struct][binary_tree]") {
   GIVEN("一个单独的元素的树的删除") {
     Lee::Binary_Tree<int> tree{5};
@@ -109,3 +109,4 @@ SCENARIO("binary_tree 二叉树的Delete函数测试", "[data_struct][binary_tre
   }  ///< GIVEN
   REQUIRE(Lee::Binary_Tree<int>::BinaryTreeNode::construct_count == 0);
 }  ///< SCENARIO
+#endif
