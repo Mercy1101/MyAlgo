@@ -85,11 +85,8 @@ return
 ; 输出///   @retval
 CapsLock & r::
 SetCapsLockState, AlwaysOff
-Send,^{space}
-;Send,^{space}
 SendInput,///   @retval{space}
-SendInput,{enter}///
-Send,{up}{right}{right}{right}{right}{right}{right}{right}{right}{right}{right}{right}
+;Send,{right}{right}{right}{right}{right}{right}{right}{right}{right}{right}{right}
 return
 
 ; 输出头文件注释
