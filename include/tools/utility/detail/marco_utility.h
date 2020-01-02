@@ -18,6 +18,8 @@
 #include <string>
 #include <vector>
 
+#include "concurrentqueue/concurrentqueue.h"
+
 // A macro to disallow operator=
 // This should be used in the private: declarations for a class.
 #define MYALGO_DISALLOW_ASSIGN_(type) void operator=(type const &) = delete
@@ -34,9 +36,14 @@
 /// 定义一个布尔值转字符串的宏
 #define BOOL_TO_STRING(type) ((type) ? "true" : "false")
 
-/// 打印vector容器的宏
-// #define VECTOR_PRINT(vec) \
-//   for (const auto &it : (vec)) dbg(it);
+#define CATCH_AND_WRAP                \
+  catch (const std::out_of_range &) { \
+    throw;                            \
+  }                                   \
+  catch (const std::exception &e) {   \
+  }                                   \
+  catch (...) {                       \
+  }
 
 namespace Lee {
 inline namespace utility {
@@ -53,6 +60,10 @@ using Hour = int;               ///< 时
 using Minute = int;             ///< 分
 using Second = int;             ///< 秒
 using MilliSecond = long long;  ///< 毫秒
+
+/// 定义无锁多生产者多消费者线程安全的队列的别名
+template <typename T>
+using CQueue = moodycamel::ConcurrentQueue<T>;
 
 /** 默认的配置文件放置的路径（根目录下的文件夹名） */
 const std::string DEFAULT_CONFIG_FOLDER_NAME = "config";
