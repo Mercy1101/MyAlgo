@@ -17,6 +17,7 @@
 #include <stdio.h>
 #include <stdlib.h>  // for RAND_MAX
 #include <string.h>  // for strnlen()
+
 #include <cassert>
 #include <chrono>
 #include <ctime>
@@ -28,6 +29,7 @@
 #include <string>
 #include <thread>
 #include <type_traits>
+
 #include "utility/detail/random_utility.h"
 
 namespace Lee {
@@ -44,8 +46,13 @@ inline namespace detail {
 ///           从而避免了数组参数降级为指针所引发的错误
 ///
 /// @param    匿名参数(但类型要求为任意类型数组)
+///
 /// @return   数组的长度
+///
 /// @author   Lijiancong, pipinstall@163.com
+///           Token From Scott Meyers <Effective Modern C++>
+///           条款一：理解模板型别推到
+///
 /// @date     2019-12-01 18:48:08
 /// @warning  线程不安全
 /// @note     用法如ARRAY_SIZE(a)一样
@@ -55,6 +62,31 @@ template <class T, std::size_t N>
 constexpr inline std::size_t ArraySize(T (&)[N]) noexcept {
   return N;
 }
+
+/// 我也见过 github.com/google/benchmark/src/arraysize.h 中的另一种写法
+
+// The arraysize(arr) macro returns the # of elements in an array arr.
+// The expression is a compile-time constant, and therefore can be
+// used in defining new arrays, for example.  If you use arraysize on
+// a pointer by mistake, you will get a compile-time error.
+//
+
+// This template function declaration is used in defining arraysize.
+// Note that the function doesn't need an implementation, as we only
+// use its type.
+template <typename T, size_t N>
+char (&ArraySizeHelper(T (&array)[N]))[N];
+
+// That gcc wants both of these prototypes seems mysterious. VC, for
+// its part, can't decide which to use (another mystery). Matching of
+// template overloads: the final frontier.
+#ifndef COMPILER_MSVC
+template <typename T, size_t N>
+char (&ArraySizeHelper(const T (&array)[N]))[N];
+#endif
+
+#define arraysize(array) (sizeof(::Lee::ArraySizeHelper(array)))
+
 
 /// @name     ignore_unused
 /// @brief    使用该空函数可以屏蔽编译器对未使用过的变量的警告
