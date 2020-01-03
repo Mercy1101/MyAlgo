@@ -4197,6 +4197,16 @@ SELECT DialResult, COUNT(*) FROM dialhistory_x GROUP BY DialResult;
 SELECT DetailCode FROM sr_result_cfg WHERE INSTR(KeyWord, "拨完号后")>0;
 ```
 
+#### const的位置对指针本身的值与指针指向的值产生的影响
+
+```c++
+int x = 1;
+int y = 2;
+const int *p = &x;	///< 指针指向的值不可变（const 出现在'*'之前）
+int const *p = &x;	///< 指针指向的值不可变（const 出现在'*'之前）
+int* const p = &x;	///< 指针本身的值不可变（const 出现在'*'之后）
+```
+
 
 
 ## 数据结构与算法
