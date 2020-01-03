@@ -655,3 +655,11 @@ TEST_CASE("Lee::GetRandomPassWord 的例子展示", "[utility][GetRandomPassWord
   dbg(Lee::GetRandomPassWord(32));
   dbg(Lee::GetRandomPassWord(64));
 }
+
+TEMPLATE_TEST_CASE("arraysize 的模板测试", "[utility][arraysize]", int,
+                        long long, unsigned long, double) {
+  TestType array_16[16];
+  REQUIRE(arraysize(array_16) == 16);
+  TestType array_VLA[] = {0, 1, 2};
+  REQUIRE(arraysize(array_VLA) == 3);
+}

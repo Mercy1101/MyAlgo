@@ -36,13 +36,9 @@
 /// 定义一个布尔值转字符串的宏
 #define BOOL_TO_STRING(type) ((type) ? "true" : "false")
 
-#define CATCH_AND_WRAP                \
-  catch (const std::out_of_range &) { \
-    throw;                            \
-  }                                   \
-  catch (const std::exception &e) {   \
-  }                                   \
-  catch (...) {                       \
+#define MYALGO_CATCH_AND_WRAP              \
+  catch (const std::exception &e) {        \
+    LOG(LOG_ERROR, "Error: %s", e.what()); \
   }
 
 namespace Lee {
