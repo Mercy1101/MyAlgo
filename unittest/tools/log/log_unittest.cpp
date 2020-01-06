@@ -7,7 +7,6 @@
 #include "utility/utility.h"
 
 // #define LOG_UNITTEST 日志测试的开关
-#undef LOG_UNITTEST
 #ifdef LOG_UNITTEST
 /**
  * @brief 对log模块进行简单的单元测试
@@ -44,5 +43,53 @@ TEST_CASE("测试多线程下异步日志的效果", "[log]") {
     });
     ls.detach();
   }
+}
+
+TEST_CASE("log 模块的速度测试", "[log]") {
+  BENCHMARK(" All Log 1000") {
+    for (int i = 0; i < 1; ++i) {
+      LOG(LOG_TRACE,
+          "DialResult is failed, loop decrease and dial again. (ScheduleID: "
+          "%d, DialNumber: %s, DialResult: %f "
+          "is_audit_dial: false)",
+          i, "01010086", i + 40.0005);
+      LOG(LOG_DEBUG,
+          "DialResult is failed, loop decrease and dial again. (ScheduleID: "
+          "%d, DialNumber: %s, DialResult: %f "
+          "is_audit_dial: false)",
+          i, "01010086", i + 40.0005);
+      LOG(LOG_INFO,
+          "DialResult is failed, loop decrease and dial again. (ScheduleID: "
+          "%d, DialNumber: %s, DialResult: %f "
+          "is_audit_dial: false)",
+          i, "01010086", i + 40.0005);
+      LOG(LOG_WARN,
+          "DialResult is failed, loop decrease and dial again. (ScheduleID: "
+          "%d, DialNumber: %s, DialResult: %f "
+          "is_audit_dial: false)",
+          i, "01010086", i + 40.0005);
+      LOG(LOG_ERROR,
+          "DialResult is failed, loop decrease and dial again. (ScheduleID: "
+          "%d, DialNumber: %s, DialResult: %f "
+          "is_audit_dial: false)",
+          i, "01010086", i + 40.0005);
+      LOG(LOG_CRITICAL,
+          "DialResult is failed, loop decrease and dial again. (ScheduleID: "
+          "%d, DialNumber: %s, DialResult: %f "
+          "is_audit_dial: false)",
+          i, "01010086", i + 40.0005);
+      LOG(LOG_OFF,
+          "DialResult is failed, loop decrease and dial again. (ScheduleID: "
+          "%d, DialNumber: %s, DialResult: %f "
+          "is_audit_dial: false)",
+          i, "01010086", i + 40.0005);
+      LOG(LOG_INFO,
+          "DialResult is failed, loop decrease and dial again. (ScheduleID: "
+          "%d, DialNumber: %s, DialResult: %f "
+          "is_audit_dial: false)",
+          i, "01010086", i + 40.0005);
+    }
+    return 0;
+  };
 }
 #endif  // end of LOG_UNITTEST
