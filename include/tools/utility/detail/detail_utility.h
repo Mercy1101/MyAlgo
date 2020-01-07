@@ -16,6 +16,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>  // for RAND_MAX
+#include <stdlib.h>  // for exit()
 #include <string.h>  // for strnlen()
 
 #include <cassert>
@@ -86,7 +87,6 @@ char (&ArraySizeHelper(const T (&array)[N]))[N];
 #endif
 
 #define arraysize(array) (sizeof(::Lee::ArraySizeHelper(array)))
-
 
 /// @name     ignore_unused
 /// @brief    使用该空函数可以屏蔽编译器对未使用过的变量的警告
@@ -426,6 +426,23 @@ inline void SleepForRandomMilliSecond(Lee::MilliSecond range_start,
 }
 inline void SleepForRandomMilliSecond(Lee::MilliSecond range_end) {
   SleepForRandomMilliSecond(0, range_end);
+}
+
+/// @name     quick_exit
+/// @brief    先打印日志，引发正常的程序终止并清理
+///
+/// @param    code      [in]  退出码
+/// @param    exit_info [in]  退出的信息
+///
+/// @return   NONE
+///
+/// @author   Lijiancong, pipinstall@163.com
+/// @date     2020-01-07 16:35:46
+/// @warning  线程不安全
+inline void quick_exit(int code, const std::string &exit_code) {
+  LOG(LOG_ERROR, exit_code);
+  LOG(LOG_ERROR, "Exist the program!");
+  exit(code);
 }
 
 }  // namespace detail
