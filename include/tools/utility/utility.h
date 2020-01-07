@@ -5,7 +5,7 @@
 /// that can be found in the License file.
 ///
 /// @file   utility.h
-/// @brief  比较杂的工具集。
+/// @brief  工具集
 ///
 /// @author lijiancong, pipinstall@163.com
 /// @date   2019-12-01 17:06:41

@@ -80,9 +80,9 @@ TEST_CASE("file_line_reader_test") {
   std::vector<std::string> file_content;
   for (auto line : reader) {
     std::cout << line << std::endl;
-    //file_content.emplace_back(line);
+    file_content.emplace_back(line);
   }
-  //REQUIRE(file_content.size() == get_line_content().size());
-  //REQUIRE(std::equal(file_content.begin(), file_content.end(),
-  //                   get_line_content().begin()));
+  REQUIRE(file_content.size() == get_line_content().size());
+  REQUIRE(std::equal(file_content.begin(), file_content.end(),
+                     get_line_content().begin()));
 }

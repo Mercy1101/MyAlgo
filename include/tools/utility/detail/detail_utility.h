@@ -32,6 +32,7 @@
 #include <type_traits>
 
 #include "utility/detail/random_utility.h"
+#include "log/log.h"
 
 namespace Lee {
 inline namespace utility {
@@ -440,7 +441,7 @@ inline void SleepForRandomMilliSecond(Lee::MilliSecond range_end) {
 /// @date     2020-01-07 16:35:46
 /// @warning  线程不安全
 inline void quick_exit(int code, const std::string &exit_code) {
-  LOG(LOG_ERROR, exit_code);
+  LOG(LOG_ERROR, exit_code.c_str());
   LOG(LOG_ERROR, "Exist the program!");
   exit(code);
 }
