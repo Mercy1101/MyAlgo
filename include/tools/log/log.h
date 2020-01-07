@@ -115,7 +115,6 @@ class SpdLogInstance {
 #endif
 
     BaseLog(eLogLevel, strLog);
-    // std::cout << "out>>" << acLog << std::endl;
     va_end(valog);
   }
   static void WriteSpdLog(const enum SPD_LOG_LEVEL &eLogLevel,
