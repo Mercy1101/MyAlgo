@@ -30,7 +30,7 @@
 
 namespace Lee {
 inline namespace utility {
-inline namespace file_line_reader {
+inline namespace file_line_reader_utility {
 const size_t BUFFER_SIZE = 256;
 
 static inline char* expand(char* data, size_t size, size_t capacity) {
@@ -39,6 +39,12 @@ static inline char* expand(char* data, size_t size, size_t capacity) {
   delete[] data;
   return new_ptr;
 }
+
+//inline void swap(::Lee::file_line_reader::iterator& lhs,
+//                 ::Lee::file_line_reader::iterator& rhs) noexcept
+//{
+//  lhs.swap(rhs);
+//}
 
 /** Class to allow iteration over all lines of a text file. */
 class file_line_reader {
@@ -199,7 +205,8 @@ class file_line_reader {
    * @param delimiter  the delimiter between text `lines' (default to LF)
    * @param strip      enumerator about whether to strip the delimiter
    */
-  file_line_reader(FILE* stream, char delimiter, strip_type strip)
+  explicit file_line_reader(FILE* stream, char delimiter = '\n',
+                            strip_type strip = strip_delimiter)
       : _M_stream(stream),
         _M_delimiter(delimiter),
         _M_strip_delimiter(strip == strip_delimiter),
@@ -238,7 +245,7 @@ class file_line_reader {
 
     if (_M_delimiter == '\n') {
       for (;;) {
-        if (!fgets(output + write_pos, capacity - write_pos, _M_stream)) {
+        if (!fgets(output + write_pos, static_cast<int>(capacity - write_pos), _M_stream)) {
           break;
         }
         size_t len = strlen(output + write_pos);
@@ -297,11 +304,6 @@ class file_line_reader {
   size_t _M_offset;
   size_t _M_read_pos;
   size_t _M_size;
-  inline void swap(Lee::file_line_reader::iterator& lhs,
-                   Lee::file_line_reader::iterator& rhs) noexcept
-  {
-    lhs.swap(rhs);
-  }
 };
 
 
