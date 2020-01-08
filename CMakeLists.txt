@@ -70,6 +70,9 @@ set(UNITTEST_SOURCE
 
   # utility/file_line_reader 的测试单元文件
   unittest/tools/utility/file_line_reader_utility_unittest.cpp
+
+  # profiler 模块的测试文件
+  unittest/tools/profiler/profiler_unittest.cpp
 )
 
 # 把源文件添加进工程中
@@ -140,6 +143,8 @@ endif(MSVC)
 # 定义这个宏,是为了正常编译spdlog
 #target_compile_definitions(${EXECUTABLE_EXE_NAME} PRIVATE SPDLOG_COMPILED_LIB)
 #target_compile_definitions(${EXECUTABLE_EXE_NAME} PRIVATE SPDLOG_HEADER_ONLY)
+target_compile_definitions(${EXECUTABLE_EXE_NAME} PRIVATE CATCH_CONFIG_ENABLE_BENCHMARKING)
+
 
 # 定义这个宏为了避免dbg文件中的警告
 ADD_DEFINITIONS(-DDBG_MACRO_NO_WARNING)

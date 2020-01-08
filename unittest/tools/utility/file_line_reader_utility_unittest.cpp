@@ -79,7 +79,7 @@ TEST_CASE("file_line_reader_test") {
   Lee::file_line_reader reader{fp};
   std::vector<std::string> file_content;
   for (auto line : reader) {
-    std::cout << line << std::endl;
+    //std::cout << line << std::endl;
     file_content.emplace_back(line);
   }
   REQUIRE(file_content.size() == get_line_content().size());
