@@ -46,8 +46,12 @@ inline Lee::Second GetCurrentTimeStamp() noexcept {
   if (current_time_s >
       std::numeric_limits<Lee::Second>::max() -
           static_cast<decltype(current_time_s)>(30 * 24 * 60 * 60)) {
-    assert(false &&
-           "Excute GetCurrentTimeStamp() failed!(current_time_s overflow!)");
+    //    assert(false &&
+    //           "Excute GetCurrentTimeStamp() failed!(current_time_s
+    //           overflow!)");
+    std::cout
+        << "Excute GetCurrentTimeStamp() failed!(current_time_s overflow!)"
+        << std::endl;
     return -1;
   }
   return static_cast<Lee::Second>(current_time_s);
@@ -71,9 +75,12 @@ inline Lee::MilliSecond GetCurrentMilliSecondStamp() noexcept {
   if (current_time_s >
       std::numeric_limits<Lee::MilliSecond>::max() -
           static_cast<decltype(current_time_s)>(30 * 24 * 60 * 60)) {
-    assert(false &&
-           "Excute GetCurrentMilliSecondStamp() failed!(current_time_s "
-           "overflow!)");
+    ///    assert(false &&
+    ///           "Excute GetCurrentMilliSecondStamp() failed!(current_time_s "
+    ///           "overflow!)");
+    std::cout << "Excute GetCurrentMilliSecondStamp() failed!(current_time_s "
+                 "overflow!)"
+              << std::endl;
     return -1;
   }
   return static_cast<Lee::MilliSecond>(current_time_s);
@@ -108,7 +115,8 @@ inline clock_t GetCPUMilliSecond() noexcept {
 ///     输出：2019-10-17 13:34:00
 inline std::string GetTimeString(Lee::Second Time, const char *Format) {
   if (Time < 0) {
-    assert(false && "GetTimeString Param Time is invalid!");
+    /// assert(false && "GetTimeString Param Time is invalid!");
+    std::cout << "GetTimeString Param Time is invalid!" << std::endl;
     Time = 0;
   }
 
@@ -151,7 +159,8 @@ inline Lee::Second GetCompileTimeStamp() {
   static time_t compile_time_s = 0;  ///< 单位为秒
   std::call_once(InstanceFlag, []() {
     tm tm = {0};
-    char Mmm[4] = "Jan";
+    char Mmm[4] = {0};
+    strcpy_s(Mmm, sizeof(Mmm), "Jan");
     sscanf_s(__DATE__, "%3s %d %d", Mmm, static_cast<unsigned>(sizeof(Mmm)),
              &tm.tm_mday, &tm.tm_year);
 
@@ -191,7 +200,8 @@ inline Lee::Second GetCompileTimeStamp() {
     tm.tm_mon -= 1;
     compile_time_s = mktime(&tm);
     if (compile_time_s <= 0 || compile_time_s > Lee::GetCurrentTimeStamp()) {
-      assert(false && "GetCompileTimeStamp() is failed!");
+      /// assert(false && "GetCompileTimeStamp() is failed!");
+      std::cout << "GetCompileTimeStamp() is failed!" << std::endl;
       compile_time_s = -1;
     }
   });  /// std::call_once()
@@ -216,7 +226,10 @@ inline Lee::Second GetTodaySpecificTimeStamp(const int iHour, const int iMin,
                                              const int iSec) {
   if (iHour < 0 || iHour > 23 || iMin < 0 || iMin > 59 || iSec < 0 ||
       iSec > 59) {
-    assert(false && "Invalid Param! GetTodaySpecificTimeStamp Execute fail! ");
+    /// assert(false && "Invalid Param! GetTodaySpecificTimeStamp Execute fail!
+    /// ");
+    std::cout << "Invalid Param! GetTodaySpecificTimeStamp Execute fail! "
+              << std::endl;
     return 0;
   }
 
