@@ -418,7 +418,8 @@ inline void SleepForRandomMilliSecond(Lee::MilliSecond range_start,
   if (range_start < 0) range_start = 0;
   if (range_end < 0) range_end = 0;
   if (range_end > SLEEP_FOR_RANGE_MAX_MILLISECOND) {
-    assert("range_end is too large!" && false);
+    /// assert("range_end is too large!" && false);
+    std::cout << "range_end is too large!" << std::endl;
     range_end = SLEEP_FOR_RANGE_MAX_MILLISECOND;
   }
   Lee::MilliSecond sleep_time = Lee::GetRangeRandom(
@@ -440,8 +441,8 @@ inline void SleepForRandomMilliSecond(Lee::MilliSecond range_end) {
 /// @author   Lijiancong, pipinstall@163.com
 /// @date     2020-01-07 16:35:46
 /// @warning  线程不安全
-inline void quick_exit(int code, const std::string &exit_code) {
-  LOG(LOG_ERROR, exit_code.c_str());
+inline void quick_exit(const int &code, const std::string &exit_info) {
+  LOG(LOG_ERROR, exit_info.c_str());
   LOG(LOG_ERROR, "Exist the program!");
   exit(code);
 }
