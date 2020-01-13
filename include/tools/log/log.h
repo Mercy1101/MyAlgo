@@ -246,11 +246,11 @@ class SpdLogInstance {
   static void InitSpdLogger(std::shared_ptr<spdlog::logger> &sptrDetailLogger,
                             int &iLogLevelConf) {
     /** 检查路径有没有创建 */
-    const auto strPath = Lee::GetRootPath();
+    const auto strPath = ::Lee::GetRootPath();
     const std::string strLogRootFolder =
-        strPath + "\\" + Lee::DEFAULT_LOG_FILE_FOLDER;
-    if (!Lee::IsFileExist(strLogRootFolder)) {
-      if (!Lee::CreateFileFolder(strLogRootFolder)) {
+        strPath + "\\" + ::Lee::DEFAULT_LOG_FILE_FOLDER;
+    if (!::Lee::IsFileExist(strLogRootFolder)) {
+      if (!::Lee::CreateFileFolder(strLogRootFolder)) {
         std::cout << "Path " << strLogRootFolder << "is not exist!"
                   << std::endl;
         /// assert(false && "can't create log root floder");
@@ -261,8 +261,8 @@ class SpdLogInstance {
 
     std::string strDetailLogPath = strPath + "\\" + DEFAULT_LOG_ROOT_PATH +
                                    "\\" + DEFAULT_DETAIL_LOG_FOLDER_NAME;
-    if (!Lee::IsFileExist(strDetailLogPath)) {
-      if (!Lee::CreateFileFolder(strDetailLogPath)) {
+    if (!::Lee::IsFileExist(strDetailLogPath)) {
+      if (!::Lee::CreateFileFolder(strDetailLogPath)) {
         std::cout << "CreateFileFolder: " << strDetailLogPath << " failed!"
                   << std::endl;
         /// assert(false && "CreateFileFolder failed in log/log.h!");

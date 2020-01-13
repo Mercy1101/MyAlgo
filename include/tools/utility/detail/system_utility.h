@@ -83,15 +83,15 @@ inline bool IsFileExist(const std::string& strFilePathAndName) {
 /// @author   Lijiancong, pipinstall@163.com
 /// @date     2019-11-22 09:52:06
 /// @warning  线程不安全
-inline std::wstring StringToWSTR(const std::string& s) {
-  int length = static_cast<int>(s.length()) + 1;
-  int len = MultiByteToWideChar(CP_ACP, 0, s.c_str(), length, 0, 0);
-  wchar_t* buf = new wchar_t[len];
-  MultiByteToWideChar(CP_ACP, 0, s.c_str(), length, buf, len);
-  std::wstring r(buf);
-  delete[] buf;
-  return r;
-}
+/// inline std::wstring StringToWSTR(const std::string& s) {
+///   int length = static_cast<int>(s.length()) + 1;
+///   int len = MultiByteToWideChar(CP_ACP, 0, s.c_str(), length, 0, 0);
+///   wchar_t* buf = new wchar_t[len];
+///   MultiByteToWideChar(CP_ACP, 0, s.c_str(), length, buf, len);
+///   std::wstring r(buf);
+///   delete[] buf;
+///   return r;
+/// }
 
 /// @name     Wchar_tToString
 /// @brief    wchar_t to string
@@ -106,7 +106,8 @@ inline std::wstring StringToWSTR(const std::string& s) {
 /// @warning  线程不安全
 /// inline void Wchar_tToString(std::string& szDst, wchar_t* wchar) {
 ///   wchar_t* wText = wchar;
-///   DWORD dwNum = WideCharToMultiByte(CP_OEMCP, NULL, wText, -1, NULL, 0, NULL,
+///   DWORD dwNum = WideCharToMultiByte(CP_OEMCP, NULL, wText, -1, NULL, 0,
+///   NULL,
 ///                                     FALSE);  // WideCharToMultiByte的运用
 ///   char* psText;  // psText为char*的临时数组，作为赋值给std::string的中间变量
 ///   psText = new char[dwNum];
@@ -115,11 +116,11 @@ inline std::wstring StringToWSTR(const std::string& s) {
 ///   szDst = psText;              // std::string赋值
 ///   delete[] psText;             // psText的清除
 /// }
-inline void Wchar_tToString(std::string& szDst, wchar_t* wchar) {
-  std::wstring ws(wchar);
-  std::string temp(ws.begin(), ws.end());
-  szDst = temp;
-}
+/// inline void Wchar_tToString(std::string& szDst, wchar_t* wchar) {
+///   std::wstring ws(wchar);
+///   std::string temp(ws.begin(), ws.end());
+///   szDst = temp;
+/// }
 
 /// @name     GetRootPath
 /// @brief    获取当前程序所在的根目录.(windows系统限定)
@@ -135,24 +136,21 @@ inline std::string GetRootPath() {
   static std::once_flag InstanceFlag;
   static std::string strPathName;
   std::call_once(InstanceFlag, [&]() {
-    TCHAR szPath[MAX_PATH] = {0};
+    char szPath[MAX_PATH] = {0};
     if (!GetModuleFileName(NULL, szPath, MAX_PATH)) {
       std::cout << "Cannot GetModuleFileName!Error Code: " << GetLastError()
                 << std::endl;
+      assert(false && "Cannot GetModuleFileName!");
       /// assert(false && "Cannot GetModuleFileName!");
       std::cout << "Cannot GetModuleFileName!" << std::endl;
       strPathName = "";
     }
-    std::string Path;
-    Wchar_tToString(Path, szPath);
-
+    std::string Path(szPath);
     auto pos = Path.find_last_of("\\/");
     strPathName = Path.substr(0, pos);
   });
-
   return strPathName;
 }
-
 /// @name     CreateFileFolder
 /// @brief    创建一个windows系统的文件夹
 ///
@@ -170,12 +168,7 @@ inline std::string GetRootPath() {
 ///           如果上一级目录也不存在则需要先创建上一级目录,创建二级目录.
 inline bool CreateFileFolder(const std::string& strFolderPath) {
   if (strFolderPath.empty()) return false;
-  auto pwchar = StringToWSTR(strFolderPath).c_str();
-  bool result = true;
-  if (0 == CreateDirectory(pwchar, NULL)) {
-    result = false;
-  }
-  return result;
+  return 0 == CreateDirectory(strFolderPath.c_str(), NULL) ? false : true;
 }
 /// @name     StringToWstring
 /// @brief    string to wstring
@@ -197,27 +190,6 @@ inline void StringToWstring(std::wstring& szDst, const std::string& str) {
   szDst = wszUtf8;
   // std::wstring r = wszUtf8;
   delete[] wszUtf8;
-}
-
-/// @name     ConvertSymbol
-/// @brief    转换路径中的符号，反斜杠转为正斜杠
-///
-/// @param    path  [in/out]
-///
-/// @return   NONE
-///
-/// @author   Lijiancong, pipinstall@163.com
-/// @date     2019-12-30 13:13:41
-/// @warning  线程不安全
-inline void ConvertSymbol(std::string* path) {
-  while (true) {
-    auto postion = path->find("\\");
-    if (postion != std::string::npos) {
-      path->replace(postion, 1, "/");
-    } else {
-      return;
-    }
-  }
 }
 
 }  // namespace system
