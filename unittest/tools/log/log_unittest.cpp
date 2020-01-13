@@ -3,6 +3,9 @@
 #include <atomic>
 #include <catch2/catch.hpp>
 #include <iostream>
+#include <string>
+#include <sstream>
+#include <thread>
 
 #include "utility/utility.h"
 
@@ -92,4 +95,18 @@ TEST_CASE("log 模块的速度测试", "[log]") {
     return 0;
   };
 }
+
+TEST_CASE("log 模块添加线程id打印的测试", "[log]") {
+  for (int i = 0; i < 10; ++i) {
+    std::thread thread([]() {
+      std::ostringstream oss;
+      oss << std::this_thread::get_id();
+      std::string stid = oss.str();
+      unsigned long long tid = std::stoull(stid);
+      LOG(LOG_INFO, "thread id test!(%llu)", tid);
+    });
+    thread.join();
+  }
+}
+
 #endif  // end of LOG_UNITTEST

@@ -27,14 +27,16 @@
 #include <memory>
 #include <mutex>
 #include <thread>
+#include <sstream>
 
-#include "log/spdlog/spdlog.h"
-#include "simpleini/SimpleIni.h"
-#include "log/spdlog/sinks/rotating_file_sink.h"
-#include "utility/detail/marco_utility.h"
-#include "utility/detail/system_utility.h"
 #include "log/spdlog/async.h"
 #include "log/spdlog/sinks/basic_file_sink.h"
+#include "log/spdlog/sinks/rotating_file_sink.h"
+#include "log/spdlog/spdlog.h"
+#include "simpleini/SimpleIni.h"
+#include "utility/detail/marco_utility.h"
+#include "utility/detail/system_utility.h"
+
 
 /** 所有日志模块相对于程序根路径下的默认文件夹名称 */
 const std::string DEFAULT_LOG_ROOT_PATH = "log";
@@ -85,6 +87,7 @@ class SpdLogInstance {
   * @brief    主要进行C语言字符串整合为string型，
   *           传给日志打印函数，进行打印
 
+  * @param    thread_id    [in]    线程ID
   * @param    strFuncName  [in]    调用该函数的函数名称
   * @param    iLineNumber  [in]    在第几行调用该函数
   * @param    eLogLevel    [in]    打印等级
@@ -96,12 +99,17 @@ class SpdLogInstance {
   * @warning  线程安全
   * @note
   */
-  static void WriteSpdLog(const std::string &strFuncName, const int iLineNumber,
+  static void WriteSpdLog(const std::thread::id thread_id,
+                          const std::string &strFuncName, const int iLineNumber,
                           const SPD_LOG_LEVEL &eLogLevel, const char *szFormat,
                           ...) {
     if (strlen(szFormat) > 1024 * 2) {
       assert(false && "LOG text is too large!");
     }
+    std::ostringstream oss;
+    oss << thread_id;
+    std::string stid = oss.str();
+    /// unsigned long long tid = std::stoull(stid);
 
     va_list valog;
     va_start(valog, szFormat);
@@ -111,7 +119,8 @@ class SpdLogInstance {
 
 #ifndef SWITCH_LOG_NO_FUNCNAME_LINENUMBER
     strLog = strLog + " <In Function: " + strFuncName +
-             ", Line: " + std::to_string(iLineNumber) + ">";
+             ", Line: " + std::to_string(iLineNumber) +
+             ", PID: " + stid + ">";
 #endif
 
     BaseLog(eLogLevel, strLog);
@@ -263,11 +272,11 @@ class SpdLogInstance {
       }
     }
     strDetailLogPath += "\\detail.log";
-     sptrDetailLogger = spdlog::rotating_logger_mt("detail", strDetailLogPath,
-                                                   1048576 * 50, 10);
-    
-      //sptrDetailLogger = spdlog::basic_logger_mt<spdlog::async_factory>(
-      //"async_detail_logger", "logs/async_log.txt");
+    sptrDetailLogger = spdlog::rotating_logger_mt("detail", strDetailLogPath,
+                                                  1048576 * 50, 10);
+
+    // sptrDetailLogger = spdlog::basic_logger_mt<spdlog::async_factory>(
+    //"async_detail_logger", "logs/async_log.txt");
 
     spdlog::level::level_enum eFlushLevel = spdlog::level::level_enum::warn;
     /** 读取配置中的日志等级 */
@@ -350,9 +359,9 @@ class SpdLogInstance {
 }  // end of namespace log
 }  // end of namespace Lee
 
-#define LOG(level, text, ...)                                            \
-  Lee::log::SpdLogInstance::WriteSpdLog(__func__, __LINE__, level, text, \
-                                        __VA_ARGS__)
+#define LOG(level, text, ...)                                                 \
+  Lee::log::SpdLogInstance::WriteSpdLog(std::this_thread::get_id(), __func__, \
+                                        __LINE__, level, text, __VA_ARGS__)
 #define LOG_NO_FUNCTIONNAME(level, string) \
   Lee::log::SpdLogInstance::WriteSpdLog(level, string)
 
