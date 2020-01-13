@@ -26,17 +26,14 @@
 #include <iostream>
 #include <memory>
 #include <mutex>
-#include <thread>
 #include <sstream>
+#include <thread>
 
-#include "log/spdlog/async.h"
-#include "log/spdlog/sinks/basic_file_sink.h"
-#include "log/spdlog/sinks/rotating_file_sink.h"
 #include "log/spdlog/spdlog.h"
 #include "simpleini/SimpleIni.h"
+#include "spdlog/sinks/rotating_file_sink.h"
 #include "utility/detail/marco_utility.h"
 #include "utility/detail/system_utility.h"
-
 
 /** 所有日志模块相对于程序根路径下的默认文件夹名称 */
 const std::string DEFAULT_LOG_ROOT_PATH = "log";
@@ -83,28 +80,29 @@ constexpr int DEFAULT_FLUSH_LEVEL_CONF = 3;
 class SpdLogInstance {
  public:
   /**
-  * @name     WriteSpdLog
-  * @brief    主要进行C语言字符串整合为string型，
-  *           传给日志打印函数，进行打印
+ * @name     WriteSpdLog
+ * @brief    主要进行C语言字符串整合为string型，
+ *           传给日志打印函数，进行打印
 
-  * @param    thread_id    [in]    线程ID
-  * @param    strFuncName  [in]    调用该函数的函数名称
-  * @param    iLineNumber  [in]    在第几行调用该函数
-  * @param    eLogLevel    [in]    打印等级
-  * @param    szFormat     [in]    日志信息，C型字符串
+ * @param    thread_id    [in]    线程ID
+ * @param    strFuncName  [in]    调用该函数的函数名称
+ * @param    iLineNumber  [in]    在第几行调用该函数
+ * @param    eLogLevel    [in]    打印等级
+ * @param    szFormat     [in]    日志信息，C型字符串
 
-  * @return   NONE
-  * @author   Lijiancong, pipinstall@163.com
-  * @date     2019-09-17 11:03:46
-  * @warning  线程安全
-  * @note
-  */
+ * @return   NONE
+ * @author   Lijiancong, pipinstall@163.com
+ * @date     2019-09-17 11:03:46
+ * @warning  线程安全
+ * @note
+ */
   static void WriteSpdLog(const std::thread::id thread_id,
                           const std::string &strFuncName, const int iLineNumber,
                           const SPD_LOG_LEVEL &eLogLevel, const char *szFormat,
                           ...) {
     if (strlen(szFormat) > 1024 * 2) {
-      assert(false && "LOG text is too large!");
+      /// assert(false && "LOG text is too large!");
+      BaseLog(SPD_LOG_LEVEL::LOG_ERROR, "LOG text is too large!");
     }
     std::ostringstream oss;
     oss << thread_id;
@@ -119,8 +117,7 @@ class SpdLogInstance {
 
 #ifndef SWITCH_LOG_NO_FUNCNAME_LINENUMBER
     strLog = strLog + " <In Function: " + strFuncName +
-             ", Line: " + std::to_string(iLineNumber) +
-             ", PID: " + stid + ">";
+             ", Line: " + std::to_string(iLineNumber) + ", PID: " + stid + ">";
 #endif
 
     BaseLog(eLogLevel, strLog);
@@ -256,8 +253,9 @@ class SpdLogInstance {
       if (!Lee::CreateFileFolder(strLogRootFolder)) {
         std::cout << "Path " << strLogRootFolder << "is not exist!"
                   << std::endl;
-        assert(false && "can't create log root floder");
-        exit(-1);
+        /// assert(false && "can't create log root floder");
+        std::cout << "can't create log root floder" << std::endl;
+        // log::quick_exit(-1, "can't create log root floder");
       }
     }
 
@@ -267,18 +265,19 @@ class SpdLogInstance {
       if (!Lee::CreateFileFolder(strDetailLogPath)) {
         std::cout << "CreateFileFolder: " << strDetailLogPath << " failed!"
                   << std::endl;
-        assert(false && "CreateFileFolder failed in log/log.h!");
-        exit(-1);
+        /// assert(false && "CreateFileFolder failed in log/log.h!");
+        std::cout << "CreateFileFolder failed in log/log.h!" << std::endl;
+        /// log::quick_exit(-1, "CreateFileFolder failed in log/log.h!");
       }
     }
     strDetailLogPath += "\\detail.log";
     sptrDetailLogger = spdlog::rotating_logger_mt("detail", strDetailLogPath,
                                                   1048576 * 50, 10);
+    // auto async_file = spdlog::basic_logger_mt<spdlog::async_factory>(
+    //   "async_file_logger", "logs/async_log.txt");
 
-    // sptrDetailLogger = spdlog::basic_logger_mt<spdlog::async_factory>(
-    //"async_detail_logger", "logs/async_log.txt");
-
-    spdlog::level::level_enum eFlushLevel = spdlog::level::level_enum::warn;
+    enum spdlog::level::level_enum eFlushLevel =
+        spdlog::level::level_enum::warn;
     /** 读取配置中的日志等级 */
     if (!ReadLogConfig(DEFAULT_LOG_CONFIG_FILE_NAME, iLogLevelConf,
                        eFlushLevel)) {
@@ -318,9 +317,9 @@ class SpdLogInstance {
     sprintf_s(acFile, sizeof(acFile), "%s\\%s", Lee::GetRootPath().c_str(),
               FileName.c_str());
     if (!Lee::IsFileExist(acFile)) {
-      printf("file %s not exist!\n", acFile);
-      assert(false && "log config file not exist!\n");
-      // exit(-1);
+      /// assert(false && "log config file not exist!\n");
+      std::cout << "log config file not exist!" << std::endl;
+      // Lee::quick_exit(-1, "log config file not exist!");
       return false;
     }
     bool IsFileUtf8 = true;
