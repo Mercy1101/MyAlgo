@@ -126,8 +126,8 @@ static inline void SpdLogProfiler(const char* LogText, ...) {
       if (!Lee::CreateFileFolder(strLogRootFolder)) {
         std::cout << "Path " << strLogRootFolder << "is not exist!"
                   << std::endl;
-        assert(false && "can't create log root floder");
-        exit(-1);
+        /// assert(false && "can't create log root floder");
+        Lee::quick_exit(-1, "can't create log root floder");
       }
     }
 
@@ -136,8 +136,8 @@ static inline void SpdLogProfiler(const char* LogText, ...) {
     if (!Lee::IsFileExist(strPath)) {
       if (!Lee::CreateFileFolder(strPath)) {
         std::cout << "CreateFileFolder: " << strPath << " failed!" << std::endl;
-        assert(false && "CreateFileFolder failed in Lee::profiler!");
-        exit(-1);
+        /// assert(false && "CreateFileFolder failed in Lee::profiler!");
+        Lee::quick_exit(-1, "CreateFileFolder failed in Lee::profiler!");
       }
     }
     strPath += "\\profiler.log";
@@ -150,6 +150,7 @@ static inline void SpdLogProfiler(const char* LogText, ...) {
   va_list vaLog;
   va_start(vaLog, LogText);
   vsnprintf_s(acLog, sizeof(acLog) - 1, LogText, vaLog);
+  acLog[2048 - 1] = '\0';
   va_end(vaLog);
 
   std::string sLog(acLog);
@@ -173,8 +174,10 @@ class ProfilerInstance {
         duringTime(0),
         startTime(SteadyClock::now()),
         finishTime(SteadyClock::now()) {
-    SpdLogProfiler("Profiler is Running in %s Line: %d Memory: %u KB(%u MB)\n{",
-                   sFunc.c_str(), iLine, memory(), memory(MemoryUnit::MB_));
+    SpdLogProfiler(
+        "Profiler is Running in %s Line: %d Memory: %u KB(%u MB), "
+        "this:%#x\n{",
+        sFunc.c_str(), iLine, memory(), memory(MemoryUnit::MB_), this);
     start();
   }
 
@@ -182,9 +185,9 @@ class ProfilerInstance {
     finish();
     SpdLogProfiler(
         "\n1Function: %s \nSpand Time: %.3fms( %.3fs) \nMemory: %u KB(%u MB) \n"
-        "In File: %s  LINE: %d\nEnd of Function: %s\n}\n",
+        "In File: %s  LINE: %d\nEnd of Function: %s, this: %#x\n}\n",
         m_Func.c_str(), millisecond(), second(), memory(),
-        memory(MemoryUnit::MB_), m_File.c_str(), m_Line, m_Func.c_str());
+        memory(MemoryUnit::MB_), m_File.c_str(), m_Line, m_Func.c_str(), this);
   }
 
  private:
