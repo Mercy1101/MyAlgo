@@ -19,6 +19,7 @@
 #include <functional>
 #include <iostream>
 #include <iterator>
+#include <list>
 #include <mutex>
 #include <string>
 #include <vector>
@@ -195,6 +196,61 @@ static void quicksort(T list[], int begin, int end) {
     quicksort(list, begin, pivot_idx - 1);
     quicksort(list, pivot_idx + 1, end);
   }
+}
+
+template <typename T>
+std::list<T> sequential_quick_sort(std::list<T> input) {
+  if (input.empty()) {
+    return input;
+  }
+  std::list<T> result;
+  result.splice(result.begin(), input, input.begin());
+  T const& pivot = *result.begin();
+
+  auto divide_point = std::partition(input.begin(), input.end(),
+                                     [&](T const& t) { return t < pivot; });
+
+  std::list<T> lower_part;
+  lower_part.splice(lower_part.end(), input, input.begin(), divide_point);
+
+  auto new_lower(sequential_quick_sort(std::move(lower_part)));
+  auto new_higher(sequential_quick_sort(std::move(input)));
+  result.splice(result.end(), new_higher);
+  result.splice(result.begin(), new_lower);
+  return result;
+}
+
+template <class ForwardIt>
+void quicksort(ForwardIt first, ForwardIt last) {
+  if (first == last) return;
+  auto pivot = *std::next(first, std::distance(first, last) / 2);
+  ForwardIt middle1 = std::partition(
+      first, last, [pivot](const auto& em) { return em < pivot; });
+  ForwardIt middle2 = std::partition(
+      middle1, last, [pivot](const auto& em) { return !(pivot < em); });
+  quicksort(first, middle1);
+  quicksort(middle2, last);
+}
+
+template <typename T>
+std::list<T> parallel_quick_sort(std::list<T> input) {
+  if (input.empty()) {
+    return input;
+  }
+
+  std::list<T> result;
+  result.splice(result.begin(), input, input.begin());
+  T const& pivot = *result.begin();
+  auto divide_point = std::partition(input.begin(), input.end(),
+                                     [&](T const& t) { return t < pivot; });
+  std::list<T> lower_part;
+  lower_part.splice(lower_part.end(), input, input.begin(), divide_point);
+  std::future<std::list<T>> new_lower(
+      std::async(&parallel_quick_sort<T>, std::move(lower_part)));
+  auto new_higher(parallel_quick_sort(std::move(input)));
+  result.splice(result.end(), new_higher);
+  result.splice(result.begin(), new_lower.get());
+  return result;
 }
 
 }  // namespace algorithm
