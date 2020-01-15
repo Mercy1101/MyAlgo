@@ -1,4 +1,4 @@
-//======================================================================//
+﻿//======================================================================//
 // Copyright (C) 2016-2018 Jonathan Müller <jonathanmueller.dev@gmail.com>
 //
 // This software is provided 'as-is', without any express or
