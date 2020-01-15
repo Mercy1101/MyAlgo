@@ -12,6 +12,7 @@
 #define MYALGO_INCLUDE_TOOLS_UTILITY_DETAIL_THREAD_UTILITY_H_
 
 #include <condition_variable>
+#include <exception>
 #include <memory>
 #include <mutex>
 #include <queue>
@@ -185,6 +186,177 @@ class threadsafe_queue {
   std::condition_variable data_cond;
 };  /// end of class threadsafe_queue
 
+/// @name     threadsafe_queue_sptr
+/// @brief    使用锁来封装一个std::stack，因为大量使用了锁，所以可能有效率问题
+///
+/// @author   Lijiancong, pipinstall@163.com
+///           Taken from <C++ Concurrency In Action> 第六章：基于锁的并发结构
+///           清单6.1 线程安全栈的类定义
+/// @date     2020-01-15 09:45:31
+/// @warning  线程不安全
+template <typename T>
+class threadsafe_queue_sptr {
+ public:
+  threadsafe_queue_sptr() {}
+  void wait_and_pop() {
+    std::unique_lock<std::mutex> lk(mut);
+    data_cond.wait(lk, [] { return !data_queue.empty(); });
+    value = std::move(*data_queue.front());
+    data_queue.pop();
+  }
+
+  bool try_pop(T& value) {
+    std::lock_guard<std::mutex> lk(mut);
+    if (data_queue.empty()) {
+      return false;
+    }
+    value = std::move(*data_queue.front());
+    data_queue.pop();
+    return res;
+  }
+
+  std::shared_ptr<T> wait_and_pop() {
+    std::unique_lock<std::mutex> lk(mut);
+    if (data_queue.empty()) {
+      return std::shared_ptr<T>();
+    }
+  }
+
+  std::shared_ptr<T> try_pop() {
+    std::lock_guard<std::mutex> lk(mut);
+    if (data_queue.empty()) {
+      return std::shared_ptr<T>();
+    }
+
+    std::shared_ptr<T> res = data_queue.front();
+    data_queue.pop();
+    return res;
+  }
+
+  void push(T new_value) {
+    std::shared_ptr<T> data(std::make_shared<T>(std::move(new_value)));
+    std::lock_guard<std::mutex> lk(mut);
+    data_queue.push(data);
+    data_cond.notify_one();
+  }
+
+  bool empty() const {
+    std::lock_guard<std::mutex> lk(mut);
+    return data_queue.empty();
+  }
+
+ private:
+  mutable std::mutex mut;
+  std::queue<std::shared_ptr<T>> data_queue;
+  std::condition_variable data_cond;
+};  /// end of class threadsafe_queue_sptr
+struct empty_stack : std::exception {
+  const char* what() const throw();
+};
+
+/// @name     threadsafe_queue_ptr
+/// @brief    使用锁来封装一个std::stack，因为大量使用了锁，所以可能有效率问题
+///
+/// @author   Lijiancong, pipinstall@163.com
+///           Taken from <C++ Concurrency In Action> 第六章：基于锁的并发结构
+///           清单6.6 使用细粒度锁的线程安全队列
+/// @date     2020-01-15 09:45:31
+/// @warning  线程不安全
+template <typename T>
+class threadsafe_queue_ptr {
+ public:
+  threadsafe_queue_ptr() : head(new node), tail(head.get()) {}
+  threadsafe_queue_ptr(const threadsafe_queue_ptr& other) = delete;
+
+  std::shared_ptr<T> try_pop() {
+    std::unique_ptr<node> old_head = pop_head();
+    return old_head ? old_head->data:std::shared_ptr<T>();
+  }
+
+  void push(T new_value) {
+    std::shared_ptr<T> new_data(std::make_shared<T>(std::move(new_value)));
+    std::unique_ptr<node> p(new node);
+    node * const new_tail = p.get();
+    std::lock_guard<std::mutex> tail_lock(tail_mutex);
+    tail->data = new_data;
+    tail->next = std::move(p);
+    tail = new_tail;
+  }
+ private:
+  struct node {
+    std::shared_ptr<T> data;
+    std::unique_ptr<node> next;
+  };
+  std::mutex head_mutex;
+  std::unique_ptr<node> head;
+  std::mutex tail_mutex;
+  node* tail;
+
+  node* get_tail() {
+    std::lock_guard<std::mutex> tail_lock(tail_mutex);
+    return tail;
+  }
+
+  std::unique_ptr<node> pop_head() {
+    std::lock_guard<std::mutex> head_lock(head_mutex);
+
+    if (head.get() == get_tail()) {
+      return nullptr;
+    }
+    std::unique_ptr<node> old_head = std::move(head);
+    head = std::move(old_head->next);
+    return old_head;
+  }
+
+};  /// end of threadsafe_queue_ptr
+
+/// @name     threadsafe_stack
+/// @brief    使用锁来封装一个std::stack，因为大量使用了锁，所以可能有效率问题
+///
+/// @author   Lijiancong, pipinstall@163.com
+///           Taken from <C++ Concurrency In Action> 第六章：基于锁的并发结构
+///           清单6.1 线程安全栈的类定义
+/// @date     2020-01-15 09:45:31
+/// @warning  线程不安全
+template <typename T>
+class threadsafe_stack {
+ public:
+  threadsafe_stack() {}
+  threadsafe_stack(const threadsafe_stack& other) {
+    std::lock_guard<std::mutex> lock(other.m);
+    data = other.data;
+  }
+  threadsafe_stack& operator=(const threadsafe_stack&) = delete;
+
+  void push(T new_value) {
+    std::lock_guard<std::mutex> lock(m);
+    data.push(std::move(new_value));
+  }
+
+  std::shared_ptr<T> pop() {
+    std::lock_guard<std::mutex> lock(m);
+    if (data.empty()) throw empty_stack();
+    std::shared_ptr<T> const res(std::make_shared<T>(std::move(data.top())));
+    data.pop();
+    return res;
+  }
+
+  void pop(T& value) {
+    std::lock_guard<std::mutex> lock(m);
+    if (data.empty()) throw empty_stack();
+    value = std::move(data.top());
+    data.pop();
+  }
+
+  bool empty() const {
+    std::lock_guard<std::mutex> lock(m);
+    return data.empty();
+  }
+
+ private:
+  std::stack<T> data;
+  mutable std::mutex m;
+};  /// end of class threadsafe_stack
 
 }  // namespace thread_guard_
 }  // namespace utility
