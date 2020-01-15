@@ -17,6 +17,7 @@
 #include <mutex>
 #include <queue>
 #include <thread>
+#include <stack>
 
 #include "utility/detail/marco_utility.h"
 
