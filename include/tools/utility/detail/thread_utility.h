@@ -11,6 +11,7 @@
 #ifndef MYALGO_INCLUDE_TOOLS_UTILITY_DETAIL_THREAD_UTILITY_H_
 #define MYALGO_INCLUDE_TOOLS_UTILITY_DETAIL_THREAD_UTILITY_H_
 
+#include <atomic>
 #include <condition_variable>
 #include <exception>
 #include <memory>
@@ -20,40 +21,12 @@
 #include <stack>
 #include <thread>
 #include <vector>
-#include <atomic>
 
 #include "utility/detail/marco_utility.h"
 
 namespace Lee {
 inline namespace utility {
 inline namespace thread_guard_ {
-
-/// @name     thread_guard
-/// @brief    用来传入一个线程，并在析构时自动调用join(), 来令线程join(),
-///           防止语句发生异常时线程没有调用join函数
-///
-/// @author   Lijiancong, pipinstall@163.com
-///           Taken from <C++ Concurrency In Action> 第二章：管理线程
-///           清单2.3 使用RAII等待线程完成
-///
-/// @date     2020-01-13 10:04:34
-/// @warning  线程安全
-class thread_guard {
- public:
-  explicit thread_guard(std::thread& t) : t_(t) {}
-  ~thread_guard() {
-    if (t_.joinable()) {
-      t_.join();
-    } else {
-      /// TODO（李建聪）: 如果不能join，怎么处理？
-    }
-  }
-
- private:
-  MYALGO_DISALLOW_COPY_AND_ASSIGN_(thread_guard);
-  std::thread& t_;  ///< 用来保留一个线程的引用
-
-};  /// end of class thread_guard
 
 /// @name     scoped_thread
 /// @brief    用来移动一个线程进入本class，然后在析构的时候调用join。
@@ -127,133 +100,6 @@ class hierarchical_mutex {
   }
 };
 
-/// @name     threadsafe_queue
-/// @brief    内部使用std::queue，外面包装了一层线程安全的接口
-///
-/// @author   Lijiancong, pipinstall@163.com
-///           Taken from <C++ Concurrency In Action> 第四章：同步并发操作
-///           清单4.5 使用条件变量的线程安全队列的完整类定义
-///
-/// @date     2020-01-13 14:32:30
-/// @warning  线程安全
-template <typename T>
-class threadsafe_queue {
- public:
-  threadsafe_queue() {}
-  threadsafe_queue(threadsafe_queue const& other) {
-    std::lock_guard<std::mutex> lk(other.mut);
-    data_queue = other.data_queue;
-  }
-
-  void push(T new_value) {
-    std::lock_guard<std::mutex> lk(mut);
-    data_queue.push(new_value);
-    data_cond.notify_one();
-  }
-
-  void wait_and_pop(T& value) {
-    std::unique_lock<std::mutex> lk(mut);
-    data_cond.wait(lk, [this] { return !data.empty(); });
-    value = data_queue.front();
-    data_queue.pop();
-  }
-
-  std::shared_ptr<T> wait_and_pop() {
-    std::unique_lock<std::mutex> lk(mut);
-    data_cond.wait(lk, [this] { return !data_queue.empty(); });
-  }
-
-  bool try_pop(T& value) {
-    std::lock_guard<std::mutex> lk(mut);
-    if (data_queue.empty()) return false;
-    value = data_queue.front();
-    data_queue.pop();
-    return true;
-  }
-
-  std::shared_ptr<T> try_pop() {
-    std::lock_guard<std::mutex> lk(mut);
-    if (data_queue.empty()) return std::shared_ptr<T>();
-    std::shared_ptr<T> res(std::make_shared<T>(data_queue.front();));
-    data_queue.pop();
-    return res;
-  }
-
-  bool empty() const {
-    std::lock_guard<std::mutex> lk(mut);
-    return data_queue.empty();
-  }
-
- private:
-  mutable std::mutex mut;
-  std::queue<T> data_queue;
-  std::condition_variable data_cond;
-};  /// end of class threadsafe_queue
-
-/// @name     threadsafe_queue_sptr
-/// @brief    使用锁来封装一个std::stack，因为大量使用了锁，所以可能有效率问题
-///
-/// @author   Lijiancong, pipinstall@163.com
-///           Taken from <C++ Concurrency In Action> 第六章：基于锁的并发结构
-///           清单6.1 线程安全栈的类定义
-/// @date     2020-01-15 09:45:31
-/// @warning  线程不安全
-template <typename T>
-class threadsafe_queue_sptr {
- public:
-  threadsafe_queue_sptr() {}
-  void wait_and_pop() {
-    std::unique_lock<std::mutex> lk(mut);
-    data_cond.wait(lk, [] { return !data_queue.empty(); });
-    value = std::move(*data_queue.front());
-    data_queue.pop();
-  }
-
-  bool try_pop(T& value) {
-    std::lock_guard<std::mutex> lk(mut);
-    if (data_queue.empty()) {
-      return false;
-    }
-    value = std::move(*data_queue.front());
-    data_queue.pop();
-    return res;
-  }
-
-  std::shared_ptr<T> wait_and_pop() {
-    std::unique_lock<std::mutex> lk(mut);
-    if (data_queue.empty()) {
-      return std::shared_ptr<T>();
-    }
-  }
-
-  std::shared_ptr<T> try_pop() {
-    std::lock_guard<std::mutex> lk(mut);
-    if (data_queue.empty()) {
-      return std::shared_ptr<T>();
-    }
-
-    std::shared_ptr<T> res = data_queue.front();
-    data_queue.pop();
-    return res;
-  }
-
-  void push(T new_value) {
-    std::shared_ptr<T> data(std::make_shared<T>(std::move(new_value)));
-    std::lock_guard<std::mutex> lk(mut);
-    data_queue.push(data);
-    data_cond.notify_one();
-  }
-
-  bool empty() const {
-    std::lock_guard<std::mutex> lk(mut);
-    return data_queue.empty();
-  }
-
- private:
-  mutable std::mutex mut;
-  std::queue<std::shared_ptr<T>> data_queue;
-  std::condition_variable data_cond;
-};  /// end of class threadsafe_queue_sptr
 struct empty_stack : std::exception {
   const char* what() const throw();
 };
@@ -314,54 +160,6 @@ class threadsafe_queue_ptr {
   }
 
 };  /// end of threadsafe_queue_ptr
-
-/// @name     threadsafe_stack
-/// @brief    使用锁来封装一个std::stack，因为大量使用了锁，所以可能有效率问题
-///
-/// @author   Lijiancong, pipinstall@163.com
-///           Taken from <C++ Concurrency In Action> 第六章：基于锁的并发结构
-///           清单6.1 线程安全栈的类定义
-/// @date     2020-01-15 09:45:31
-/// @warning  线程不安全
-template <typename T>
-class threadsafe_stack {
- public:
-  threadsafe_stack() {}
-  threadsafe_stack(const threadsafe_stack& other) {
-    std::lock_guard<std::mutex> lock(other.m);
-    data = other.data;
-  }
-  threadsafe_stack& operator=(const threadsafe_stack&) = delete;
-
-  void push(T new_value) {
-    std::lock_guard<std::mutex> lock(m);
-    data.push(std::move(new_value));
-  }
-
-  std::shared_ptr<T> pop() {
-    std::lock_guard<std::mutex> lock(m);
-    if (data.empty()) throw empty_stack();
-    std::shared_ptr<T> const res(std::make_shared<T>(std::move(data.top())));
-    data.pop();
-    return res;
-  }
-
-  void pop(T& value) {
-    std::lock_guard<std::mutex> lock(m);
-    if (data.empty()) throw empty_stack();
-    value = std::move(data.top());
-    data.pop();
-  }
-
-  bool empty() const {
-    std::lock_guard<std::mutex> lock(m);
-    return data.empty();
-  }
-
- private:
-  std::stack<T> data;
-  mutable std::mutex m;
-};  /// end of class threadsafe_stack
 
 template <typename Key, typename Value, typename Hash = std::hash<Key>>
 class threadsafe_lookup_table {
@@ -562,6 +360,95 @@ class lock_free_queue {
     tail.store(p);
   }
 };  /// end of lock_free_queue
+
+class work_stealing_queue {
+ private:
+  typedef function_wrapper data_type;
+  std::deque<data_type> the_queue;
+  mutable std::mutex the_mutex;
+
+ public:
+  work_stealing_queue() {}
+
+  work_stealing_queue(const work_stealing_queue& other) = delete;
+  work_stealing_queue& operator=(const work_stealing_queue& other) = delete;
+
+  void push(data_type data) {
+    std::lock_guard<std::mutex> lock(the_mutex);
+    the_queue.push_front(std::move(data));
+  }
+
+  bool empty() const {
+    std::lock_guard<std::mutex> lock(the_mutex);
+    return the_queue.empty();
+  }
+
+  bool try_pop(data_type& res) {
+    std::lock_guard<std::mutex> lock(the_mutex);
+    if (the_queue.empty()) {
+      return false;
+    }
+
+    res = std::move(the_queue.front());
+    the_queue.pop_front();
+    return true;
+  }
+
+  bool try_steal(data_type& res) {
+    std::lock_guard<std::mutex> lock(the_mutex);
+    if (the_queue.empty()) {
+      return false;
+    }
+
+    res = std::move(the_queue.back());
+    the_queue.pop_back();
+    return true;
+  }
+};
+
+class function_wrapper {
+  struct impl_base {
+    virtual void call() = 0;
+    virtual ~impl_base() {}
+  };
+  std::unique_ptr<impl_base> impl;
+  template <typename F>
+  struct impl_type : impl_base {
+    F f;
+    impl_type(F&& f_) : f(std::move(f_)) {}
+    void call() { f(); }
+  };
+
+ public:
+  template <typename F>
+  function_wrapper(F&& f) : impl(new impl_type<F>(std::move(f))) {}
+
+  void call() { impl->call(); }
+
+  function_wrapper(function_wrapper&& other) : impl(std::move(other.impl)) {}
+
+  function_wrapper& operator=(function_wrapper&& other) {
+    impl = std::move(other.impl);
+    return *this;
+  }
+
+  function_wrapper(const function_wrapper&) = delete;
+  function_wrapper(function_wrapper&) = delete;
+  function_wrapper& operator=(const function_wrapper&) = delete;
+};
+
+class join_threads {
+  std::vector<std::thread>& threads;
+
+ public:
+  explicit join_threads(std::vector<std::thread>& threads_)
+      : threads(threads_) {}
+  ~join_threads() {
+    for (unsigned long i = 0; i < threads.size(); ++i) {
+      if (threads[i].joinable()) threads[i].join();
+    }
+  }
+};
 }  // namespace thread_guard_
 }  // namespace utility
 }  // namespace Lee

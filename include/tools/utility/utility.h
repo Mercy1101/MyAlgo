@@ -21,11 +21,11 @@
 #include "utility/detail/prime_utility.h"  /// 包含关于素数的函数
 #include "utility/detail/random_utility.h"  /// 包含与随机数相关的小工具
 #include "utility/detail/system_utility.h"  /// 包含系统相关的小工具
-#include "utility/detail/thread_utility.h"  /// 包含thread_guard小工具
+#include "utility/detail/thread_pool_utility.h"  /// 包含线程池小工具
+#include "utility/detail/thread_utility.h"       /// 包含thread_guard小工具
 #include "utility/detail/time_utility.h"   /// 包含time相关的小工具
 #include "utility/thirdparty/cxxopts.hpp"  /// 包含命令行解析的小工具
 #include "utility/thirdparty/dbg.h"        /// 包含打印小工具
 #include "utility/thirdparty/debug_assert.hpp"  /// 包含assert小工具
-
 
 #endif  // end of MYALGO_INCLUDE_TOOLS_UTILITY_UTILITY_H_
