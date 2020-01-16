@@ -148,6 +148,32 @@ printf("%s", strTest3.c_str());	// 正确
 
 ```
 
+特别注意：不可以获取一个临时变量的`c_str()`，因为返回的时`char* `指针，如果临时变量被释放的话，这个指针指向的值也是错的。
+
+[较为具体的解释](https://stackoverflow.com/questions/35980664/why-does-calling-stdstring-c-str-on-a-function-that-returns-a-string-not-wor/35980716#35980716)
+
+```c++
+#include <iostream>
+#include <string>
+std::string getString() {
+  std::string str("hello");
+  return str;
+}
+
+int main() {
+  const char* cStr = getString().c_str();	///< 永远不要这样做
+  std::cout << cStr << std::endl;  // 函数返回的临时变量没有被保存，在上一行结束后就被释放了
+  std::string s1("Hello ");
+  std::string s2("World!");
+  const char* cs = (s1 + s2).c_str();	///< 永远不要这样做
+  std::cout << cs << std::endl;
+  system("pause");
+}
+
+```
+
+
+
 #### 5. 数字转std::string
 
 ```c++
