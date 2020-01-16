@@ -2808,6 +2808,7 @@ int main()
 | V1.8   | 李建聪 | 添加**std::apply介绍**小节                                   | 2019-12-07 11:16:59 |
 | V1.9   | 李建聪 | 添加**std::map和std::set的切片移动（Splicing for maps and sets）**小节 | 2019-12-07 11:17:00 |
 | V2.0   | 李建聪 | 添加**并行算法**小节                                         | 2019-12-07 11:17:01 |
+| V2.1   | 李建聪 | 添加**三路比较符（C++20）**小节                              | 2020-01-16 12:54:19 |
 
 ### std::optional介绍
 
@@ -3118,6 +3119,88 @@ auto result2 = std::sort(std::execution::seq, std::begin(longVector),
 std::end(longVector));
 ```
 
+### 三路比较符（C++20）
+
+[官网解释](https://zh.cppreference.com/w/cpp/utility/compare/compare_three_way)
+
+[微软技术博客介绍](https://devblogs.microsoft.com/cppblog/simplify-your-code-with-rocket-science-c20s-spaceship-operator/)
+
+[When do you actually use `<=>`?](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2019/p1186r3.html)
+
+例子1：
+
+```c++
+#include <iostream>
+#include <compare>
+ 
+struct Rational_2 {
+    int num;
+    int den; // > 0
+};
+ 
+constexpr std::weak_ordering operator<=>(Rational_2 lhs, Rational_2 rhs)
+{
+    return lhs.num * rhs.den <=> rhs.num * lhs.den;
+}
+ 
+void print(std::weak_ordering value)
+{
+    if (value == 0)
+        std::cout << "equal\n";
+    else if (value < 0)
+        std::cout << "less\n";
+    else
+        std::cout << "greater\n";
+}
+ 
+int main()
+{
+    Rational_2 c{6,5};
+    Rational_2 d{8,7};
+    print(c <=> d);
+    print(std::compare_three_way{}(c,d));
+}
+```
+
+例子2：
+
+```c++
+#include <iostream>
+#include <compare>
+struct Basics {
+  int i;
+  char c;
+  float f;
+  double d;
+  auto operator<=>(const Basics&) const = default;
+};
+ 
+struct Arrays {
+  int ai[1];
+  char ac[2];
+  float af[3];
+  double ad[2][2];
+  auto operator<=>(const Arrays&) const = default;
+};
+ 
+struct Bases : Basics, Arrays {
+  auto operator<=>(const Bases&) const = default;
+};
+ 
+int main() {
+  constexpr Bases a = { { 0, 'c', 1.f, 1. },
+                        { { 1 }, { 'a', 'b' }, { 1.f, 2.f, 3.f }, { { 1., 2. }, { 3., 4. } } } };
+  constexpr Bases b = { { 0, 'c', 1.f, 1. },
+                        { { 1 }, { 'a', 'b' }, { 1.f, 2.f, 3.f }, { { 1., 2. }, { 3., 4. } } } };
+  static_assert(a == b);
+  static_assert(!(a != b));
+  static_assert(!(a < b));
+  static_assert(a <= b);
+  static_assert(!(a > b));
+  static_assert(a >= b);
+}
+```
+
 
 
 ## 多线程编程总结
@@ -3127,6 +3210,7 @@ std::end(longVector));
 | V1.0   | 李建聪 | 添加**函数的可重入性判断(线程安全性)**小节 | 2019-08-02 10:22:57 |
 | V1.1   | 李建聪 | 添加**异步运算接口**小节                   | 2019-11-28 10:48:44 |
 | V1.2   | 李建聪 | 添加**硬件支持的线程数量**小节             | 2020-01-13 10:23:12 |
+| V1.3   | 李建聪 | 添加**std::thread::yield介绍**小节         | 2020-01-16 14:48:08 |
 
 ### 函数的可重入性判断(线程安全性)
 
@@ -3343,6 +3427,27 @@ int main ()
 int main() {
     unsigned int n = std::thread::hardware_concurrency();
     std::cout << n << " concurrent threads are supported.\n";
+}
+```
+
+### std::thread::yield介绍
+
+[std::thread::yield vs std::sleep_for](https://stackoverflow.com/questions/11048946/stdthis-threadyield-vs-stdthis-threadsleep-for)
+
+例子：
+
+```c++
+void worker_thread() {
+    while (true) {
+        std::function<void()> task;
+        if (work_queue.try_pop(task)) {
+            /// 获取到任务就运行
+            task();
+        } else {
+            /// 没有获取到就休息一下
+            std::this_thread::yield();
+        }
+    }
 }
 ```
 
