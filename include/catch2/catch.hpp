@@ -7068,6 +7068,7 @@ namespace Catch {
                     classify_outliers(r.begin(), r.end()),
                 };
             }
+            #undef min
             template <typename Clock>
             EnvironmentEstimate<FloatDuration<Clock>> estimate_clock_cost(FloatDuration<Clock> resolution) {
                 auto time_limit = std::min(resolution * clock_cost_estimation_tick_limit, FloatDuration<Clock>(clock_cost_estimation_time_limit));

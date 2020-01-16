@@ -77,6 +77,9 @@ void SomeFunc(int i)
 #ifndef TOOLS_PROFILER_PROFILER_H_
 #define TOOLS_PROFILER_PROFILER_H_
 
+#include <Windows.h>
+#include <psapi.h>
+
 #include <chrono>
 #include <ctime>
 #include <exception>
@@ -85,13 +88,12 @@ void SomeFunc(int i)
 #include <mutex>
 #include <ratio>
 #include <utility>
+
 #include "log/log.h"  // for DEFAULT_PROFILER_LOG_FOLDER_NAME
 #include "log/spdlog/sinks/rotating_file_sink.h"  // for spdlog
 #include "log/spdlog/spdlog.h"
 #include "utility/utility.h"  // for Lee::GetCurrentPath()
 
-#include <Windows.h>
-#include <psapi.h>
 #pragma comment(lib, "psapi.lib")
 
 /** 假设定义了_DEBUG这个宏则开启性能宏定义，否则PROFILER_F()是一个空函数 */
@@ -304,9 +306,11 @@ void SomeFunc(int i)
     printf("%d", i);
 }
 */
+#define LEE_C11_PROFILER_MODE
 #ifdef LEE_C11_PROFILER_MODE
-#define PROFILER_F() \
-  Lee::Profiler_::ProfilerInstance pRoFiLeR__(__func__, __FILE__, __LINE__)
+#define PROFILER_F()                                                        \
+  Lee::Profiler_::ProfilerInstance pRoFiLeR__(__func__, __FILE__, \
+                                                        __LINE__)
 #else
 #define PROFILER_F() nullptr
 #endif  // end of LEE_C11_PROFILER_MODE
