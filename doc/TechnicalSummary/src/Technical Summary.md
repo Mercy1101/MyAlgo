@@ -54,6 +54,7 @@
 | V4.8 | 李建聪 | 添加**弃用属性（[[deprecated]] attribute）**小节 | 2019-12-07 11:20:29 |
 | V4.9 | 李建聪 | 添加**std::forward介绍**小节 | 2019-12-07 12:52:26 |
 | V5.0 | 李建聪 | 添加**std::declval介绍**小节 | 2019-12-17 09:11:39 |
+| V5.1 | 李建聪 | 添加**std::decay_t 介绍**小节 | 2020-01-19 10:50:02 |
 
 ### std::string 用法
 
@@ -2814,6 +2815,63 @@ int main()
     decltype(std::declval<NonDefault>().foo()) n2 = n1; // n2 的类型是 int
     std::cout << "n1 = " << n1 << '\n'
               << "n2 = " << n2 << '\n';
+}
+```
+
+### std::decay_t 介绍
+
+```c++
+#include <iostream>
+#include <type_traits>
+ 
+template <typename T, typename U>
+struct decay_equiv : 
+    std::is_same< std::decay_t<T>, U>::type 
+{};
+ 
+int main()
+{
+    std::cout << std::boolalpha
+              << decay_equiv<int, int>::value << '\n'
+              << decay_equiv<int&, int>::value << '\n'
+              << decay_equiv<int&&, int>::value << '\n'
+              << decay_equiv<const int&, int>::value << '\n'
+              << decay_equiv<int[2], int*>::value << '\n'
+              << decay_equiv<int(int), int(*)(int)>::value << '\n';
+    system("pause");
+}
+
+```
+
+### 变参模板介绍
+
+```c++
+#include <iostream>
+#include <algorithm>
+
+template <typename T>
+class AddSpace {
+private:
+  T const& ref;
+public:
+  AddSpace(T const& r) : ref(r) {}
+  friend std::ostream& operator<<(std::ostream& os, AddSpace<T> s)
+  {
+    return os << s.ref << ' ';
+  }
+};
+
+template<typename... Args>
+void print(Args... args)
+{
+  (std::cout << ... << AddSpace(args)) << '\n';
+}
+
+int main()
+{
+  print("afafd", "adafdaf");
+  print("sdfas", "sdfsdf", "sdfa", "afafd", "adafdaf");
+  system("pause");
 }
 ```
 
