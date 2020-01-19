@@ -16,6 +16,7 @@
 #include <queue>
 #include <thread>
 #include <vector>
+#include <future>
 
 #include "utility/detail/thread_utility.h"
 
@@ -24,13 +25,13 @@ inline namespace utility {
 inline namespace thread_pool_ {
 
 class thread_pool {
-  typedef function_wrapper task_type;
+  typedef Lee::function_wrapper task_type;
 
   std::atomic_bool done;
-  thread_safe_queue<task_type> pool_work_queue;
+  Lee::threadsafe_queue<task_type> pool_work_queue;
   std::vector<std::unique_ptr<work_stealing_queue> > queues;
   std::vector<std::thread> threads;
-  join_threads joiner;
+  Lee::join_threads joiner;
 
   static thread_local work_stealing_queue* local_work_queue;
   static thread_local unsigned my_index;
@@ -111,3 +112,4 @@ class thread_pool {
 }  // namespace thread_pool_
 }  // namespace utility
 }  // namespace Lee
+#endif

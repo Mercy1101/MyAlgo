@@ -20,6 +20,7 @@
 #include <shared_mutex>
 #include <stack>
 #include <thread>
+#include <deque>
 #include <vector>
 
 #include "utility/detail/marco_utility.h"
@@ -104,7 +105,7 @@ struct empty_stack : std::exception {
   const char* what() const throw();
 };
 
-/// @name     threadsafe_queue_ptr
+/// @name     threadsafe_queue
 /// @brief    使用锁来封装一个std::stack，因为大量使用了锁，所以可能有效率问题
 ///
 /// @author   Lijiancong, pipinstall@163.com
@@ -113,9 +114,9 @@ struct empty_stack : std::exception {
 /// @date     2020-01-15 09:45:31
 /// @warning  线程不安全
 template <typename T>
-class threadsafe_queue_ptr {
+class threadsafe_queue {
  public:
-  threadsafe_queue_ptr() : head(new node), tail(head.get()) {}
+  threadsafe_queue() : head(new node), tail(head.get()) {}
   threadsafe_queue_ptr(const threadsafe_queue_ptr& other) = delete;
 
   std::shared_ptr<T> try_pop() {
@@ -363,7 +364,7 @@ class lock_free_queue {
 
 class work_stealing_queue {
  private:
-  typedef function_wrapper data_type;
+  typedef Lee::function_wrapper data_type;
   std::deque<data_type> the_queue;
   mutable std::mutex the_mutex;
 
