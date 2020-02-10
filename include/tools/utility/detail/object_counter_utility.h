@@ -9,7 +9,7 @@
 /// @brief  一个对象实现次数统计的模板
 ///
 /// @author lijiancong, pipinstall@163.com
-///         Taken from < C++ Templates > 2e
+///         Taken from <C++ Templates> 2e
 ///         Chapter 21 (21.2 The Curiously Recurring Template Pattern (CRTP))
 /// @date   2020-02-10 12:41:47
 ///////// ///////// ///////// ///////// ///////// ///////// ///////// /////////
@@ -19,6 +19,9 @@
 
 #include <cstddef>
 
+namespace Lee {
+inline namespace utility {
+inline namespace object_counter {
 template <typename CountedType>
 class ObjectCounter {
  private:
@@ -41,5 +44,7 @@ class ObjectCounter {
   // return number of existing objects:
   static std::size_t live() { return count; }
 };
-
+}  // namespace object_counter
+}  // namespace utility
+}  // namespace Lee
 #endif  /// end of MYALGO_INCLUDE_TOOLS_UTILITY_DETAIL_OBJECT_COUNTER_H_
