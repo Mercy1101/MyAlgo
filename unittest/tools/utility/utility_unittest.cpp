@@ -3,7 +3,6 @@
 #include <limits>
 #include <string>
 
-//#include "utility/thirdparty/dbg.h"
 #include "utility/utility.h"
 
 TEST_CASE("KMP简单测试", "[utility][KMP]") {
