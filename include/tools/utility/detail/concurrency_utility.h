@@ -1,33 +1,26 @@
 ﻿///////// ///////// ///////// ///////// ///////// ///////// ///////// /////////
 /// Copyright (c) 2019 Lijiancong. All rights reserved.
 ///
-/// @file   thread_utility.h
-/// @brief  这个文件中放置与线程相关的小工具
+/// @file   concurrency_utility.h
+/// @brief  从 <C++ Concurrency In Action> 书中抄的代码
 ///
 /// @author lijiancong, pipinstall@163.com
-/// @date   2020-01-13 09:15:54
+/// @date   2020-01-16 15:31:21
 ///////// ///////// ///////// ///////// ///////// ///////// ///////// /////////
 
-#ifndef MYALGO_INCLUDE_TOOLS_UTILITY_DETAIL_THREAD_UTILITY_H_
-#define MYALGO_INCLUDE_TOOLS_UTILITY_DETAIL_THREAD_UTILITY_H_
+#ifndef MYALGO_INCLUDE_TOOLS_UTILITY_DETAIL_THREAD_POOL_UTILITY_H_
+#define MYALGO_INCLUDE_TOOLS_UTILITY_DETAIL_THREAD_POOL_UTILITY_H_
 
 #include <atomic>
-#include <condition_variable>
-#include <exception>
+#include <future>
 #include <memory>
-#include <mutex>
 #include <queue>
-#include <shared_mutex>
-#include <stack>
 #include <thread>
-#include <deque>
 #include <vector>
-
-#include "utility/detail/marco_utility.h"
 
 namespace Lee {
 inline namespace utility {
-inline namespace thread_guard_ {
+inline namespace concurrency {
 
 /// @name     scoped_thread
 /// @brief    用来移动一个线程进入本class，然后在析构的时候调用join。
@@ -46,7 +39,6 @@ class scoped_thread {
   ~scoped_thread() { t_.join(); }
 
  private:
-  MYALGO_DISALLOW_COPY_AND_ASSIGN_(scoped_thread);
   std::thread t_;
 };  /// end of class scoped_thread
 
@@ -450,8 +442,93 @@ class join_threads {
     }
   }
 };
-}  // namespace thread_guard_
+
+class thread_pool {
+  typedef Lee::function_wrapper task_type;
+
+  std::atomic_bool done;
+  Lee::threadsafe_queue<task_type> pool_work_queue;
+  std::vector<std::unique_ptr<work_stealing_queue>> queues;
+  std::vector<std::thread> threads;
+  Lee::join_threads joiner;
+
+  static thread_local work_stealing_queue* local_work_queue;
+  static thread_local unsigned my_index;
+
+  void worker_thread(unsigned my_index_) {
+    my_index = my_index_;
+    local_work_queue = queues[my_index].get();
+    while (!done) {
+      run_pending_task();
+    }
+  }
+
+  bool pop_task_from_local_queue(task_type& task) {
+    return local_work_queue && local_work_queue->try_pop(task);
+  }
+
+  bool pop_task_from_pool_queue(task_type& task) {
+    return pool_work_queue.try_pop(task);
+  }
+
+  bool pop_task_from_other_thread_queue(task_type& task) {
+    for (unsigned i = 0; i < queues.size(); ++i) {
+      unsigned const index = (my_index + i + 1) % queues.size();
+      if (queues[index]->try_steal(task)) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+ public:
+  thread_pool() : joiner(threads), done(false) {
+    unsigned const thread_count = std::thread::hardware_concurrency();
+
+    try {
+      for (unsigned i = 0; i < thread_count; ++i) {
+        queues.push_back(
+            std::unique_ptr<work_stealing_queue>(new work_stealing_queue));
+        threads.push_back(std::thread(&thread_pool::worker_thread, this, i));
+      }
+    } catch (...) {
+      done = true;
+      throw;
+    }
+  }
+
+  ~thread_pool() { done = true; }
+
+  template <typename ResultType>
+  using task_handle = std::unique_future<ResultType>;
+
+  template <typename FunctionType>
+  task_handle<std::result_of<FunctionType()>::type> submit(FunctionType f) {
+    typedef std::result_of<FunctionType()>::type result_type;
+
+    std::packaged_task<result_type()> task(f);
+    task_handle<result_type> res(task.get_future());
+    if (local_work_queue) {
+      local_work_queue->push(std::move(task));
+    } else {
+      pool_work_queue.push(std::move(task));
+    }
+    return res;
+  }
+
+  void run_pending_task() {
+    task_type task;
+    if (pop_task_from_local_queue(task) || pop_task_from_pool_queue(task) ||
+        pop_task_from_other_thread_queue(task)) {
+      task();
+    } else {
+      std::this_thread::yield();
+    }
+  }
+};
+
+}  // namespace concurrency
 }  // namespace utility
 }  // namespace Lee
-
-#endif  // end of MYALGO_INCLUDE_TOOLS_UTILITY_DETAIL_THREAD_UTILITY_H_
+#endif
