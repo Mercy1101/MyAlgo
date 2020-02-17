@@ -1,4 +1,7 @@
+
+
 # 技术总结文档
+
 [TOC]
 
 ## 概览
@@ -55,6 +58,7 @@
 | V4.9 | 李建聪 | 添加**std::forward介绍**小节 | 2019-12-07 12:52:26 |
 | V5.0 | 李建聪 | 添加**std::declval介绍**小节 | 2019-12-17 09:11:39 |
 | V5.1 | 李建聪 | 添加**std::decay_t 介绍**小节 | 2020-01-19 10:50:02 |
+| V5.2 | 李建聪 | 添加**std::is_empty 介绍** 小节 | 2020-02-17 09:36:58 |
 
 ### std::string 用法
 
@@ -2875,7 +2879,53 @@ int main()
 }
 ```
 
+### std::is_empty 介绍
 
+若 `T` 是空类类型（即无异于 0 大小位域的非静态数据成员、无虚函数、无虚基类，且无非空基类的非联合类类型），则提供等于 true 的成员常量 `value` 。对于任何其他类型， `value` 为 false 。
+
+若 `T` 是非联合类类型，则 `T` 应是完整类型；否则行为未定义。
+
+添加 `is_empty` 或 `is_empty_v` (C++17 起) 的特化的程序行为未定义。
+
+```c++
+#include <iostream>
+#include <type_traits>
+ 
+struct A {};
+ 
+struct B {
+    int m;
+};
+ 
+struct C {
+    virtual ~C();
+};
+ 
+union D {};
+ 
+struct E {
+    [[no_unique_address]] D d;
+};
+ 
+int main()
+{
+    std::cout << std::boolalpha;
+    std::cout << std::is_empty<A>::value << '\n';
+    std::cout << std::is_empty<B>::value << '\n';
+    std::cout << std::is_empty<C>::value << '\n';
+    std::cout << std::is_empty<D>::value << '\n';
+    std::cout << std::is_empty<E>::value << '\n'; // 结果依赖于 ABI
+ 
+}
+```
+
+> ```
+> true
+> false
+> false
+> false
+> true
+> ```
 
 ## C++17及其以后的特性
 
@@ -2893,6 +2943,7 @@ int main()
 | V1.9   | 李建聪 | 添加**std::map和std::set的切片移动（Splicing for maps and sets）**小节 | 2019-12-07 11:17:00 |
 | V2.0   | 李建聪 | 添加**并行算法**小节                                         | 2019-12-07 11:17:01 |
 | V2.1   | 李建聪 | 添加**三路比较符（C++20）**小节                              | 2020-01-16 12:54:19 |
+| V2.2   | 李建聪 | 添加小节**no_unique_address (C++20)**                        | 2020-02-17 09:34:08 |
 
 ### std::optional介绍
 
@@ -3282,6 +3333,56 @@ int main() {
   static_assert(a <= b);
   static_assert(!(a > b));
   static_assert(a >= b);
+}
+```
+
+### no_unique_address (C++20)
+
+指示此数据成员不需要具有不同于其类的所有其他非静态数据成员的地址。
+
+```c++
+#include <iostream>
+ 
+struct Empty {}; // 空类
+ 
+struct X {
+    int i;
+    Empty e;
+};
+ 
+struct Y {
+    int i;
+    [[no_unique_address]] Empty e;
+};
+ 
+struct Z {
+    char c;
+    [[no_unique_address]] Empty e1, e2;
+};
+ 
+struct W {
+    char c[2];
+    [[no_unique_address]] Empty e1, e2;
+};
+ 
+int main()
+{
+    // 任何空类类型对象的大小至少为 1
+    static_assert(sizeof(Empty) >= 1);
+ 
+    // 至少需要多一个字节以给 e 唯一地址
+    static_assert(sizeof(X) >= sizeof(int) + 1);
+ 
+    // 优化掉空成员
+    std::cout << "sizeof(Y) == sizeof(int) is " << std::boolalpha 
+              << (sizeof(Y) == sizeof(int)) << '\n';
+ 
+    // e1 与 e2 不能共享同一地址，因为它们拥有相同类型，尽管它们标记有 [[no_unique_address]]。
+    // 然而，其中一者可以与 c 共享地址。
+    static_assert(sizeof(Z) >= 2);
+ 
+    // e1 与 e2 不能拥有同一地址，但它们之一能与 c[0] 共享，而另一者与 c[1] 共享
+    std::cout << "sizeof(W) == 2 is " << (sizeof(W) == 2) << '\n';
 }
 ```
 
