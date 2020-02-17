@@ -2,6 +2,7 @@
 #include "utility/detail/concurrency_utility.h"
 
 #include <catch2/catch.hpp>
+#include <iostream>
 
 TEST_CASE("层级锁用法示例", "[utility][concurrency]") {
   Lee::hierarchical_mutex mutex_high(500);
@@ -12,6 +13,7 @@ TEST_CASE("层级锁用法示例", "[utility][concurrency]") {
     std::lock_guard<Lee::hierarchical_mutex> lock1(mutex_mid);
     std::lock_guard<Lee::hierarchical_mutex> lock2(mutex_low);
   } catch (const std::exception& e) {
+    std::cout << e.what() << std::endl;
     REQUIRE(false);
   }
   try {
@@ -19,6 +21,7 @@ TEST_CASE("层级锁用法示例", "[utility][concurrency]") {
     std::lock_guard<Lee::hierarchical_mutex> lock1(mutex_mid);
     std::lock_guard<Lee::hierarchical_mutex> lock2(mutex_high);
   } catch (const std::exception& e) {
+    std::cout << e.what() << std::endl;
     REQUIRE(true);
   }
 }
