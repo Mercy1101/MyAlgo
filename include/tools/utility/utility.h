@@ -15,17 +15,17 @@
 #define MYALGO_INCLUDE_TOOLS_UTILITY_UTILITY_H_
 
 #include "utility/detail/algorithm_utility.h"  /// 包含algorthm相关的小工具
+#include "utility/detail/concurrency_utility.h"  /// 包含有关线程的小工具
 #include "utility/detail/detail_utility.h"  /// 包含杂项相关的小工具
 #include "utility/detail/file_line_reader_utility.h"  /// 包含按行读取的文件
 #include "utility/detail/marco_utility.h"  /// 包含相关宏定义的小工具
 #include "utility/detail/prime_utility.h"  /// 包含关于素数的函数
 #include "utility/detail/random_utility.h"  /// 包含与随机数相关的小工具
 #include "utility/detail/system_utility.h"  /// 包含系统相关的小工具
-#include "utility/detail/thread_pool_utility.h"  /// 包含线程池小工具
-#include "utility/detail/thread_utility.h"       /// 包含thread_guard小工具
-#include "utility/detail/time_utility.h"   /// 包含time相关的小工具
+#include "utility/detail/time_utility.h"    /// 包含time相关的小工具
 #include "utility/thirdparty/cxxopts.hpp"  /// 包含命令行解析的小工具
 #include "utility/thirdparty/dbg.h"        /// 包含打印小工具
 #include "utility/thirdparty/debug_assert.hpp"  /// 包含assert小工具
+
 
 #endif  // end of MYALGO_INCLUDE_TOOLS_UTILITY_UTILITY_H_

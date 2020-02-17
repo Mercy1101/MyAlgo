@@ -17,6 +17,7 @@
 #include <queue>
 #include <thread>
 #include <vector>
+#include <shared_mutex>
 
 namespace Lee {
 inline namespace utility {
@@ -109,7 +110,7 @@ template <typename T>
 class threadsafe_queue {
  public:
   threadsafe_queue() : head(new node), tail(head.get()) {}
-  threadsafe_queue_ptr(const threadsafe_queue_ptr& other) = delete;
+  threadsafe_queue(const threadsafe_queue& other) = delete;
 
   std::shared_ptr<T> try_pop() {
     std::unique_ptr<node> old_head = pop_head();
@@ -354,9 +355,41 @@ class lock_free_queue {
   }
 };  /// end of lock_free_queue
 
+
+class function_wrapper {
+  struct impl_base {
+    virtual void call() = 0;
+    virtual ~impl_base() {}
+  };
+  std::unique_ptr<impl_base> impl;
+  template <typename F>
+  struct impl_type : impl_base {
+    F f;
+    impl_type(F&& f_) : f(std::move(f_)) {}
+    void call() { f(); }
+  };
+
+ public:
+  template <typename F>
+  function_wrapper(F&& f) : impl(new impl_type<F>(std::move(f))) {}
+
+  void call() { impl->call(); }
+
+  function_wrapper(function_wrapper&& other) : impl(std::move(other.impl)) {}
+
+  function_wrapper& operator=(function_wrapper&& other) {
+    impl = std::move(other.impl);
+    return *this;
+  }
+
+  function_wrapper(const function_wrapper&) = delete;
+  function_wrapper(function_wrapper&) = delete;
+  function_wrapper& operator=(const function_wrapper&) = delete;
+};
+
 class work_stealing_queue {
  private:
-  typedef Lee::function_wrapper data_type;
+  using data_type = Lee::function_wrapper;
   std::deque<data_type> the_queue;
   mutable std::mutex the_mutex;
 
@@ -399,36 +432,6 @@ class work_stealing_queue {
   }
 };
 
-class function_wrapper {
-  struct impl_base {
-    virtual void call() = 0;
-    virtual ~impl_base() {}
-  };
-  std::unique_ptr<impl_base> impl;
-  template <typename F>
-  struct impl_type : impl_base {
-    F f;
-    impl_type(F&& f_) : f(std::move(f_)) {}
-    void call() { f(); }
-  };
-
- public:
-  template <typename F>
-  function_wrapper(F&& f) : impl(new impl_type<F>(std::move(f))) {}
-
-  void call() { impl->call(); }
-
-  function_wrapper(function_wrapper&& other) : impl(std::move(other.impl)) {}
-
-  function_wrapper& operator=(function_wrapper&& other) {
-    impl = std::move(other.impl);
-    return *this;
-  }
-
-  function_wrapper(const function_wrapper&) = delete;
-  function_wrapper(function_wrapper&) = delete;
-  function_wrapper& operator=(const function_wrapper&) = delete;
-};
 
 class join_threads {
   std::vector<std::thread>& threads;
@@ -443,92 +446,8 @@ class join_threads {
   }
 };
 
-class thread_pool {
-  typedef Lee::function_wrapper task_type;
-
-  std::atomic_bool done;
-  Lee::threadsafe_queue<task_type> pool_work_queue;
-  std::vector<std::unique_ptr<work_stealing_queue>> queues;
-  std::vector<std::thread> threads;
-  Lee::join_threads joiner;
-
-  static thread_local work_stealing_queue* local_work_queue;
-  static thread_local unsigned my_index;
-
-  void worker_thread(unsigned my_index_) {
-    my_index = my_index_;
-    local_work_queue = queues[my_index].get();
-    while (!done) {
-      run_pending_task();
-    }
-  }
-
-  bool pop_task_from_local_queue(task_type& task) {
-    return local_work_queue && local_work_queue->try_pop(task);
-  }
-
-  bool pop_task_from_pool_queue(task_type& task) {
-    return pool_work_queue.try_pop(task);
-  }
-
-  bool pop_task_from_other_thread_queue(task_type& task) {
-    for (unsigned i = 0; i < queues.size(); ++i) {
-      unsigned const index = (my_index + i + 1) % queues.size();
-      if (queues[index]->try_steal(task)) {
-        return true;
-      }
-    }
-
-    return false;
-  }
-
- public:
-  thread_pool() : joiner(threads), done(false) {
-    unsigned const thread_count = std::thread::hardware_concurrency();
-
-    try {
-      for (unsigned i = 0; i < thread_count; ++i) {
-        queues.push_back(
-            std::unique_ptr<work_stealing_queue>(new work_stealing_queue));
-        threads.push_back(std::thread(&thread_pool::worker_thread, this, i));
-      }
-    } catch (...) {
-      done = true;
-      throw;
-    }
-  }
-
-  ~thread_pool() { done = true; }
-
-  template <typename ResultType>
-  using task_handle = std::unique_future<ResultType>;
-
-  template <typename FunctionType>
-  task_handle<std::result_of<FunctionType()>::type> submit(FunctionType f) {
-    typedef std::result_of<FunctionType()>::type result_type;
-
-    std::packaged_task<result_type()> task(f);
-    task_handle<result_type> res(task.get_future());
-    if (local_work_queue) {
-      local_work_queue->push(std::move(task));
-    } else {
-      pool_work_queue.push(std::move(task));
-    }
-    return res;
-  }
-
-  void run_pending_task() {
-    task_type task;
-    if (pop_task_from_local_queue(task) || pop_task_from_pool_queue(task) ||
-        pop_task_from_other_thread_queue(task)) {
-      task();
-    } else {
-      std::this_thread::yield();
-    }
-  }
-};
-
 }  // namespace concurrency
 }  // namespace utility
 }  // namespace Lee
+
 #endif
