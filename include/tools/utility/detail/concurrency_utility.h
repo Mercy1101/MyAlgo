@@ -15,9 +15,10 @@
 #include <future>
 #include <memory>
 #include <queue>
+#include <shared_mutex>
 #include <thread>
 #include <vector>
-#include <shared_mutex>
+
 
 namespace Lee {
 inline namespace utility {
@@ -57,6 +58,18 @@ class hierarchical_mutex {
   explicit hierarchical_mutex(const unsigned long value)
       : hierarchy_value_(value), previous_hierarchy_value_(0) {}
 
+  /// @name     lock
+  /// @brief    用来锁定自己的函数，
+  ///           锁定顺序依照本线程中小的数值先锁定，到锁定大的数值
+  ///           如果顺序反过来则会抛出异常
+  ///
+  /// @param    NONE
+  ///
+  /// @return   NONE
+  ///
+  /// @author   Lijiancong, pipinstall@163.com
+  /// @date     2020-02-17 13:22:50
+  /// @warning  线程不安全
   void lock() {
     check_for_hierarchy_violation();
     internal_mutex_.lock();
@@ -80,10 +93,10 @@ class hierarchical_mutex {
 
   unsigned long const hierarchy_value_;
   unsigned long previous_hierarchy_value_;
-  static thread_local unsigned long this_thread_hierarchy_value_;
+  inline static thread_local unsigned long this_thread_hierarchy_value_ = 0;
 
   void check_for_hierarchy_violation() {
-    if (this_thread_hierarchy_value_ <= hierarchy_value_) {
+    if (this_thread_hierarchy_value_ >= hierarchy_value_) {
       throw std::logic_error("mutex hierarchy violated");
     }
   }
@@ -355,7 +368,6 @@ class lock_free_queue {
   }
 };  /// end of lock_free_queue
 
-
 class function_wrapper {
   struct impl_base {
     virtual void call() = 0;
@@ -431,7 +443,6 @@ class work_stealing_queue {
     return true;
   }
 };
-
 
 class join_threads {
   std::vector<std::thread>& threads;

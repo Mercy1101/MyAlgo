@@ -73,13 +73,15 @@ set(UNITTEST_SOURCE
 
   # profiler 模块的测试文件
   unittest/tools/profiler/profiler_unittest.cpp
+
+  # 并行工具的单元测试文件
+  unittest/tools/utility/concurrency_utility.cpp
 )
 
 # 把源文件添加进工程中
 add_executable(${EXECUTABLE_EXE_NAME} ${SOURCES}
                                       ${INIT_FILE_SOURCES}
                                       ${UNITTEST_SOURCE}
-                                      #${SPD_LOG_SOURCES}
                                       ${LEET_CODE_FILE_SOURCES}
                                       ${TOOLS_FILE_SOURCES}
 )
