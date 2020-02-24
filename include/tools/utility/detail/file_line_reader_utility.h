@@ -1,5 +1,5 @@
 ///////// ///////// ///////// ///////// ///////// ///////// ///////// /////////
-/// Copyright (c) 2019 Lijiancong. All rights reserved.
+/// Copyright (c) 2019,2020 Lijiancong. All rights reserved.
 ///
 /// Use of this source code is governed by a MIT license
 /// that can be found in the License file.
@@ -40,7 +40,7 @@ static inline char* expand(char* data, size_t size, size_t capacity) {
   return new_ptr;
 }
 
-//inline void swap(::Lee::file_line_reader::iterator& lhs,
+// inline void swap(::Lee::file_line_reader::iterator& lhs,
 //                 ::Lee::file_line_reader::iterator& rhs) noexcept
 //{
 //  lhs.swap(rhs);
@@ -245,7 +245,8 @@ class file_line_reader {
 
     if (_M_delimiter == '\n') {
       for (;;) {
-        if (!fgets(output + write_pos, static_cast<int>(capacity - write_pos), _M_stream)) {
+        if (!fgets(output + write_pos, static_cast<int>(capacity - write_pos),
+                   _M_stream)) {
           break;
         }
         size_t len = strlen(output + write_pos);
@@ -305,8 +306,6 @@ class file_line_reader {
   size_t _M_read_pos;
   size_t _M_size;
 };
-
-
 
 class istream_line_reader {
  public:
@@ -388,7 +387,7 @@ class istream_line_reader {
   std::istream* _M_stream;
 };
 
-}  // namespace file_line_reader
+}  // namespace file_line_reader_utility
 }  // namespace utility
 }  // namespace Lee
 

@@ -1,5 +1,5 @@
 ﻿///////// ///////// ///////// ///////// ///////// ///////// ///////// /////////
-/// Copyright (c) 2019 Lijiancong. All rights reserved.
+/// Copyright (c) 2019,2020 Lijiancong. All rights reserved.
 ///
 /// Use of this source code is governed by a MIT license
 /// that can be found in the License file.
@@ -29,10 +29,8 @@ inline namespace print_data_struct {
 /// @warning  线程不安全
 void PrintCompleteBinaryTree(const int &depth);
 
-
 }  // namespace print_data_struct
 }  // namespace data_struct
 }  // namespace Lee
-
 
 #endif  // end of MYALGO_INCLUDE_TOOLS_DATASTRUCT_PRINT_DATA_STRUCT_H_

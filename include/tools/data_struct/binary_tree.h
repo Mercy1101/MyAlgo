@@ -1,5 +1,5 @@
 ﻿///////// ///////// ///////// ///////// ///////// ///////// ///////// /////////
-/// Copyright (c) 2019 Lijiancong. All rights reserved.
+/// Copyright (c) 2019,2020 Lijiancong. All rights reserved.
 ///
 /// Use of this source code is governed by a MIT license
 /// that can be found in the License file.
@@ -170,9 +170,9 @@ class Binary_Tree {
   /// @name     Transplant
   /// @brief    把一颗子树挪到另一个节点下面
   ///
-  /// @param    tree      [in] 
-  /// @param    node_from [in] 
-  /// @param    node_to   [in] 
+  /// @param    tree      [in]
+  /// @param    node_from [in]
+  /// @param    node_to   [in]
   ///
   /// @return
   ///

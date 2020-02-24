@@ -1,5 +1,5 @@
 ﻿///////// ///////// ///////// ///////// ///////// ///////// ///////// /////////
-/// Copyright (c) 2019 Lijiancong. All rights reserved.
+/// Copyright (c) 2019,2020 Lijiancong. All rights reserved.
 ///
 /// Use of this source code is governed by a MIT license
 /// that can be found in the License file.
@@ -26,6 +26,5 @@
 #include "utility/thirdparty/cxxopts.hpp"  /// 包含命令行解析的小工具
 #include "utility/thirdparty/dbg.h"        /// 包含打印小工具
 #include "utility/thirdparty/debug_assert.hpp"  /// 包含assert小工具
-
 
 #endif  // end of MYALGO_INCLUDE_TOOLS_UTILITY_UTILITY_H_

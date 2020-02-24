@@ -1,5 +1,5 @@
 ﻿///////// ///////// ///////// ///////// ///////// ///////// ///////// /////////
-/// Copyright (c) 2019 Lijiancong. All rights reserved.
+/// Copyright (c) 2019,2020 Lijiancong. All rights reserved.
 ///
 /// Use of this source code is governed by a MIT license
 /// that can be found in the License file.
@@ -19,7 +19,9 @@
 #include <random>
 #include <string>
 #include <type_traits>
+
 #include "utility/detail/time_utility.h"  // for GetCurrentMilliSecondStamp()
+
 
 namespace Lee {
 inline namespace utility {
@@ -249,8 +251,7 @@ inline std::string GetRandomPassWord(const int &length) {
       'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'};
   std::string password;
   for (int i = 0; i < length; ++i) {
-    auto index =
-        Lee::GetRangeRandomNumberInt(62 - 1);
+    auto index = Lee::GetRangeRandomNumberInt(62 - 1);
     password += letter[index];
   }
   return password;

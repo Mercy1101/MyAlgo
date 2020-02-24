@@ -1,4 +1,4 @@
-﻿/// Copyright (c) 2019 Lijiancong. All rights reserved.
+﻿/// Copyright (c) 2019,2020 Lijiancong. All rights reserved.
 ///
 /// Use of this source code is governed by a MIT license
 /// that can be found in the License file.
@@ -16,14 +16,17 @@
 
 #include <stdio.h>
 #include <time.h>
+
 #include <cassert>
 #include <chrono>
 #include <ctime>
-#include <limits>                          // for std::numeric_limits()
-#include <mutex>                           // for std::call_once()
-#include <typeindex>                       // for std::typeindex()
-#include <typeinfo>                        // for typeid
+#include <limits>     // for std::numeric_limits()
+#include <mutex>      // for std::call_once()
+#include <typeindex>  // for std::typeindex()
+#include <typeinfo>   // for typeid
+
 #include "utility/detail/marco_utility.h"  // for Lee::Second
+
 
 namespace Lee {
 inline namespace utility {

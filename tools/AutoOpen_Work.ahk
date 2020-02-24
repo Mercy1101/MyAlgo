@@ -94,7 +94,7 @@ CapsLock & p::
 SetCapsLockState, AlwaysOff
 Send,^{space}
 Send,^{space}
-;SendInput,/// Copyright (c) 2019 Lijiancong. All rights reserved.
+;SendInput,/// Copyright (c) 2019,2020 Lijiancong. All rights reserved.
 ;SendInput,{ENTER}/// 
 ;SendInput,{ENTER}/// Use of this source code is governed by a MIT license
 ;SendInput,{ENTER}/// that can be found in the License file.
