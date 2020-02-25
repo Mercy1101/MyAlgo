@@ -3821,6 +3821,7 @@ int main()
 | V2.5   | 李建聪 | 增加小节**MySQL查询某项字段的所有结果出现的次数**            | 2019-12-18 15:03:12 |
 | V2.6   | 李建聪 | 增加小节**MySQL中INSTR函数介绍**小节                         | 2019-12-24 16:05:27 |
 | V2.7   | 李建聪 | 增加**const的位置对指针本身的值与指针指向的值产生的影响**小节 | 2020-01-13 10:22:08 |
+| V2.8   | 李建聪 | 增加**基类应该删除拷贝构造函数和拷贝构造符**小节             | 2020-02-25 09:13:21 |
 
 ### 如何求得一个数组的长度
 
@@ -4516,7 +4517,55 @@ int const *p = &x;	///< 指针指向的值不可变（const 出现在'*'之前�
 int* const p = &x;	///< 指针本身的值不可变（const 出现在'*'之后）
 ```
 
+### 基类应该删除拷贝构造函数和拷贝构造符
 
+**Example, bad**
+
+```c++
+class B { // BAD: polymorphic base class doesn't suppress copying
+public:
+    virtual char m() { return 'B'; }
+    // ... nothing about copy operations, so uses default ...
+};
+
+class D : public B {
+public:
+    char m() override { return 'D'; }
+    // ...
+};
+
+void f(B& b) {
+    auto b2 = b; // oops, slices the object; b2.m() will return 'B'
+}
+
+D d;
+f(d);
+```
+
+**Example**
+
+```c++
+class B { // GOOD: polymorphic class suppresses copying
+public:
+    B(const B&) = delete;
+    B& operator=(const B&) = delete;
+    virtual char m() { return 'B'; }
+    // ...
+};
+
+class D : public B {
+public:
+    char m() override { return 'D'; }
+    // ...
+};
+
+void f(B& b) {
+    auto b2 = b; // ok, compiler will detect inadvertent copying, and protest
+}
+
+D d;
+f(d);
+```
 
 ## 数据结构与算法
 
