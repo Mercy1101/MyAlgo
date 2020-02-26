@@ -41,13 +41,35 @@ inline namespace concurrency {
 class scoped_thread {
  public:
   explicit scoped_thread(std::thread t) : t_(std::move(t)) {
-    if (!t_.joinable()) throw std::logic_error("No thread");
+    if (!t_.joinable()) throw std::logic_error("No join thread");
   }
   ~scoped_thread() { t_.join(); }
 
  private:
   std::thread t_;
 };  /// end of class scoped_thread
+
+/// @name     join_threads
+/// @brief    接受一个线程的vector的引用，并在析构时自动join所有线程
+///
+/// @author   Lijiancong, pipinstall@163.com
+/// @date     2020-02-26 11:05:35
+/// @warning  线程安全
+class join_threads {
+  std::vector<std::thread>& threads_ref_;
+
+ public:
+  join_threads(std::vector<std::thread>& ref) : threads_ref_(ref) {
+    for (auto& it : threads_ref_) {
+      if (!it.joinable()) throw std::logic_error("No join thread");
+    }
+  }
+  ~join_threads() {
+    for (auto& it : threads_ref_) {
+      it.join();
+    }
+  }
+};
 
 /// @name     hierarchical_mutex
 /// @brief    为了实现在单个线程中保证加锁顺序的锁，保证加锁顺序否则就抛出异常
@@ -57,7 +79,7 @@ class scoped_thread {
 ///           Taken from <C++ Concurrency In Action> 第三章：管理线程
 ///           清单3.8 简单的分层次互斥元
 /// @date     2020-01-13 12:31:46
-/// @warning  线程不安全
+/// @warning  线程安全
 class hierarchical_mutex {
  public:
   explicit hierarchical_mutex(const unsigned long value)
@@ -68,13 +90,9 @@ class hierarchical_mutex {
   ///           锁定顺序依照本线程中小的数值先锁定，到锁定大的数值
   ///           如果顺序反过来则会抛出异常
   ///
-  /// @param    NONE
-  ///
-  /// @return   NONE
-  ///
   /// @author   Lijiancong, pipinstall@163.com
   /// @date     2020-02-17 13:22:50
-  /// @warning  线程不安全
+  /// @warning  线程安全
   void lock() {
     check_for_hierarchy_violation();
     internal_mutex_.lock();
@@ -117,7 +135,7 @@ class hierarchical_mutex {
 ///
 /// @author   Lijiancong, pipinstall@163.com
 /// @date     2020-02-24 09:04:58
-/// @warning  线程不安全
+/// @warning  线程安全
 template <typename T>
 class threadsafe_queue {
  public:
@@ -225,7 +243,7 @@ class threadsafe_queue {
 ///
 /// @author   Lijiancong, pipinstall@163.com
 /// @date     2020-02-24 14:18:14
-/// @warning  线程不安全
+/// @warning  线程安全
 template <typename Key, typename Value, typename Hash = std::hash<Key>>
 class threadsafe_lookup_table {
  private:
@@ -311,7 +329,7 @@ class threadsafe_lookup_table {
 ///
 /// @author   Lijiancong, pipinstall@163.com
 /// @date     2020-02-24 15:04:19
-/// @warning  线程不安全
+/// @warning  线程安全
 template <typename T>
 class threadsafe_list {
   struct node {
@@ -396,7 +414,7 @@ class threadsafe_list {
 /// @brief    使用引用计数和放松原子操作的无锁栈
 /// @author   Lijiancong, pipinstall@163.com
 /// @date     2020-02-25 15:23:43
-/// @warning  线程不安全
+/// @warning  线程安全
 template <typename T>
 class lock_free_stack {
  private:
@@ -471,7 +489,7 @@ class lock_free_stack {
 ///
 /// @author   Lijiancong, pipinstall@163.com
 /// @date     2020-02-26 09:13:43
-/// @warning  线程不安全
+/// @warning  线程安全
 template <typename Iterator, typename T>
 T parallel_accumulate(Iterator first, Iterator last, T init) {
   unsigned long const length = std::distance(first, last);
@@ -494,7 +512,7 @@ T parallel_accumulate(Iterator first, Iterator last, T init) {
 ///
 /// @author   Lijiancong, pipinstall@163.com
 /// @date     2020-02-26 09:42:17
-/// @warning  线程不安全
+/// @warning  线程安全
 template <typename Iterator, typename Func>
 void parallel_for_each(Iterator first, Iterator last, Func f) {
   unsigned long const length = std::distance(first, last);
@@ -521,7 +539,7 @@ void parallel_for_each(Iterator first, Iterator last, Func f) {
 ///
 /// @author   Lijiancong, pipinstall@163.com
 /// @date     2020-02-26 10:13:53
-/// @warning  线程不安全
+/// @warning  线程安全
 template <typename Iterator, typename MatchType>
 Iterator parallel_find_impl(Iterator first, Iterator last, MatchType match,
                             std::atomic<bool>& done) {
@@ -555,6 +573,84 @@ template <typename Iterator, typename MatchType>
 Iterator parallel_find(Iterator first, Iterator last, MatchType match) {
   std::atomic<bool> done(false);
   return parallel_find_impl(first, last, match, done);
+}
+
+/// @name     parallel_partial_sum
+/// @brief    通过划分问题来并行计算分段的和
+///
+/// @author   Lijiancong, pipinstall@163.com
+/// @date     2020-02-26 11:07:55
+/// @warning  线程安全
+template <typename Iterator>
+void parallel_partial_sum(Iterator first, Iterator last) {
+  using value_type = typename Iterator::value_type;
+  struct process_chunk {
+    void operator()(Iterator begin, Iterator last,
+                    std::future<value_type>* previous_end_value,
+                    std::promise<value_type>* end_value) {
+      try {
+        Iterator end = last;
+        ++end;
+        std::partial_sum(begin, end, begin);
+        if (previous_end_value) {
+          value_type& addend = previous_end_value->get();
+          *last += addend;
+          if (end_value) {
+            end_value->set_value(*last);
+          }
+          std::for_each(begin, last,
+                        [addend](value_type& item) { item += addend; });
+        } else if (end_value) {
+          end_value->set_value(*last);
+        }
+      } catch (...) {
+        if (end_value) {
+          end_value->set_exception(std::current_exception());
+        } else {
+          throw;
+        }
+      }
+    }
+  };
+
+  unsigned long const length = std::distance(first, last);
+
+  if (!length) return last;
+
+  unsigned long const min_per_thread = 25;
+  unsigned long const max_threads =
+      (length + min_per_thread - 1) / min_per_thread;
+
+  unsigned long const hardware_threads = std::thread::hardware_concurrency();
+
+  unsigned long const num_threads =
+      std::min(herdware_threads != 0 ? hardware_threads : 2, max_threads);
+
+  unsigned long const block_size = length / num_threads;
+
+  using value_type = typename Iterator::value_type;
+
+  std::vector<std::thread> threads(num_threads - 1);
+  std::vector<std::promise<value_type>> end_values(num_threads - 1);
+  std::vector<std::future<value_type>> previous_end_values;
+  previous_end_values.reserve(num_threads - 1);
+  join_threads joiner(threads);
+
+  Iterator block_start = first;
+  for (unsigned long i = 0; i < (num_threads - 1); ++i) {
+    Iterator block_last = block_start;
+    std::advance(block_last, block_size - 1);
+    threads[i] =
+        std::thread(process_chunk(), block_start, block_last,
+                    (i != 0) ? &previous_end_values[i - 1] : 0, &end_values[i]);
+    ++block_start;
+    previous_end_values.push_back(end_values[i].get_future());
+  }
+
+  Iterator final_element = block_start;
+  std::advance(final_element, std::distance(block_start, last) - 1);
+  process_chunk()(block_start, final_element,
+                  (num_threads > 1) ? &previous_end_values.back() : 0, 0);
 }
 
 }  // namespace concurrency
