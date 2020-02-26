@@ -18,6 +18,7 @@
 #include <list>
 #include <memory>
 #include <mutex>
+#include <numeric>
 #include <queue>
 #include <shared_mutex>
 #include <thread>
@@ -391,7 +392,7 @@ class threadsafe_list {
   }
 };
 
-/// @name     lock_free_stack 
+/// @name     lock_free_stack
 /// @brief    使用引用计数和放松原子操作的无锁栈
 /// @author   Lijiancong, pipinstall@163.com
 /// @date     2020-02-25 15:23:43
@@ -433,9 +434,10 @@ class lock_free_stack {
     counted_node_ptr new_node;
     new_node.ptr = new node(data);
     new_node.external_count = 1;
-    new_node.ptr->next = head.load(std::memory_order_relaxed)
-    while (!head.compare_exchange_weak(new_node.ptr->next, new_node,
-           std::memory_order_release, std::memory_order_relaxed));
+    new_node.ptr->next =
+        head.load(std::memory_order_relaxed) while (!head.compare_exchange_weak(
+            new_node.ptr->next, new_node, std::memory_order_release,
+            std::memory_order_relaxed));
   }
   std::shared_ptr<T> pop() {
     counted_node_ptr old_head = head.load(std::memory_order_relaxed);
@@ -463,6 +465,29 @@ class lock_free_stack {
     }
   }
 };
+
+/// @name     parallel_accumulate
+/// @brief    异常安全的并行求和算法
+///
+/// @author   Lijiancong, pipinstall@163.com
+/// @date     2020-02-26 09:13:43
+/// @warning  线程不安全
+template <typename Iterator, typename T>
+T parallel_accumulate(Iterator first, Iterator last, T init) {
+  unsigned long const length = std::distance(first, last);
+  unsigned long const max_chunk_size = 25;
+
+  if (length <= max_chunk_size) {
+    return std::accumulate(first, last, init);
+  } else {
+    Iterator mid_point = first;
+    std::advance(mid_point, length / 2);
+    std::future<T> first_half_result =
+        std::async(parallel_accumulate<Iterator, T>, first, mid_point, init);
+    T second_half_result = parallel_accumulate(mid_point, last, T());
+    return first_half_result.get() + second_half_result;
+  }
+}
 
 }  // namespace concurrency
 }  // namespace utility
