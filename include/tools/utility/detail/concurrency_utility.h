@@ -489,6 +489,34 @@ T parallel_accumulate(Iterator first, Iterator last, T init) {
   }
 }
 
+/// @name     parallel_for_each
+/// @brief    std::for_each的并行版本
+///
+/// @author   Lijiancong, pipinstall@163.com
+/// @date     2020-02-26 09:42:17
+/// @warning  线程不安全
+template <typename Iterator, typename Func>
+void parallel_for_each(Iterator first, Iterator last, Func f) {
+  unsigned long const length = std::distance(first, last);
+
+  if (!length) {
+    return;
+  }
+
+  unsigned long const min_per_thread = 25;
+
+  if (length < (2 * min_per_thread)) {
+    std::for_each(first, last, f);
+  } else {
+    Iterator const mid_point = first + length / 2;
+    std::future<void> first_half =
+        std::async(&parallel_for_each<Iterator, Func>, first, mid_point, f);
+    parallel_for_each(mid_point, last, f);
+    first_half.get();
+  }
+}
+
+
 }  // namespace concurrency
 }  // namespace utility
 }  // namespace Lee
