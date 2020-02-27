@@ -737,7 +737,7 @@ class work_stealing_queue {
 ///
 /// @author   Lijiancong, pipinstall@163.com
 /// @date     2020-02-26 16:26:49
-/// @warning  线程不安全
+/// @warning  线程安全
 class thread_pool {
   typedef function_wrapper task_type;
 
