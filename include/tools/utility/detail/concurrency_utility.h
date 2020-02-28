@@ -140,6 +140,11 @@ class hierarchical_mutex {
 /// @warning  线程安全
 template <typename T>
 class threadsafe_queue {
+
+  struct node {
+    std::shared_ptr<T> data;
+    std::unique_ptr<node> next;
+  };
  public:
   threadsafe_queue() : head(new node), tail(head.get()) {}
   threadsafe_queue(const threadsafe_queue& other) = delete;
@@ -152,7 +157,7 @@ class threadsafe_queue {
 
   bool try_pop(T& value) {
     std::unique_ptr<node> const old_head = try_pop_head(value);
-    return old_head;
+    return old_head != nullptr;
   }
 
   std::shared_ptr<T> wait_and_pop() {
@@ -183,10 +188,6 @@ class threadsafe_queue {
   }
 
  private:
-  struct node {
-    std::shared_ptr<T> data;
-    std::unique_ptr<node> next;
-  };
 
   std::mutex head_mutex;
   std::unique_ptr<node> head;
@@ -200,7 +201,7 @@ class threadsafe_queue {
   }
 
   std::unique_ptr<node> pop_head() {
-    std::unique_ptr<node> const old_head = std::move(head);
+    std::unique_ptr<node> old_head = std::move(head);
     head = std::move(old_head->next);
     return old_head;
   }
@@ -414,6 +415,7 @@ class threadsafe_list {
 
 /// @name     lock_free_stack
 /// @brief    使用引用计数和放松原子操作的无锁栈
+///
 /// @author   Lijiancong, pipinstall@163.com
 /// @date     2020-02-25 15:23:43
 /// @warning  线程安全
@@ -673,6 +675,13 @@ class function_wrapper {
   template <typename F>
   function_wrapper(F&& f) : impl(new impl_type<F>(std::move(f))) {}
 
+  void operator()()
+  {
+    impl->call();
+  }
+
+  function_wrapper() = default;
+
   void call() { impl->call(); }
 
   function_wrapper(function_wrapper&& other) : impl(std::move(other.impl)) {}
@@ -758,7 +767,7 @@ class thread_pool {
     }
   }
 
-  bool pop_task_from_from_local_queue(task_type& task) {
+  bool pop_task_from_local_queue(task_type& task) {
     return local_work_queue && local_work_queue->try_pop(task);
   }
 
@@ -797,7 +806,7 @@ class thread_pool {
   using task_handle = std::future<ResultType>;
 
   template <typename FunctionType>
-  task_handle<std::result_of<FunctionType()>::type> submit(FunctionType f) {
+  std::future<typename std::result_of<FunctionType()>::type> submit(FunctionType f) {
     typedef std::result_of<FunctionType()>::type result_type;
 
     std::packaged_task<result_type()> task(f);
