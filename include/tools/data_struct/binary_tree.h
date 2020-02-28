@@ -70,7 +70,7 @@ class Binary_Tree {
   void Destory() { Destory(root_); }
   Tree GetRoot() const { return root_; }
   Position FindMin() { return FindMin(root_); }
-  Tree Delete(const Comparable &data) { return Delete(data, root_); };
+  void Delete(const Comparable &data) { Delete(data, root_); };
 
  private:
   /// @name     Insert
@@ -160,12 +160,27 @@ class Binary_Tree {
   /// @param    data  [in]  要删除的特定元素
   /// @param    tree  [out] 要修改的树节点指针
   ///
-  /// @return   树节点
+  /// @return   NONE
   ///
   /// @author   Lijiancong, pipinstall@163.com
   /// @date     2019-12-29 18:11:41
   /// @warning  线程不安全
-  void Delete(const Comparable &data, Tree tree) {}
+  void Delete(const Comparable &x, Tree *t) {
+    if (t == nullptr) return;  // Item not found; do nothing
+    if (x < t->element)
+      Delete(x, t->left);
+    else if (t->element < x)
+      Delete(x, t->right);
+    else if (t->left != nullptr && t->right != nullptr)  // Two children
+    {
+      t->element = findMin(t->right)->element;
+      Delete(t->element, t->right);
+    } else {
+      BinaryNode *oldNode = t;
+      t = (t->left != nullptr) ? t->left : t->right;
+      delete oldNode;
+    }
+  }
 
   /// @name     Transplant
   /// @brief    把一颗子树挪到另一个节点下面
@@ -174,7 +189,7 @@ class Binary_Tree {
   /// @param    node_from [in]
   /// @param    node_to   [in]
   ///
-  /// @return
+  /// @return   NONE
   ///
   /// @author   Lijiancong, pipinstall@163.com
   /// @date     2019-12-31 11:09:41
