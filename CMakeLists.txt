@@ -75,7 +75,7 @@ set(UNITTEST_SOURCE
   unittest/tools/profiler/profiler_unittest.cpp
 
   # 并行工具的单元测试文件
-  unittest/tools/utility/concurrency_utility.cpp
+  unittest/tools/utility/concurrency_utility_unittest.cpp
 )
 
 # 把源文件添加进工程中
