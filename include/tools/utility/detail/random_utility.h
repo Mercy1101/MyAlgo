@@ -27,11 +27,11 @@ namespace Lee {
 inline namespace utility {
 inline namespace random {
 /// @name     GetRandom
-/// @brief    获取[0, RNAD_MAX]中一个随机数。
+/// @brief    获取[0, RAND_MAX]中一个随机数。
 ///
 /// @param    NONE
 ///
-/// @return   [0, RNAD_MAX]中一个随机数
+/// @return   [0, RAND_MAX]中一个随机数
 ///
 /// @author   Lijiancong, pipinstall@163.com
 /// @date     2019-12-01 17:12:37
