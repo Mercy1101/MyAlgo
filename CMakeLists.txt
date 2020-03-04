@@ -69,7 +69,7 @@ set(UNITTEST_SOURCE
   unittest/tools/data_struct/binary_tree_unittest.cpp
 
   # utility/file_line_reader 的测试单元文件
-  unittest/tools/utility/file_line_reader_utility_unittest.cpp
+  # unittest/tools/utility/file_line_reader_utility_unittest.cpp
 
   # profiler 模块的测试文件
   unittest/tools/profiler/profiler_unittest.cpp
