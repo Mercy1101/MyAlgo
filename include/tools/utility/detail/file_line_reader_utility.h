@@ -56,11 +56,11 @@ class file_line_reader {
    */
   class iterator {  // implements InputIterator
    public:
-    typedef ptrdiff_t difference_type;
-    typedef char* value_type;
-    typedef value_type* pointer;
-    typedef value_type& reference;
-    typedef std::input_iterator_tag iterator_category;
+    using difference_type = ptrdiff_t;
+    using value_type = char*;
+    using pointer = value_type*;
+    using reference = value_type&;
+    using iterator_category = std::input_iterator_tag;
 
     iterator() noexcept
         : _M_reader(nullptr),
@@ -316,11 +316,11 @@ class istream_line_reader {
    */
   class iterator {  // implements InputIterator
    public:
-    typedef ptrdiff_t difference_type;
-    typedef std::string value_type;
-    typedef const value_type* pointer;
-    typedef const value_type& reference;
-    typedef std::input_iterator_tag iterator_category;
+    using difference_type = ptrdiff_t;
+    using value_type = std::string;
+    using pointer = const value_type*;
+    using reference = const value_type&;
+    using iterator_category = std::input_iterator_tag;
 
     iterator() noexcept : _M_stream(nullptr) {}
     explicit iterator(std::istream& is) : _M_stream(&is) { ++*this; }

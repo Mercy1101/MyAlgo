@@ -1,5 +1,5 @@
 ﻿/**
- * Copyright (c) 2019 Lijiancong. All rights reserved.
+ * Copyright (c) 2019, 2020 Lijiancong. All rights reserved.
  * Use of this source code is governed by a MIT license
  * that can be found in the License file.
  */
@@ -25,18 +25,6 @@
 然后通过调用second()或者millisecond()就可以得到从调用start()到finish()过去了多少时间。
 调用memory()就可以获得当前程序占用多少内存。
 
-3. 设计思路：
-
-* @warning
-1. 注意GosLog配置的打印等级，如果打印等级没有设置为PROFILER及以上则不会出现打印.
-
-2. 由于PROFILER_F宏使用GosLog函数来输出和打印，
-所以该函数应该在GosLog初始化后被调用，否则没有打印。
-
-3. 为了不让PROFILER不影响Release版本的运行，
-下方定义了LEE_PROFILER_MODE宏来作为Profiler的开关。
-_DEBUG这个宏在VS2010中是在DEBUG模式下被自动定义的，C++Builder中则需要手动设置。
-
 * @example
 1.想要知道某个函数运行时间
 原语句：
@@ -48,7 +36,8 @@ void SomeFunc(int i)
 void SomeFunc(int i)
 {
     PROFILER_F();   //
-写在函数定义的第一行，当代码运行至函数定义结束时，打印运行时间 printf("%d", i);
+写在函数定义的第一行，当代码运行至函数定义结束时，打印运行时间
+    printf("%d", i);
 }
 
 2.想要知道某段代码运行时间
@@ -308,9 +297,8 @@ void SomeFunc(int i)
 */
 #define LEE_C11_PROFILER_MODE
 #ifdef LEE_C11_PROFILER_MODE
-#define PROFILER_F()                                                        \
-  Lee::Profiler_::ProfilerInstance pRoFiLeR__(__func__, __FILE__, \
-                                                        __LINE__)
+#define PROFILER_F() \
+  Lee::Profiler_::ProfilerInstance pRoFiLeR__(__func__, __FILE__, __LINE__)
 #else
 #define PROFILER_F() nullptr
 #endif  // end of LEE_C11_PROFILER_MODE

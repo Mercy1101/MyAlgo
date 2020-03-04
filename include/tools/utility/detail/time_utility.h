@@ -168,7 +168,6 @@ inline Lee::Second GetCompileTimeStamp() {
              &tm.tm_mday, &tm.tm_year);
 
     std::string Month(Mmm);
-    // std::reverse(Month.begin(), Month.end());
     if (Month.find("Jan") != std::string::npos) {
       tm.tm_mon = 1;
     } else if (Month.find("Feb") != std::string::npos) {
@@ -203,7 +202,6 @@ inline Lee::Second GetCompileTimeStamp() {
     tm.tm_mon -= 1;
     compile_time_s = mktime(&tm);
     if (compile_time_s <= 0 || compile_time_s > Lee::GetCurrentTimeStamp()) {
-      /// assert(false && "GetCompileTimeStamp() is failed!");
       std::cout << "GetCompileTimeStamp() is failed!" << std::endl;
       compile_time_s = -1;
     }
@@ -229,8 +227,6 @@ inline Lee::Second GetTodaySpecificTimeStamp(const int iHour, const int iMin,
                                              const int iSec) {
   if (iHour < 0 || iHour > 23 || iMin < 0 || iMin > 59 || iSec < 0 ||
       iSec > 59) {
-    /// assert(false && "Invalid Param! GetTodaySpecificTimeStamp Execute fail!
-    /// ");
     std::cout << "Invalid Param! GetTodaySpecificTimeStamp Execute fail! "
               << std::endl;
     return 0;
