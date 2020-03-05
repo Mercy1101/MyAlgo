@@ -7,12 +7,12 @@
 
 ///////// ///////// ///////// ///////// ///////// ///////// ///////// /////////
 /**
-* @file                 log.h
-* @brief                这个文件主要定义了重写的新log模块的接口，
-                        会使用C++11以后的关键字，c++Builder不能使用
+* @file       log.h
+* @brief      这个文件主要定义了重写的新log模块的接口，
+              会使用C++11以后的关键字，c++Builder不能使用
 
-* @author               Lijiancong, pipinstall@163.com
-* @date                 2019-09-17 10:37:35
+* @author     Lijiancong, pipinstall@163.com
+* @date       2019-09-17 10:37:35
 
 * @note
 */
@@ -252,9 +252,7 @@ class SpdLogInstance {
       if (!::Lee::CreateFileFolder(strLogRootFolder)) {
         std::cout << "Path " << strLogRootFolder << "is not exist!"
                   << std::endl;
-        /// assert(false && "can't create log root floder");
         std::cout << "can't create log root floder" << std::endl;
-        // log::quick_exit(-1, "can't create log root floder");
       }
     }
 
@@ -264,9 +262,7 @@ class SpdLogInstance {
       if (!::Lee::CreateFileFolder(strDetailLogPath)) {
         std::cout << "CreateFileFolder: " << strDetailLogPath << " failed!"
                   << std::endl;
-        /// assert(false && "CreateFileFolder failed in log/log.h!");
         std::cout << "CreateFileFolder failed in log/log.h!" << std::endl;
-        /// log::quick_exit(-1, "CreateFileFolder failed in log/log.h!");
       }
     }
     strDetailLogPath += "\\detail.log";
@@ -316,9 +312,7 @@ class SpdLogInstance {
     sprintf_s(acFile, sizeof(acFile), "%s\\%s", Lee::GetRootPath().c_str(),
               FileName.c_str());
     if (!Lee::IsFileExist(acFile)) {
-      /// assert(false && "log config file not exist!\n");
       std::cout << "log config file not exist!" << std::endl;
-      // Lee::quick_exit(-1, "log config file not exist!");
       return false;
     }
     bool IsFileUtf8 = true;
