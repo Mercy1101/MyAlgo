@@ -34,7 +34,6 @@
 #include "log/log.h"
 #include "utility/detail/random_utility.h"
 
-
 namespace Lee {
 inline namespace utility {
 inline namespace detail {
@@ -67,13 +66,11 @@ constexpr inline std::size_t ArraySize(T (&)[N]) noexcept {
 }
 
 /// 我也见过 github.com/google/benchmark/src/arraysize.h 中的另一种写法
-
 // The arraysize(arr) macro returns the # of elements in an array arr.
 // The expression is a compile-time constant, and therefore can be
 // used in defining new arrays, for example.  If you use arraysize on
 // a pointer by mistake, you will get a compile-time error.
 //
-
 // This template function declaration is used in defining arraysize.
 // Note that the function doesn't need an implementation, as we only
 // use its type.

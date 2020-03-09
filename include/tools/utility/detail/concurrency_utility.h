@@ -26,7 +26,6 @@
 #include <utility>
 #include <vector>
 
-
 namespace Lee {
 inline namespace utility {
 inline namespace concurrency {
