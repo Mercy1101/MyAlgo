@@ -59,6 +59,7 @@
 | V5.0 | 李建聪 | 添加**std::declval介绍**小节 | 2019-12-17 09:11:39 |
 | V5.1 | 李建聪 | 添加**std::decay_t 介绍**小节 | 2020-01-19 10:50:02 |
 | V5.2 | 李建聪 | 添加**std::is_empty 介绍** 小节 | 2020-02-17 09:36:58 |
+| V5.3 | 李建聪 | 添加**std::result_of 介绍**小节 | 2020-03-10 09:13:16 |
 
 ### std::string 用法
 
@@ -2926,6 +2927,54 @@ int main()
 > false
 > true
 > ```
+
+### std::result_of 介绍
+
+编译期类型推导，见下面例子
+
+```c++
+#include <type_traits>
+#include <iostream>
+ 
+struct S {
+    double operator()(char, int&);
+    float operator()(int) { return 1.0;}
+};
+ 
+template<class T>
+typename std::result_of<T(int)>::type f(T& t)
+{
+    std::cout << "overload of f for callable T\n";
+    return t(0);
+}
+ 
+template<class T, class U>
+int f(U u)
+{
+    std::cout << "overload of f for non-callable T\n";
+    return u;
+}
+ 
+int main()
+{
+    // 以 char 和 int 参数调用 S 的结果是 double
+    std::result_of<S(char, int&)>::type d = 3.14; // d 拥有 double 类型
+    static_assert(std::is_same<decltype(d), double>::value, "");
+ 
+    // 以 int 参数调用 S 的结果是 float
+    std::result_of<S(int)>::type x = 3.14; // x 拥有 float 类型
+    static_assert(std::is_same<decltype(x), float>::value, "");
+ 
+    // result_of 能以指向成员函数的指针以如下方式使用
+    struct C { double Func(char, int&); };
+    std::result_of<decltype(&C::Func)(C, char, int&)>::type g = 3.14;
+    static_assert(std::is_same<decltype(g), double>::value, "");
+ 
+    f<C>(1); // C++11 中可能编译失败； C++14 中调用不可调用重载
+}
+```
+
+
 
 ## C++17及其以后的特性
 
