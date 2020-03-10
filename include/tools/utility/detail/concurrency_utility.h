@@ -22,6 +22,7 @@
 #include <numeric>
 #include <queue>
 #include <shared_mutex>
+#include <stdexcept>
 #include <thread>
 #include <utility>
 #include <vector>
@@ -139,11 +140,11 @@ class hierarchical_mutex {
 /// @warning  线程安全
 template <typename T>
 class threadsafe_queue {
-
   struct node {
     std::shared_ptr<T> data;
     std::unique_ptr<node> next;
   };
+
  public:
   threadsafe_queue() : head(new node), tail(head.get()) {}
   threadsafe_queue(const threadsafe_queue& other) = delete;
@@ -187,7 +188,6 @@ class threadsafe_queue {
   }
 
  private:
-
   std::mutex head_mutex;
   std::unique_ptr<node> head;
   std::mutex tail_mutex;
@@ -674,10 +674,7 @@ class function_wrapper {
   template <typename F>
   function_wrapper(F&& f) : impl(new impl_type<F>(std::move(f))) {}
 
-  void operator()()
-  {
-    impl->call();
-  }
+  void operator()() { impl->call(); }
 
   function_wrapper() = default;
 
@@ -694,7 +691,6 @@ class function_wrapper {
   function_wrapper(function_wrapper&) = delete;
   function_wrapper& operator=(const function_wrapper&) = delete;
 };
-
 
 class work_stealing_queue {
  private:
@@ -740,7 +736,7 @@ class work_stealing_queue {
   }
 };
 
-/// @name     thread_pool 
+/// @name     thread_pool
 /// @brief    使用工作窃取的线程池
 ///
 /// @author   Lijiancong, pipinstall@163.com
@@ -805,7 +801,8 @@ class thread_pool {
   using task_handle = std::future<ResultType>;
 
   template <typename FunctionType>
-  std::future<typename std::result_of<FunctionType()>::type> submit(FunctionType f) {
+  std::future<typename std::result_of<FunctionType()>::type> submit(
+      FunctionType f) {
     typedef std::result_of<FunctionType()>::type result_type;
 
     std::packaged_task<result_type()> task(f);
@@ -827,6 +824,75 @@ class thread_pool {
       std::this_thread::yield();
     }
   }
+};
+
+/// @name     ThreadPool_Sample 
+/// @brief    从网上抄的一个点赞最多的线程池的实现
+/// @author   Lijiancong, pipinstall@163.com
+///           Taken from https://github.com/progschj/ThreadPool 
+/// @date     2020-03-10 09:26:40
+/// @warning  线程不安全
+class ThreadPool_Sample {
+ public:
+  ThreadPool_Sample(size_t threads) : stop(false) {
+    for (size_t i = 0; i < threads; ++i)
+      workers.emplace_back([this] {
+        for (;;) {
+          std::function<void()> task;
+
+          {
+            std::unique_lock<std::mutex> lock(this->queue_mutex);
+            this->condition.wait(
+                lock, [this] { return this->stop || !this->tasks.empty(); });
+            if (this->stop && this->tasks.empty()) return;
+            task = std::move(this->tasks.front());
+            this->tasks.pop();
+          }
+
+          task();
+        }
+      });
+  }
+
+  template <class F, class... Args>
+  auto enqueue(F&& f, Args&&... args)
+      -> std::future<typename std::result_of<F(Args...)>::type> {
+    using return_type = typename std::result_of<F(Args...)>::type;
+
+    auto task = std::make_shared<std::packaged_task<return_type()>>(
+        std::bind(std::forward<F>(f), std::forward<Args>(args)...));
+
+    std::future<return_type> res = task->get_future();
+    {
+      std::unique_lock<std::mutex> lock(queue_mutex);
+
+      // don't allow enqueueing after stopping the pool
+      if (stop) throw std::runtime_error("enqueue on stopped ThreadPool");
+
+      tasks.emplace([task]() { (*task)(); });
+    }
+    condition.notify_one();
+    return res;
+  }
+  ~ThreadPool_Sample() {
+    {
+      std::unique_lock<std::mutex> lock(queue_mutex);
+      stop = true;
+    }
+    condition.notify_all();
+    for (std::thread& worker : workers) worker.join();
+  }
+
+ private:
+  // need to keep track of threads so we can join them
+  std::vector<std::thread> workers;
+  // the task queue
+  std::queue<std::function<void()>> tasks;
+
+  // synchronization
+  std::mutex queue_mutex;
+  std::condition_variable condition;
+  bool stop;
 };
 
 }  // namespace concurrency
