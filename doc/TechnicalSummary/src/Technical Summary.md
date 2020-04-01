@@ -4736,3 +4736,27 @@ try {
 }
 ```
 
+## Qt学习笔记
+
+| 版本号 | 作者   | 修改摘要                             | 时间                |
+| ------ | ------ | ------------------------------------ | ------------------- |
+| V1.0   | 李建聪 | 添加**setwindowflags的属性总结**小节 | 2020-04-01 11:00:18 |
+
+### setwindowflags的属性总结
+
+```c++
+setWindowFlags(Qt::CustomizeWindowHint）;//设置窗口标题栏自定义
+
+setWindowFlags（Qt::WindowMinimizeButtonHint）;//设置窗口的标题栏只有最小化的按钮
+
+setWindowFlags( Qt::WindowCloseButtonHint ）;//设置窗口的标题栏只有关闭的按钮
+
+setWindowFlags（Qt::WindowStaysOnTopHint);//设置窗体一直置顶，并且不会抢焦点
+
+this->setWindowFlags(this->windowFlags()）;//设置窗口为QT的默认属性
+
+this->setWindowFlags（Qt::FramelessWindowHint)）;//设置窗体无边框，不可拖动拖拽拉伸
+
+this->setWindowModality(Qt::WindowModal); //设置窗体为模态
+```
+
