@@ -4742,7 +4742,7 @@ try {
 | ------ | ------ | ------------------------------------ | ------------------- |
 | V1.0   | 李建聪 | 添加**setwindowflags的属性总结**小节 | 2020-04-01 11:00:18 |
 
-### setwindowflags的属性总结
+### 窗口属性之setwindowflags的属性总结
 
 ```c++
 setWindowFlags(Qt::CustomizeWindowHint）;/// 设置窗口标题栏自定义
@@ -4762,3 +4762,18 @@ this->setWindowModality(Qt::WindowModal); /// 设置窗体为模态
 setWindowFlags(Qt::Dialog | Qt::FramelessWindowHint);	/// 窗体无边框且阻塞父窗口
 ```
 
+
+
+### 窗口属性之Qt::WA_DeleteOnClose
+
+```c++
+this->setAttribute(Qt::WA_DeleteOnClose, true);
+```
+
+
+
+当在调用close()函数去关闭某个窗口时，该窗口只会隐藏而不会释放，所有需要使用这句话来提醒qt，该窗口在close时删除。
+
+[窗口属性之Qt::WA_DeleteOnClose](https://blog.csdn.net/jaken99/article/details/72903135)
+
+[使用注意](https://blog.csdn.net/u012997311/article/details/51283526)
