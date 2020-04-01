@@ -4745,18 +4745,20 @@ try {
 ### setwindowflags的属性总结
 
 ```c++
-setWindowFlags(Qt::CustomizeWindowHint）;//设置窗口标题栏自定义
+setWindowFlags(Qt::CustomizeWindowHint）;/// 设置窗口标题栏自定义
 
-setWindowFlags（Qt::WindowMinimizeButtonHint）;//设置窗口的标题栏只有最小化的按钮
+setWindowFlags（Qt::WindowMinimizeButtonHint）;/// 设置窗口的标题栏只有最小化的按钮
 
-setWindowFlags( Qt::WindowCloseButtonHint ）;//设置窗口的标题栏只有关闭的按钮
+setWindowFlags( Qt::WindowCloseButtonHint ）;/// 设置窗口的标题栏只有关闭的按钮
 
-setWindowFlags（Qt::WindowStaysOnTopHint);//设置窗体一直置顶，并且不会抢焦点
+setWindowFlags（Qt::WindowStaysOnTopHint);/// 设置窗体一直置顶，并且不会抢焦点
 
-this->setWindowFlags(this->windowFlags()）;//设置窗口为QT的默认属性
+this->setWindowFlags(this->windowFlags()）;/// 设置窗口为QT的默认属性
 
-this->setWindowFlags（Qt::FramelessWindowHint)）;//设置窗体无边框，不可拖动拖拽拉伸
+this->setWindowFlags（Qt::FramelessWindowHint)）;/// 设置窗体无边框，不可拖动拖拽拉伸
 
-this->setWindowModality(Qt::WindowModal); //设置窗体为模态
+this->setWindowModality(Qt::WindowModal); /// 设置窗体为模态
+
+setWindowFlags(Qt::Dialog | Qt::FramelessWindowHint);	/// 窗体无边框且阻塞父窗口
 ```
 
