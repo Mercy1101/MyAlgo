@@ -826,10 +826,10 @@ class thread_pool {
   }
 };
 
-/// @name     ThreadPool_Sample 
+/// @name     ThreadPool_Sample
 /// @brief    从网上抄的一个点赞最多的线程池的实现
 /// @author   Lijiancong, pipinstall@163.com
-///           Taken from https://github.com/progschj/ThreadPool 
+///           Taken from https://github.com/progschj/ThreadPool
 /// @date     2020-03-10 09:26:40
 /// @warning  线程不安全
 class ThreadPool_Sample {
