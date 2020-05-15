@@ -39,7 +39,7 @@ class smart_ptr {
   }
 
   template <typename U>
-  smart_ptr(const smart_ptr<U>& other) {
+  smart_ptr(const smart_ptr<U>& other) noexcept {
     ptr_ = other.ptr_;
     if (ptr_) {
       other.shared_count_->add_count();
@@ -49,7 +49,7 @@ class smart_ptr {
 
   /// 这里引入模板U, 是为了自动类型推导来支持子类指针向基类指针的转换
   template <typename U>
-  smart_ptr(const smart_ptr<U>&& other) {
+  smart_ptr(const smart_ptr<U>&& other) noexcept {
     ptr_ = other.ptr_;
     if (ptr_) {
       shared_count_ = other.shared_count_;
@@ -65,12 +65,12 @@ class smart_ptr {
     delete ptr_;
   }
 
-  T* get() const { return ptr_; }
-  T& operator*() const { return *ptr_; }
-  T* operator->() const { return ptr_; }
-  operator bool() const { return ptr_; }
+  T* get() const noexcept { return ptr_; }
+  T& operator*() const noexcept { return *ptr_; }
+  T* operator->() const noexcept { return ptr_; }
+  operator bool() const noexcept { return ptr_; }
 
-  smart_ptr& operator=(smart_ptr rhs) {
+  smart_ptr& operator=(smart_ptr rhs) noexcept {
     smart_ptr(rhs).swap(*this);
     return *this;
   }
@@ -87,15 +87,30 @@ class smart_ptr {
     swap(shared_count_, rhs.shared_count_);
   }
 
+  template <typename U>
+  smart_ptr(const smart_ptr<U>& other, T* ptr) {
+    ptr_ = ptr;
+    if (ptr_) {
+      other.shared_count_->add_count();
+      shared_count_ = other.shared_count_;
+    }
+  }
+
+  template <typename U>
+  smart_ptr<T> dynamic_pointer_cast(const smart_ptr<U>& other) {
+    T* ptr = dynamic_cast<T*>(other.get());
+    return smart_ptr<T>(other, ptr);
+  }
+
  private:
   class shared_count {
    public:
     shared_count() : count_(-1) {}
 
-    void add_count() { ++count_; }
-    long reduce_count() { return --count_; }
-    long get_count() const { return count_; }
-    long use_count() const {
+    void add_count() noexcept { ++count_; }
+    long reduce_count() noexcept { return --count_; }
+    long get_count() const noexcept { return count_; }
+    long use_count() const noexcept {
       if (ptr_) {
         return shared_count_->get_count_();
       } else {
