@@ -4777,3 +4777,16 @@ this->setAttribute(Qt::WA_DeleteOnClose, true);
 [窗口属性之Qt::WA_DeleteOnClose](https://blog.csdn.net/jaken99/article/details/72903135)
 
 [使用注意](https://blog.csdn.net/u012997311/article/details/51283526)
+
+
+
+## 网课<现代C++实战30讲>学习笔记
+
+| 版本号 | 作者   | 修改摘要 | 时间                |
+| ------ | ------ | -------- | ------------------- |
+| V1.0   | 李建聪 | 创建     | 2020-05-14 12:09:23 |
+
+* C++中规定，如果提供了移动构造函数而没有手动提供拷贝构造函数，则后者被禁用。
+* new 和 delete 操作的区域是 free store
+* malloc 和 free 操作的区域是heap
+* 
