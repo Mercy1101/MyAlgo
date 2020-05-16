@@ -4789,4 +4789,74 @@ this->setAttribute(Qt::WA_DeleteOnClose, true);
 * C++中规定，如果提供了移动构造函数而没有手动提供拷贝构造函数，则后者被禁用。
 * new 和 delete 操作的区域是 free store
 * malloc 和 free 操作的区域是heap
-* 
+* 为什么C++的member function template不能是virtual的？虚函数表没法填。
+* 使用SFINAE来在编译时自动选择有reserve成员函数的容器
+
+```c++
+template <typename T>
+struct has_reserve {
+  struct good {
+    char dummy;
+  };
+  struct bad {
+    char dummy[2];
+  };
+  template <class U, void (U::*)(size_t)>
+  struct SFINAE {};
+  template <class U>
+  static good reserve(SFINAE<U, &U::reserve>*);
+  template <class U>
+  static bad reserve(...);
+  static const bool value = sizeof(reserve<T>(nullptr)) == sizeof(good);
+};
+
+template <typename C, typename T>
+std::enable_if_t<has_reserve<C>::value, void> append(C& container, T* ptr,
+                                                     size_t size) {
+  container.reserve(container.size() + size);
+  for (size_t i = 0; i < size; ++i) {
+    container.push_back(ptr[i]);
+  }
+}
+
+template <typename C, typename T>
+std::enable_if_t<!has_reserve<C>::value, void> append(C& container, T* ptr,
+                                                      size_t size) {
+  for (size_t i = 0; i < size; ++i) {
+    container.push_back(ptr[i]);
+  }
+}
+
+
+```
+
+vs
+
+```c++
+
+template <typename C, typename T>
+auto append(C& container, T* ptr, size_t size)
+    -> decltype(declval<C&>().reserve(1U), void()) {
+  container.reserve(container.size() + size);
+  for (size_t i = 0; i < size; ++i) {
+    container.push_back(ptr[i]);
+  }
+}
+```
+
+* 模板实现，入参为函数，返回值为容器的实现
+
+```c++
+template <template <typename, typename> class OutContainer = std::vector,
+          typename F, class R>
+auto fmap(F&& f, R&& inputs) {
+  typedef std::decay_t<decltype(f(*inputs.begin()))> result_type;
+  OutContainer<result_type, std::allocator<result_type>> result;
+  for (auto&& item : inputs) {
+    result.push_back(f(item));
+  }
+  return result;
+}
+
+```
+
