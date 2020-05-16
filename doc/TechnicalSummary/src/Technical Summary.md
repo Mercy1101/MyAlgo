@@ -4860,3 +4860,78 @@ auto fmap(F&& f, R&& inputs) {
 
 ```
 
+* has_reserve另一种写法
+
+```c++
+template <typename T, typename = std::void_t<>>
+struct has_reserve : std::false_type {};
+
+template<typename T>
+struct has_reserve<T, std::void_t<decltype(std::declval<T&>.reserve(1U))>> : std::true_type {};
+```
+
+* 一个 constexpr 变量是一个编译时完全确定的常数。一个 constexpr 函数至少对于某一组实参可以在编译期间产生一个编译期常数。
+* 注意一个 constexpr 函数不保证在所有情况下都会产生一个编译期常数（因而也是可以作为普通函数来使用的）。编译器也没法通用地检查这点。
+* 编译器唯一强制的是：constexpr 变量必须立即初始化初始化只能使用字面量或常量表达式，后者不允许调用任何非 constexpr 函数
+
+* 为了全面支持编译期计算，C++14 开始，很多标准类的构造函数和成员函数已经被标为 constexpr，以便在编译期使用。当然，大部分的容器类，因为用到了动态内存分配，不能成为字面类型。下面这些不使用动态内存分配的字面类型则可以在常量表达式中使用：array、initializer_list、pair、tuple、string_view、optional、variant、bitset、complex、chrono::duration、chrono::time_point、shared_ptr（仅限默认构造和空指针构造）unique_ptr（仅限默认构造和空指针构造）…
+
+* std::optional 介绍
+
+```c++
+#include <algorithm>
+#include <functional>
+#include <iostream>
+#include <optional>
+#include <string>
+#include <thread>
+#include <type_traits>
+#include <utility>
+#include <vector>
+
+template <typename T>
+constexpr bool has_value(const std::optional<T>& x) noexcept {
+  return x.has_value();
+}
+
+template <typename T, typename... Args>
+constexpr bool has_value(const std::optional<T>& first,
+                         const std::optional<Args>&... other) noexcept {
+  return first.has_value() && has_value(other...);
+}
+
+template <typename F>
+auto lift_optional(F&& f) {
+  return [f = forward<F>(f)](auto&&... args) {
+    typedef std::decay_t<decltype(
+        f(std::forward<decltype(args)>(args).value()...))>
+        result_type;
+    if (has_value(args...)) {
+      return std::optional<result_type>(
+          f(std::forward<decltype(args)>(args).value()...));
+    } else {
+      return std::optional<result_type>();
+    }
+  };
+}
+
+constexpr int increase(int n) { return n + 1; }
+
+std::ostream& operator<<(std::ostream& os, std::optional<int>(x)) {
+  if (x) {
+    os << '(' << *x << ')';
+  } else {
+    os << "(Nothing)";
+  }
+  return os;
+}
+
+int main() { auto inc_opt = lift_optional(increase);
+  auto plus_opt = lift_optional(std::plus<int>());
+  std::cout << inc_opt(std::optional<int>()) << std::endl;
+  std::cout << inc_opt(std::make_optional(41)) << std::endl;
+  std::cout << plus_opt(std::make_optional(41), std::optional<int>()) << std::endl;
+  system("pause");
+}
+```
+
