@@ -4926,7 +4926,8 @@ std::ostream& operator<<(std::ostream& os, std::optional<int>(x)) {
   return os;
 }
 
-int main() { auto inc_opt = lift_optional(increase);
+int main() { 
+  auto inc_opt = lift_optional(increase);
   auto plus_opt = lift_optional(std::plus<int>());
   std::cout << inc_opt(std::optional<int>()) << std::endl;
   std::cout << inc_opt(std::make_optional(41)) << std::endl;
