@@ -41,7 +41,7 @@
 /// @brief  放置一些关于宏定义的小工具
 ///
 /// @author lijiancong, pipinstall@163.com
-/// @date   2020-05-16 10:58:09 
+/// @date   2020-05-16 10:58:09
 ///////// ///////// ///////// ///////// ///////// ///////// ///////// /////////
 
 #ifndef MYALGO_INCLUDE_TOOLS_UTILITY_DETAIL_OUTPUT_CONTAINER_UTILITY_H_
