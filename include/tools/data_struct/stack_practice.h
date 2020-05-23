@@ -43,19 +43,54 @@ class simple_calculate {
   /// @warning  线程不安全
   [[nodiscard]] int calculate(const std::string& expression) {
     if (confirm_expression_valid(expression)) {
-      throw;
+      throw std::exception("Expression is invalid!");
     }
+
+    std::string parsed_string = parse_expression(expression);
+    if (!isalnum(parsed_string.at(0))) {
+      throw std::exception("Expression is invalid!");
+    }
+
     std::stack<int> number_stack;
     std::stack<int> operator_stack;
+    auto old_iterator = parsed_string.cbegin();
+    for (auto& c = parsed_string.cbegin(); c != parsed_string.cend();
+         ++c) {
+      if (*c != '+' && *c != '-' && *c != '*' && *c != '/') {
+        std::string temp(old_iterator, c);
+        number_stack.push(*c);
+      } else {
+        
+      }
+    }
   }
 
  private:
+  /// @name     parse_expression
+  /// @brief    解析输入字符串，去除了空格
+  ///
+  /// @param    expression [in]
+  ///
+  /// @return   解析后的字符串
+  ///
+  /// @author   Lijiancong, pipinstall@163.com
+  /// @date     2020-05-23 12:49:01
+  /// @warning  线程不安全
+  std::string parse_expression(const std::string& expression) {
+    std::string parsed_string;
+
+    while ((int index = parsed_string.find(' ')) != std::string::npos) {
+       parsed_string.erase(index, 1);
+    }
+    return parsed_string;
+  }
+
   /// @name     confirm_expression_valid
   /// @brief    确认输入的字符串是否合法
   ///
   /// @param    expression  [in]
   ///
-  /// @return
+  /// @return   true or false
   ///
   /// @author   Lijiancong, pipinstall@163.com
   /// @date     2020-05-22 12:45:49
@@ -70,17 +105,9 @@ class simple_calculate {
         expression.end()) {
       return false;
     }
+    return true;
   }
 
-  /// @name     calculate_exception
-  /// @brief    用于抛出计算错误的结果
-  /// @author   Lijiancong, pipinstall@163.com
-  /// @date     2020-05-22 12:44:49
-  /// @warning  线程不安全
-  class calculate_exception : public std::logic_error {
-    explicit calculate_exception(const std::string& error_log)
-        : std::logic_error(error_log) {}
-  };
 }
 
 }  // namespace stack_practice

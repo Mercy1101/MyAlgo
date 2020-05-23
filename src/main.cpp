@@ -5,6 +5,7 @@
 #include "Version/Version.h"  // for print PrintVersion()
 #include "init/init.h"
 #include "utility/utility.h"
+#include "profiler/Profiler.h"
 
 // "算法-二分查找"
 // "树-二叉树"
@@ -40,7 +41,6 @@
 // RSA加密
 // 打印非完全二叉树
 // 二叉树的实现
-
 int main(int argc, char** argv) {
   PrintVersion();
   CheckConfigFolder();
