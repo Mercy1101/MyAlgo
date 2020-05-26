@@ -131,7 +131,7 @@ return
 ;(11)
 !f::
 SetCapsLockState, AlwaysOff
-Run, F:\PDF
+Run, D:\PDF
 return
 
 ;(12)
