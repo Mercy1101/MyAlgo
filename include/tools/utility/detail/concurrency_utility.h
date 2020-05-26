@@ -26,6 +26,7 @@
 #include <thread>
 #include <utility>
 #include <vector>
+#include <type_traits>
 
 namespace Lee {
 inline namespace utility {
@@ -797,13 +798,23 @@ class thread_pool {
 
   ~thread_pool() { done = true; }
 
+  void run_pending_task() {
+    task_type task;
+    if (pop_task_from_local_queue(task) || pop_task_from_pool_queue(task) ||
+        pop_task_from_other_thread_queue(task)) {
+      task();
+    } else {
+      std::this_thread::yield();
+    }
+  }
+
   template <typename ResultType>
   using task_handle = std::future<ResultType>;
 
   template <typename FunctionType>
-  std::future<typename std::result_of<FunctionType()>::type> submit(
+  std::future<typename std::invoke_result<FunctionType()>::type> submit(
       FunctionType f) {
-    typedef std::result_of<FunctionType()>::type result_type;
+    typedef typename std::result_of<FunctionType()>::type result_type;
 
     std::packaged_task<result_type()> task(f);
     task_handle<result_type> res(task.get_future());
@@ -815,15 +826,6 @@ class thread_pool {
     return res;
   }
 
-  void run_pending_task() {
-    task_type task;
-    if (pop_task_from_local_queue(task) || pop_task_from_pool_queue(task) ||
-        pop_task_from_other_thread_queue(task)) {
-      task();
-    } else {
-      std::this_thread::yield();
-    }
-  }
 };
 
 /// @name     ThreadPool_Sample
@@ -856,8 +858,8 @@ class ThreadPool_Sample {
 
   template <class F, class... Args>
   auto enqueue(F&& f, Args&&... args)
-      -> std::future<typename std::result_of<F(Args...)>::type> {
-    using return_type = typename std::result_of<F(Args...)>::type;
+      -> std::future<typename std::invoke_result<F(Args...)>::type> {
+    using return_type = typename std::invoke_result<F(Args...)>::type;
 
     auto task = std::make_shared<std::packaged_task<return_type()>>(
         std::bind(std::forward<F>(f), std::forward<Args>(args)...));
