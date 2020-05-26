@@ -76,6 +76,9 @@ set(UNITTEST_SOURCE
 
   # 并行工具的单元测试文件
   unittest/tools/utility/concurrency_utility_unittest.cpp
+
+  # stack_practice的测试单元文件
+  unittest/tools/data_struct/stack_practice_unittest.cpp
 )
 
 # 把源文件添加进工程中

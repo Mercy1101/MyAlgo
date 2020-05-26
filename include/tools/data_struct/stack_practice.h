@@ -72,12 +72,18 @@ class simple_calculate {
 
     /// 开始计算结果
     int result = 0;
-    auto first_number = number_stack.pop();
-    result += calculate_number(first_number, number_stack.pop(),
-                               operator_stack.pop());
-    while (auto it = operator_stack.pop()) {
-      auto temp_result = number_stack.pop();
-      resullt += calculate_number(result, temp_result, it);
+    int first_number = number_stack.top();
+    number_stack.pop();
+    result += calculate_number(first_number, number_stack.top(),
+                               operator_stack.top());
+    number_stack.pop();
+    operator_stack.pop();
+    while (!operator_stack.empty()) {
+        auto it = operator_stack.top();
+        operator_stack.pop();
+        auto temp_result = number_stack.top();
+        number_stack.pop();
+      result += calculate_number(result, temp_result, it);
     }
     return result;
   }
@@ -147,13 +153,13 @@ class simple_calculate {
       return false;
     }
     /// 表达式不能包含以下特殊字符
-    if (expression.find_first_of("~!@#$%^&*_{}|:\"<>?`=\\[];',./") !=
-        expression.end()) {
+    if (expression.find_first_of("~!@#$%^&*_{}|:\"<>?`=\\[];',./") != std::string::npos
+        ) {
       return false;
     }
     return true;
   }
-}
+};
 
 }  // namespace stack_practice
 }  // namespace data_struct
