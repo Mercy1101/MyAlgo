@@ -39,6 +39,9 @@ THE SOFTWARE.
 #include <unordered_set>
 #include <vector>
 
+#ifdef _MSC_VER
+#  pragma warning(disable : 4702 26451)  // unreachable code
+#endif
 
 #ifdef __cpp_lib_optional
 #include <optional>

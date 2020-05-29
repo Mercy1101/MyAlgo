@@ -1,4 +1,4 @@
-// Formatting library for C++ - the core API
+﻿// Formatting library for C++ - the core API
 //
 // Copyright (c) 2012 - present, Victor Zverovich
 // All rights reserved.
@@ -16,6 +16,11 @@
 #include <string>
 #include <type_traits>
 #include <vector>
+
+#ifdef _MSC_VER
+#  pragma warning(disable : 4702 26451 4566)  // unreachable code
+#endif
+
 
 // The fmt library version in the form major * 10000 + minor * 100 + patch.
 #define FMT_VERSION 60200
