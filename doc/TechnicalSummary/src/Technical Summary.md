@@ -60,6 +60,7 @@
 | V5.1 | 李建聪 | 添加**std::decay_t 介绍**小节 | 2020-01-19 10:50:02 |
 | V5.2 | 李建聪 | 添加**std::is_empty 介绍** 小节 | 2020-02-17 09:36:58 |
 | V5.3 | 李建聪 | 添加**std::result_of 介绍**小节 | 2020-03-10 09:13:16 |
+| V5.4 | 李建聪 | 添加**数值极限**小节 | 2020-05-29 09:28:38 |
 
 ### std::string 用法
 
@@ -2928,7 +2929,7 @@ int main()
 > true
 > ```
 
-### std::result_of 介绍
+### std::result_of 介绍(C++17以后改为std::invoke_result)
 
 编译期类型推导，见下面例子
 
@@ -2971,6 +2972,49 @@ int main()
     static_assert(std::is_same<decltype(g), double>::value, "");
  
     f<C>(1); // C++11 中可能编译失败； C++14 中调用不可调用重载
+}
+```
+
+### 数值极限
+
+```c++
+#include <limits>
+#include <iostream>
+ 
+int main() 
+{
+    std::cout << "type\tlowest()\tmin()\t\tmax()\n\n";
+ 
+    std::cout << "uchar\t"
+              << +std::numeric_limits<unsigned char>::lowest() << '\t' << '\t'
+              << +std::numeric_limits<unsigned char>::min() << '\t' << '\t'
+              << +std::numeric_limits<unsigned char>::max() << '\n';
+    std::cout << "short\t"
+              << std::numeric_limits<short>::lowest() << '\t'
+              << std::numeric_limits<short>::min() << '\t'
+              << std::numeric_limits<short>::max() << '\n';
+    std::cout << "int\t"
+              << std::numeric_limits<int>::lowest() << '\t'
+              << std::numeric_limits<int>::min() << '\t'
+              << std::numeric_limits<int>::max() << '\n';
+    std::cout << "long\t"
+              << std::numeric_limits<long>::lowest() << '\t'
+              << std::numeric_limits<long>::min() << '\t'
+              << std::numeric_limits<long>::max() << '\n';
+    std::cout << "long long\t"
+              << std::numeric_limits<long long>::lowest() << '\t'
+              << std::numeric_limits<long long>::min() << '\t'
+              << std::numeric_limits<long long>::max() << '\n';
+    std::cout << "float\t"
+              << std::numeric_limits<float>::lowest() << '\t'
+              << std::numeric_limits<float>::min() << '\t'
+              << std::numeric_limits<float>::max() << '\n';
+    std::cout << "double\t"
+              << std::numeric_limits<double>::lowest() << '\t'
+              << std::numeric_limits<double>::min() << '\t'
+              << std::numeric_limits<double>::max() << '\n';
+
+    system("pause");
 }
 ```
 
