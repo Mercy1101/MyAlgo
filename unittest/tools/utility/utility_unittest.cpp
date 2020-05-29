@@ -184,8 +184,8 @@ TEST_CASE("IsMultiOverFlow在long long类型下没有溢出的测试",
   x = 0;
   y = LLONG_MAX;
   REQUIRE_FALSE(Lee::IsMultiOverFlow(x, y));
-  /** LLONG_MAX * 0 没有溢出*/
 
+  /** LLONG_MAX * 0 没有溢出*/
   x = LLONG_MAX;
   y = 0;
   REQUIRE_FALSE(Lee::IsMultiOverFlow(x, y));
