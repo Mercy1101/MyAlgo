@@ -11,11 +11,13 @@
 #ifndef MYALGO_INCLUDE_TOOLS_DATASTRUCT_STACK_PRACTICE_H_
 #define MYALGO_INCLUDE_TOOLS_DATASTRUCT_STACK_PRACTICE_H_
 
+#include <algorithm>
 #include <exception>
 #include <functional>
 #include <iostream>
+#include <list>
+#include <mutex>
 #include <optional>
-#include <stack>
 #include <string>
 
 namespace Lee {
@@ -30,8 +32,21 @@ inline namespace stack_practice {
 /// @warning  线程不安全
 class simple_calculate {
  public:
-  simple_calculate() {}
+  [[nodiscard]] static std::optional<int> cal(const std::string& expression) {
+    static std::once_flag instance_flag;
+    std::call_once(instance_flag, []() {
+      if (nullptr == instance) {
+        instance = new simple_calculate();
+      }
+    });
+    return instance->calculate(expression);
+  }
+
   ~simple_calculate() {}
+
+ private:
+  simple_calculate() {}
+  inline static simple_calculate* instance = nullptr;
 
   /// @name     calculate
   /// @brief    用于解析并计算出一个字符串中的算数符号
@@ -43,7 +58,7 @@ class simple_calculate {
   /// @author   Lijiancong, pipinstall@163.com
   /// @date     2020-05-22 11:52:54
   /// @warning  线程不安全
-  [[nodiscard]] std::optional<int> calculate(const std::string& expression) {
+  std::optional<int> calculate(const std::string& expression) {
     try {
       if (!confirm_expression_valid(expression)) {
         throw std::exception("Expression is invalid!");
@@ -54,18 +69,18 @@ class simple_calculate {
         throw std::exception("Expression is invalid!");
       }
 
-      std::stack<int> number_stack;
-      std::stack<char> operator_stack;
-      get_number(parsed_string, number_stack, operator_stack);
+      std::vector<int> number_list;
+      std::vector<char> operator_list;
+      parse_number(parsed_string, number_list, operator_list);
 
-      return calculate_result(number_stack, operator_stack);
+      return calculate_result(number_list, operator_list);
     } catch (std::exception e) {
-      std::cout << e.what() << std::endl;
+      (void)e;
+      /// std::cout << e.what() << std::endl;
       return {};
     }
   }
 
- private:
   /// @name     calculate_result
   /// @brief    计算出结果
   ///
@@ -77,54 +92,100 @@ class simple_calculate {
   /// @author   Lijiancong, pipinstall@163.com
   /// @date
   /// @warning  线程不安全
-  int calculate_result(std::stack<int>& number_stack,
-                       std::stack<char>& operator_stack) {
-    /// 开始计算结果
-    int result = number_stack.top();
-    number_stack.pop();
-    while (!operator_stack.empty()) {
-      auto it = operator_stack.top();
-      operator_stack.pop();
-      if (number_stack.empty()) {
+  int calculate_result(std::vector<int>& number_list,
+                       std::vector<char>& operator_list) {
+    /// 优先运算乘法和除法
+    priority_calculate(number_list, operator_list);
+
+    /// 开始加法和减法的计算结果
+    int result = number_list.front();
+    number_list.erase(number_list.begin());
+    while (!operator_list.empty()) {
+      auto it = operator_list.front();
+      operator_list.erase(operator_list.begin());
+      if (number_list.empty()) {
         throw std::exception("number_stack is invalid!");
       }
-      auto temp_result = number_stack.top();
-      number_stack.pop();
-      result = calculate_number(temp_result, result, it);
+      auto temp_result = number_list.front();
+      number_list.erase(number_list.begin());
+      result = calculate_number(result, temp_result, it);
     }
     return result;
   }
 
-  /// @name      get_number
+  /// @name     priority_calculate
+  /// @brief    优先计算一下乘除法，并把计算完的乘法存储在number_list中
+  ///
+  /// @param    number_list     [in/out]
+  /// @param    operator_list   [in/out]
+  ///
+  /// @return   NONE
+  ///
+  /// @author   Lijiancong, pipinstall@163.com
+  /// @date     2020-05-30 15:10:36
+  /// @warning  线程不安全
+  void priority_calculate(std::vector<int>& number_list,
+                          std::vector<char>& operator_list) {
+    for (auto priority_operator = std::find_if(
+             operator_list.begin(), operator_list.end(),
+             [](const char& temp) { return temp == '*' || temp == '/'; });
+         priority_operator != operator_list.end();
+         priority_operator = std::find_if(
+             operator_list.begin(), operator_list.end(),
+             [](const char& temp) { return temp == '*' || temp == '/'; })) {
+      /// 获取该运算符
+      auto op = *priority_operator;
+      /// 找寻这个迭代器在容器的为第几个元素，用于找寻对应的运算数字
+      int position = 0;
+      for (auto it = operator_list.begin(); it != priority_operator; ++it) {
+        ++position;
+      }
+
+      /// 擦除该运算符
+      operator_list.erase(priority_operator);
+      /// 计算结果
+      number_list.at(position + 1) = calculate_number(
+          number_list.at(position), number_list.at(position + 1), op);
+      /// 找寻并擦除第二操作数
+      auto it = number_list.begin();
+      for (int i = 0; i < position; ++i) {
+        ++it;
+      }
+      number_list.erase(it);
+    }
+  }
+
+  /// @name      parse_number
   /// @brief     解析出来数字和符号
   ///
   /// @param     parsed_string   [in]
-  /// @param     number_stack    [out]
-  /// @param     operator_stack  [out]
+  /// @param     number_list     [out]
+  /// @param     operator_list   [out]
   ///
   /// @return   NONE
   ///
   /// @author   Lijiancong, pipinstall@163.com
   /// @date     2020-05-27 12:11:06
   /// @warning  线程不安全
-  void get_number(const std::string& parsed_string,
-                  std::stack<int>& number_stack,
-                  std::stack<char>& operator_stack) {
+  void parse_number(const std::string& parsed_string,
+                    std::vector<int>& number_list,
+                    std::vector<char>& operator_list) {
     /// 提取数字
     size_t start_index = 0;
     for (size_t current_index =
              parsed_string.find_first_of("+-*/", start_index);
          current_index != std::string::npos;
          current_index = parsed_string.find_first_of("+-*/", start_index)) {
-      auto num_string = parsed_string.substr(start_index, current_index-start_index);
-      number_stack.push(std::stoi(num_string));
-      operator_stack.push(parsed_string.at(current_index));
+      auto num_string =
+          parsed_string.substr(start_index, current_index - start_index);
+      number_list.push_back(std::stoi(num_string));
+      operator_list.push_back(parsed_string.at(current_index));
       start_index = current_index + 1;
     }
     /// 提取最后一个数字
-    number_stack.push(
+    number_list.push_back(
         std::stoi(parsed_string.substr(start_index, parsed_string.size())));
-    if (number_stack.size() != operator_stack.size() + 1) {
+    if (number_list.size() != operator_list.size() + 1) {
       throw std::exception("invalid number!");
     }
   }
@@ -192,7 +253,7 @@ class simple_calculate {
       return false;
     }
     /// 表达式不能包含以下特殊字符
-    if (expression.find_first_of("~!@#$%^&*_{}|:\"<>?`=\\[];',./") !=
+    if (expression.find_first_of("~!@#$%^&_{}|:\"<>?`=\\[];',.") !=
         std::string::npos) {
       return false;
     }
