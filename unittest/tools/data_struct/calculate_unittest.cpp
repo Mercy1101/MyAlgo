@@ -1,4 +1,4 @@
-﻿#include "data_struct/stack_practice.h"
+﻿#include "data_struct/calculate.h"
 
 #include <catch2/catch.hpp>
 
@@ -202,5 +202,45 @@ SCENARIO("四则运算的简单测试", "[data_struct][stack_practice]") {
       }  ///< THEN
     }    ///< WHEN
   }      ///< GIVEN
+
+  GIVEN("带有空格的表达式") {
+    WHEN("简单四则运算: 12323+23*2-81/9") {
+      THEN("结果为： 12360") {
+        auto temp = Lee::simple_calculate::cal("12323    + 23  *2-  81/  9  ");
+        REQUIRE(temp.has_value());
+        REQUIRE(12360 == temp.value());
+      }  ///< THEN
+    }    ///< WHEN
+
+    WHEN("连续加法: 4+5+6+99+9999+66767+87987") {
+      THEN("结果为: 164867") {
+        auto temp = Lee::simple_calculate::cal("4+   5+6+99+  9999+66767  +87987       ");
+        REQUIRE(temp.has_value());
+        REQUIRE(164867 == temp.value());
+      }  ///< THEN
+    }    ///< WHEN
+
+    WHEN("输入正确的数字: 234") {
+      THEN("结果为:234") { REQUIRE(234 == Lee::simple_calculate::cal("  234 ")); }
+    }  ///< WHEN
+
+    WHEN("输入四则运算符号: +") {
+      THEN("返回空值") {
+        REQUIRE(!Lee::simple_calculate::cal("  +  ").has_value());
+      }  ///< THEN
+    }    ///< WHEN
+
+    WHEN("输入非法符号: @") {
+      THEN("返回空值") {
+        REQUIRE(!Lee::simple_calculate::cal("   @  ").has_value());
+      }
+    }  ///< WHEN
+    WHEN("复杂除零：2323*2/9+2323+4554/0*99-99+8") {
+      THEN("返回空值") {
+        REQUIRE(!Lee::simple_calculate::cal("2323  *2/ 9    +2323+   4554/  0  *99  -99+  8")
+                     .has_value());
+      }  ///< THEN
+    }    ///< WHEN
+  } ///< GIVEN
 
 }  ///< SCENARIO

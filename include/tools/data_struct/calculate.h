@@ -1,15 +1,15 @@
 ﻿///////// ///////// ///////// ///////// ///////// ///////// ///////// /////////
 /// Copyright (c) 2019, 2020 Lijiancong. All rights reserved.
 ///
-/// @file   stack_practice.h
-/// @brief  使用栈来实现四则运算
+/// @file   calculate.h
+/// @brief  四则运算
 ///
 /// @author lijiancong, pipinstall@163.com
 /// @date   2020-05-14 10:52:48
 ///////// ///////// ///////// ///////// ///////// ///////// ///////// /////////
 
-#ifndef MYALGO_INCLUDE_TOOLS_DATASTRUCT_STACK_PRACTICE_H_
-#define MYALGO_INCLUDE_TOOLS_DATASTRUCT_STACK_PRACTICE_H_
+#ifndef MYALGO_INCLUDE_TOOLS_DATASTRUCT_CALCULATE_H_
+#define MYALGO_INCLUDE_TOOLS_DATASTRUCT_CALCULATE_H_
 
 #include <algorithm>
 #include <exception>
@@ -22,7 +22,7 @@
 
 namespace Lee {
 inline namespace data_struct {
-inline namespace stack_practice {
+inline namespace calculate {
 
 /// @name     simple_calculate
 /// @brief    用于计算一个输入的字符串的对象
@@ -230,8 +230,8 @@ class simple_calculate {
   /// @warning  线程不安全
   std::string parse_expression(const std::string& expression) {
     std::string parsed_string = expression;
-
-    while (int index = parsed_string.find(' ') != std::string::npos) {
+    for (size_t index = parsed_string.find(' '); index != std::string::npos;
+         index = parsed_string.find(' ')) {
       parsed_string.erase(index, 1);
     }
     return parsed_string;
