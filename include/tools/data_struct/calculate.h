@@ -26,10 +26,24 @@ inline namespace calculate {
 
 /// @name     simple_calculate
 /// @brief    用于计算一个输入的字符串的对象
+/// @details  注意：
+///           1. 现在不支持数字中间有空格的情况。2020-05-30 18:20:37
+///           2. 目前不支持余数、浮点运算和溢出检测。2020-05-30 18:26:29
 ///
 /// @author   Lijiancong, pipinstall@163.com
 /// @date     2020-05-22 11:50:25
 /// @warning  线程不安全
+/// @example  用法如下
+/// @code
+///     #inlcude <iostream>
+///     #include <cassert>
+///     #include "caculate.h"
+///
+///     int main() {
+///       asserst(41 == Lee::calculate::cal("5+8*4+8/2"), "计算错误！");
+///       asserst(41 == Lee::calculate::cal("  5+  8*4+8   /2 ", "计算错误！"));
+///     }
+/// @endcode
 class simple_calculate {
  public:
   [[nodiscard]] static std::optional<int> cal(const std::string& expression) {
@@ -189,6 +203,7 @@ class simple_calculate {
       throw std::exception("invalid number!");
     }
   }
+
   /// @name     calculate_number
   /// @brief    计算结果并返回，遇到错误抛出异常
   ///
@@ -218,6 +233,7 @@ class simple_calculate {
       throw std::exception("unkonw operator!");
     }
   }
+
   /// @name     parse_expression
   /// @brief    解析输入字符串，去除了空格
   ///
@@ -261,7 +277,7 @@ class simple_calculate {
   }
 };
 
-}  // namespace stack_practice
+}  // namespace calculate
 }  // namespace data_struct
 }  // namespace Lee
 
