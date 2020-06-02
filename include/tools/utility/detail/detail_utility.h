@@ -445,6 +445,37 @@ inline void quick_exit(const int &code, const std::string &exit_info) {
   exit(code);
 }
 
+/// @name     compare_vector
+/// @brief    比较两个容器的元素是否一致
+///
+/// @param    x [in/out]
+/// @param    y [in/out]
+///
+/// @return
+///
+/// @author   Lijiancong, pipinstall@163.com
+/// @date     2020-06-01 12:25:09
+/// @warning  线程不安全
+template <typename T>
+bool compare_vector(std::vector<T> x, std::vector<T> y) {
+  try {
+    if (x.size() != y.size()) {
+      return false;
+    }
+    std::sort(x.begin(), x.end());
+    std::sort(y.begin(), y.end());
+    for (int i = 0; i < x.size(); ++i) {
+      if (x.at(i) != y.at(i)) {
+        return false;
+      }
+    }
+    return true;
+  } catch (std::exception e) {
+    (void)e;
+    return false;
+  }
+}
+
 }  // namespace detail
 }  // namespace utility
 }  // namespace Lee

@@ -1,5 +1,8 @@
 ﻿#include "leetcode.h"
+
 #include <catch2/catch.hpp>
+
+#include "utility/utility.h"
 
 /**
  * @brief Lee::Leetcode::isPalindrome()函数的简单测试
@@ -166,3 +169,59 @@ SCENARIO("ParseChanNumber 简单测试", "[leetcode][ParseChanNumber]") {
     }
   }
 }
+
+SCENARIO("top_k_frequent 简单测试", "[leetcode][top_k_frequent]") {
+  GIVEN("简单测试") {
+    WHEN("Input: num = [1,1,1,2,2,3], k = 1") {
+      THEN("Output: [1]") {
+        std::vector<int> input{1, 1, 1, 2, 2, 3};
+        std::vector<int> true_result{1};
+        std::vector<int> result = Lee::Leetcode::top_k_frequent(input, 1);
+        REQUIRE(Lee::compare_vector(result, true_result));
+      }  ///< THEN
+    }    ///< WHEN
+
+    WHEN("Input: num = [1], k = 1") {
+      THEN("Output: [1]") {
+        std::vector<int> input{1};
+        std::vector<int> true_result{1};
+        std::vector<int> result = Lee::Leetcode::top_k_frequent(input, 1);
+        REQUIRE(Lee::compare_vector(result, true_result));
+      }  ///< THEN
+    }    ///< WHEN
+  }      ///< GIVEN
+}  ///< SCENARIO
+
+SCENARIO("sort_string 简单测试", "[leetcode][sort_string]") {
+  GIVEN("简单测试") {
+    WHEN("Input: s = [\"aaaabbbbcccc\"]") {
+      THEN("Output: [\"abccbaabccba\"]") {
+        REQUIRE(Lee::Leetcode::sort_string("aaaabbbbcccc") == "abccbaabccba");
+      } ///< THEN
+    } ///< WHEN
+
+    WHEN("Input: s = [\"rat\"]") {
+      THEN("Output: [\"art\"]") {
+        REQUIRE(Lee::Leetcode::sort_string("rat") == "art");
+      } ///< THEN
+    } ///< WHEN
+
+    WHEN("Input: s = [\"leetcode\"]") {
+      THEN("Output: [\"cdelotee\"]") {
+        REQUIRE(Lee::Leetcode::sort_string("leetcode") == "cdelotee");
+      } ///< THEN
+    } ///< WHEN
+
+    WHEN("Input: s = [\"ggggggg\"]") {
+      THEN("Output: [\"ggggggg\"]") {
+        REQUIRE(Lee::Leetcode::sort_string("ggggggg") == "ggggggg");
+      } ///< THEN
+    } ///< WHEN
+
+    WHEN("Input: s = [\"spo\"]") {
+      THEN("Output: [\"ops\"]") {
+        REQUIRE(Lee::Leetcode::sort_string("spo") == "ops");
+      } ///< THEN
+    } ///< WHEN
+  } ///< GIVEN
+} ///< SCENARIO
