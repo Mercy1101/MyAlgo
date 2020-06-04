@@ -3916,6 +3916,8 @@ int main()
 | V2.7   | 李建聪 | 增加**const的位置对指针本身的值与指针指向的值产生的影响**小节 | 2020-01-13 10:22:08 |
 | V2.8   | 李建聪 | 增加**基类应该删除拷贝构造函数和拷贝构造符**小节             | 2020-02-25 09:13:21 |
 | V2.9   | 李建聪 | 增加**永远不要在持有一个锁时调用未知代码**小节               | 2020-02-27 08:10:44 |
+| V3.0   | 李建聪 | 增加小节**std::shared_ptr 指针的验证**                       | 2020-06-04 12:00:12 |
+|        |        |                                                              |                     |
 
 ### 如何求得一个数组的长度
 
@@ -4676,6 +4678,78 @@ void do_this(Foo *p)
 ```
 
 如上面代码所示，如果act函数中同样也对my_mutex加锁，那么就会产生死锁。所以在持有锁的时候一定要注意调用的代码中没有重复加锁的情况。
+
+#### std::shared_ptr 指针的验证
+
+```c++
+#include <algorithm>
+#include <functional>
+#include <iostream>
+#include <type_traits>
+#include <utility>
+#include <vector>
+#include <list>
+#include <iostream>
+#include <string>
+
+template<typename T>
+class test {
+ public:
+  test() { 
+    std::cout << "class test<"<< typeid(T).name() << "> is ctor! Address: " << static_cast<void*>(this) << std::endl;
+    std::list<std::shared_ptr<T>> temp_list;
+    
+    for (int i = 0; i < 10; ++i) {
+      temp_list.push_back(std::make_shared<T>(i)); 
+    }
+    object = std::make_shared<std::list<std::shared_ptr<T>>>(temp_list);
+  }
+
+  ~test() {
+    std::cout << "class test<"<< typeid(T).name() << "> is dtor! Address: " << static_cast<void*>(this) << std::endl;
+  }
+
+  std::shared_ptr<std::list<std::shared_ptr<T>>> get_object() {
+    return object;
+  }
+
+  private:
+    std::shared_ptr<std::list<std::shared_ptr<T>>> object;
+};
+
+template<typename T>
+void print_element(T i) {
+  std::cout << typeid(T).name() << ": " << i << std::endl;
+}
+ 
+int main() 
+{
+  std::cout << "\nFirst type is int:" << std::endl;
+  {
+    auto ptr = std::make_shared<test<int>>();
+    auto sptr_temp = ptr->get_object();
+    for (const auto& element : *sptr_temp) {
+      /// element 的类型为const std::shared_ptr<int>&
+      print_element(*element);
+    }
+  }
+
+  std::cout << "\nSecond type is double:" << std::endl;
+  {
+    auto ptr = std::make_shared<test<double>>();
+    auto sptr_temp_double = ptr->get_object();
+    for (const auto& element : *sptr_temp_double) {
+      /// element 的类型为const std::shared_ptr<double>&
+      print_element(*element);
+    }
+  }
+
+  std::cout << "All test is passed!" << std::endl;
+  system("pause");
+}
+```
+
+
 
 ## 数据结构与算法
 
