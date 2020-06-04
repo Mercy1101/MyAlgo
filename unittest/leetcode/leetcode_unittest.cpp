@@ -43,7 +43,8 @@ SCENARIO("ParseChanNumber 简单测试", "[leetcode][ParseChanNumber]") {
       THEN("ParseChanNumber应该返回真") {
         REQUIRE((Lee::Leetcode::ParseChanNumber(x1, &chan_number_vec)));
         REQUIRE((chan_number_vec.size() == 6));
-        REQUIRE((std::is_sorted(chan_number_vec.begin(), chan_number_vec.end())));
+        REQUIRE(
+            (std::is_sorted(chan_number_vec.begin(), chan_number_vec.end())));
         for (size_t i = 0; i < chan_number_vec.size(); ++i) {
           REQUIRE((chan_number_vec.at(i) == i));
         }
@@ -55,7 +56,8 @@ SCENARIO("ParseChanNumber 简单测试", "[leetcode][ParseChanNumber]") {
       THEN("ParseChanNumber应该返回真") {
         REQUIRE((Lee::Leetcode::ParseChanNumber(x2, &chan_number_vec)));
         REQUIRE((chan_number_vec.size() == 5));
-        REQUIRE((std::is_sorted(chan_number_vec.begin(), chan_number_vec.end())));
+        REQUIRE(
+            (std::is_sorted(chan_number_vec.begin(), chan_number_vec.end())));
         for (size_t i = 0; i < chan_number_vec.size(); ++i) {
           REQUIRE((chan_number_vec.at(i) == i + 11));
         }
@@ -116,32 +118,38 @@ SCENARIO("ParseChanNumber 简单测试", "[leetcode][ParseChanNumber]") {
         }
         std::string x10(".");
         THEN("ParseChanNumber应该返回假") {
-          REQUIRE_FALSE((Lee::Leetcode::ParseChanNumber(x10, &chan_number_vec)));
+          REQUIRE_FALSE(
+              (Lee::Leetcode::ParseChanNumber(x10, &chan_number_vec)));
           chan_number_vec.clear();
         }
         std::string x11("--");
         THEN("ParseChanNumber应该返回假") {
-          REQUIRE_FALSE((Lee::Leetcode::ParseChanNumber(x11, &chan_number_vec)));
+          REQUIRE_FALSE(
+              (Lee::Leetcode::ParseChanNumber(x11, &chan_number_vec)));
           chan_number_vec.clear();
         }
         std::string x12("---------------------------");
         THEN("ParseChanNumber应该返回假") {
-          REQUIRE_FALSE((Lee::Leetcode::ParseChanNumber(x12, &chan_number_vec)));
+          REQUIRE_FALSE(
+              (Lee::Leetcode::ParseChanNumber(x12, &chan_number_vec)));
           chan_number_vec.clear();
         }
         std::string x13(".6");
         THEN("ParseChanNumber应该返回假") {
-          REQUIRE_FALSE((Lee::Leetcode::ParseChanNumber(x13, &chan_number_vec)));
+          REQUIRE_FALSE(
+              (Lee::Leetcode::ParseChanNumber(x13, &chan_number_vec)));
           chan_number_vec.clear();
         }
         std::string x14(".7-");
         THEN("ParseChanNumber应该返回假") {
-          REQUIRE_FALSE((Lee::Leetcode::ParseChanNumber(x14, &chan_number_vec)));
+          REQUIRE_FALSE(
+              (Lee::Leetcode::ParseChanNumber(x14, &chan_number_vec)));
           chan_number_vec.clear();
         }
         std::string x15("-12-");
         THEN("ParseChanNumber应该返回假") {
-          REQUIRE_FALSE((Lee::Leetcode::ParseChanNumber(x15, &chan_number_vec)));
+          REQUIRE_FALSE(
+              (Lee::Leetcode::ParseChanNumber(x15, &chan_number_vec)));
           chan_number_vec.clear();
         }
         std::string x16(",77-");
@@ -197,31 +205,49 @@ SCENARIO("sort_string 简单测试", "[leetcode][sort_string]") {
     WHEN("Input: s = [\"aaaabbbbcccc\"]") {
       THEN("Output: [\"abccbaabccba\"]") {
         REQUIRE(Lee::Leetcode::sort_string("aaaabbbbcccc") == "abccbaabccba");
-      } ///< THEN
-    } ///< WHEN
+      }  ///< THEN
+    }    ///< WHEN
 
     WHEN("Input: s = [\"rat\"]") {
       THEN("Output: [\"art\"]") {
         REQUIRE(Lee::Leetcode::sort_string("rat") == "art");
-      } ///< THEN
-    } ///< WHEN
+      }  ///< THEN
+    }    ///< WHEN
 
     WHEN("Input: s = [\"leetcode\"]") {
       THEN("Output: [\"cdelotee\"]") {
         REQUIRE(Lee::Leetcode::sort_string("leetcode") == "cdelotee");
-      } ///< THEN
-    } ///< WHEN
+      }  ///< THEN
+    }    ///< WHEN
 
     WHEN("Input: s = [\"ggggggg\"]") {
       THEN("Output: [\"ggggggg\"]") {
         REQUIRE(Lee::Leetcode::sort_string("ggggggg") == "ggggggg");
-      } ///< THEN
-    } ///< WHEN
+      }  ///< THEN
+    }    ///< WHEN
 
     WHEN("Input: s = [\"spo\"]") {
       THEN("Output: [\"ops\"]") {
         REQUIRE(Lee::Leetcode::sort_string("spo") == "ops");
-      } ///< THEN
-    } ///< WHEN
-  } ///< GIVEN
-} ///< SCENARIO
+      }  ///< THEN
+    }    ///< WHEN
+  }      ///< GIVEN
+}  ///< SCENARIO
+
+SCENARIO("generate_pascal_trangel 简单测试",
+         "[leetcode][generate_pascal_trangel]") {
+  GIVEN("简单测试") {
+    WHEN("Input: s = [5]") {
+      THEN("Output: [ [1], [1,1], [1,2,1], [1,3,3,1], [1,4,6,4,1]]") {
+        auto result = Lee::Leetcode::generate_pascal_trangel(5);
+        std::vector<std::vector<int>> true_result;
+        true_result.push_back({1});
+        true_result.push_back({1, 1});
+        true_result.push_back({1, 2, 1});
+        true_result.push_back({1,3,3,1});
+        true_result.push_back({1,4,6,4,1});
+        REQUIRE(Lee::compare_vector(result, true_result));
+      }  ///< THEN
+    }    ///< WHEN
+  }      ///< GIVEN
+}  ///< SCENARIO

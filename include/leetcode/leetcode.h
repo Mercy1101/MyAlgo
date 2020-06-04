@@ -209,12 +209,14 @@ inline std::string sort_string(std::string s) {
   return result;
 }
 
+#if 0
 inline std::string sort_string_sample(std::string s) {
   int cnt[26] = {0};
   for (auto ch : s) ++cnt[ch - 'a'];
 
   std::string ans;
-  int n = 0, N = s.size();
+  int n = 0;
+    auto N = s.size();
   auto appendChar = [&](int i) {
     if (cnt[i]) {
       ans.push_back(i + 'a');
@@ -229,6 +231,38 @@ inline std::string sort_string_sample(std::string s) {
   }
 
   return ans;
+}
+#endif 
+
+/// @name     generate_pascal_trangel
+/// @brief
+///
+/// @param    numRows [in]
+///
+/// @return
+///
+/// @author   Lijiancong, pipinstall@163.com
+/// @date     2020-06-04 12:02:31
+/// @warning  线程不安全
+/// @note
+/// 118. Pascal's Triangle
+///   Given a non-negative integer numRows, generate the first numRows of
+/// Pascal's triangle.
+///   In Pascal's trangle, each number is the sum of the two number directly
+/// above it.
+inline constexpr std::vector<std::vector<int>> generate_pascal_trangel(int numRows) {
+  std::vector<std::vector<int>> result;
+  result.reserve(numRows);
+  for (size_t i = 0; i < numRows; ++i) {
+    std::vector<int> temp(i + 1, 1);
+    for (size_t x = 0; x < temp.size(); ++x) {
+      if (x != 0 && x != temp.size() - 1) {
+        temp.at(x) = result.back().at(x) + result.back().at(x - 1);
+      }
+    }
+    result.emplace_back(temp);
+  }
+  return result;
 }
 
 }  // end of namespace Leetcode
