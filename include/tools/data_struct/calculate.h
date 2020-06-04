@@ -1,6 +1,9 @@
 ﻿///////// ///////// ///////// ///////// ///////// ///////// ///////// /////////
 /// Copyright (c) 2019, 2020 Lijiancong. All rights reserved.
 ///
+/// Use of this source code is governed by a MIT license
+/// that can be found in the License file.
+///
 /// @file   calculate.h
 /// @brief  四则运算
 ///
@@ -40,8 +43,9 @@ inline namespace calculate {
 ///     #include "caculate.h"
 ///
 ///     int main() {
-///       asserst(41 == Lee::calculate::cal("5+8*4+8/2"), "计算错误！");
-///       asserst(41 == Lee::calculate::cal("  5+  8*4+8   /2 ", "计算错误！"));
+///       asserst((41 == Lee::calculate::cal("5+8*4+8/2")) && "计算错误！");
+///       asserst((41 == Lee::calculate::cal("  5+  8*4+8   /2 ")) &&
+///       "计算错误！"));
 ///     }
 /// @endcode
 class simple_calculate {

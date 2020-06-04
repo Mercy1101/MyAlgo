@@ -20,8 +20,6 @@
 #ifndef TOOLS_LOG_LOG_H
 #define TOOLS_LOG_LOG_H
 
-#pragma warning(disable: )
-
 #include <stdarg.h>  // for va_list
 
 #include <cassert>
