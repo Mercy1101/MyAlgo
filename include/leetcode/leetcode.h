@@ -250,7 +250,7 @@ inline std::string sort_string_sample(std::string s) {
 /// Pascal's triangle.
 ///   In Pascal's trangle, each number is the sum of the two number directly
 /// above it.
-inline constexpr std::vector<std::vector<int>> generate_pascal_trangel(int numRows) {
+inline std::vector<std::vector<int>> generate_pascal_trangel(int numRows) {
   std::vector<std::vector<int>> result;
   result.reserve(numRows);
   for (size_t i = 0; i < numRows; ++i) {
