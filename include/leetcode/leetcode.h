@@ -265,6 +265,49 @@ inline std::vector<std::vector<int>> generate_pascal_trangel(int numRows) {
   return result;
 }
 
+/// @name     decompress_rle_list
+///
+/// @author   Lijiancong, pipinstall@163.com
+/// @date     2020-06-06 19:09:42
+/// @warning  线程不安全
+/// 1313. Decompress Run-Length Encoded List
+/// We are given a list nums of integers representing a list compressed with
+/// run-length encoding.
+/// Consider each adjacent pair of elements 
+/// [freq, val] = [nums[2*i], nums[2*i+1]](with i >= 0). For each such pair,
+/// there are freq elements with value val concatenated in a sublist. 
+/// Comcatenate all the sublists from left to right to generate the 
+/// decompressed list.
+///
+/// Return the decompressed list.
+/// Example 1:
+/// Input: nums = [1,2,3,4]
+/// Output: [2,4,4,4]
+/// Explanation: The first pair [1,2] means we have freq = 1 and val = 2 so
+/// we generate the array[2].
+/// The second pair [3,4] means we have freq = 1 and val = 2 so we generate
+/// the array [2].
+/// At the end the concatenation [2] + [4,4,4] is [2,4,4,4]
+///
+/// Example 2:
+/// Input: nums = [1,1,2,3]
+/// Output: [1,3,3]
+///
+/// Constraints:
+/// * 2 <= nums.length <= 100
+/// * nums.length % 2 == 0
+/// * 1 <= nums[i] <= 100
+std::vector<int> decompress_rle_list(std::vector<int>& nums) {
+  std::vector<int> result;
+  result.reserve(nums.size()*2);
+  for(auto it = nums.begin(); it != nums.end(); ++it){
+    auto temp = it;
+    std::vector<int> temp_vec(*temp, *(++it));
+    result.insert(result.end(), temp_vec.begin(), temp_vec.end());
+  }
+  return result;
+}
+
 }  // end of namespace Leetcode
 }  // end of namespace Lee
 
