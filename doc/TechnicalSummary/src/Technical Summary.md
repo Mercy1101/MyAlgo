@@ -61,6 +61,11 @@
 | V5.2 | 李建聪 | 添加**std::is_empty 介绍** 小节 | 2020-02-17 09:36:58 |
 | V5.3 | 李建聪 | 添加**std::result_of 介绍**小节 | 2020-03-10 09:13:16 |
 | V5.4 | 李建聪 | 添加**数值极限**小节 | 2020-05-29 09:28:38 |
+| V5.5 | 李建聪 | 添加**std::iota 介绍**小节 |  |
+|  |  |  |  |
+|  |  |  |  |
+|  |  |  |  |
+|  |  |  |  |
 
 ### std::string 用法
 
@@ -3015,6 +3020,36 @@ int main()
               << std::numeric_limits<double>::max() << '\n';
 
     system("pause");
+}
+```
+
+### std::iota 介绍 
+
+```c++
+#include <algorithm>
+#include <iostream>
+#include <list>
+#include <numeric>
+#include <random>
+#include <vector>
+
+int main() {
+  std::list<int> l(10);
+  std::iota(l.begin(), l.end(), -4);
+
+  std::vector<std::list<int>::iterator> v(l.size());
+  std::iota(v.begin(), v.end(), l.begin());
+
+  std::shuffle(v.begin(), v.end(), std::mt19937{std::random_device{}()});
+
+  std::cout << "Contents of the list: ";
+  for (auto n : l) std::cout << n << ' ';
+  std::cout << '\n';
+
+  std::cout << "Contents of the list, shuffled: ";
+  for (auto i : v) std::cout << *i << ' ';
+  std::cout << '\n';
+  system("pause");
 }
 ```
 
