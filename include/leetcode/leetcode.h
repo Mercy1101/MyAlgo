@@ -22,7 +22,9 @@
 #include <algorithm>
 #include <iostream>
 #include <map>
+#include <numeric>
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 namespace Lee {
@@ -72,7 +74,7 @@ bool isPalindrome(std::string s);
  "()[]" are
  * all valid but "(]" and "([)]" are not.
  */
-bool IsValidParentheses(std::string const& s);
+bool IsValidParentheses(std::string const &s);
 
 /// @name     ParseChanNumber
 /// @brief    解析ChanNumber的函数,解释失败会返回false
@@ -89,7 +91,7 @@ bool IsValidParentheses(std::string const& s);
 /// @author   Lijiancong, pipinstall@163.com
 /// @date     2019-12-12 19:49:13
 /// @warning  线程不安全
-bool ParseChanNumber(const std::string& str, std::vector<int>* chan_number_vec);
+bool ParseChanNumber(const std::string &str, std::vector<int> *chan_number_vec);
 
 /// @name     top_k_frequent
 /// @brief    找寻一个数组中出现频次前k个的元素
@@ -119,14 +121,14 @@ bool ParseChanNumber(const std::string& str, std::vector<int>* chan_number_vec);
 /// usage2:
 /// Input: nums = [1], k = 1
 /// Output: [1]
-inline std::vector<int> top_k_frequent(std::vector<int>& nums, int k) {
+inline std::vector<int> top_k_frequent(std::vector<int> &nums, int k) {
   std::map<int, int> nums_map;
-  for (const auto& it : nums) {
+  for (const auto &it : nums) {
     ++nums_map[it];
   }
 
   std::multimap<int, int, std::greater<int>> temp_map;
-  for (const auto& it : nums_map) {
+  for (const auto &it : nums_map) {
     temp_map.insert({it.second, it.first});
   }
 
@@ -232,7 +234,7 @@ inline std::string sort_string_sample(std::string s) {
 
   return ans;
 }
-#endif 
+#endif
 
 /// @name     generate_pascal_trangel
 /// @brief
@@ -273,10 +275,10 @@ inline std::vector<std::vector<int>> generate_pascal_trangel(int numRows) {
 /// 1313. Decompress Run-Length Encoded List
 /// We are given a list nums of integers representing a list compressed with
 /// run-length encoding.
-/// Consider each adjacent pair of elements 
+/// Consider each adjacent pair of elements
 /// [freq, val] = [nums[2*i], nums[2*i+1]](with i >= 0). For each such pair,
-/// there are freq elements with value val concatenated in a sublist. 
-/// Comcatenate all the sublists from left to right to generate the 
+/// there are freq elements with value val concatenated in a sublist.
+/// Comcatenate all the sublists from left to right to generate the
 /// decompressed list.
 ///
 /// Return the decompressed list.
@@ -297,10 +299,10 @@ inline std::vector<std::vector<int>> generate_pascal_trangel(int numRows) {
 /// * 2 <= nums.length <= 100
 /// * nums.length % 2 == 0
 /// * 1 <= nums[i] <= 100
-std::vector<int> decompress_rle_list(std::vector<int>& nums) {
+inline std::vector<int> decompress_rle_list(std::vector<int> &nums) {
   std::vector<int> result;
-  result.reserve(nums.size()*2);
-  for(auto it = nums.begin(); it != nums.end(); ++it){
+  result.reserve(nums.size() * 2);
+  for (auto it = nums.begin(); it != nums.end(); ++it) {
     auto temp = it;
     std::vector<int> temp_vec(*temp, *(++it));
     result.insert(result.end(), temp_vec.begin(), temp_vec.end());
@@ -308,7 +310,143 @@ std::vector<int> decompress_rle_list(std::vector<int>& nums) {
   return result;
 }
 
+/// @name     equations_possible
+/// @author   Lijiancong, pipinstall@163.com
+/// @date     2020-06-09 08:34:46
+/// @warning  线程不安全
+/// 990. Satisfiability of Equations
+/// Given an array equations of strings that represent relationships between
+/// variables, each string equations[i] has length 4 and takes one of two
+/// different forms: "a==b" or "a!=b, Here, a and b are lowcase letters
+/// (not necessarily different) that represent one-letter variable names.
+/// Return true if and only if it is possible to assgin integers to varable
+/// names so as to satisfy all the given equations.
+/// Example 1:
+///
+/// Input: ["a==b","b!=a"]
+/// Output: false
+/// Explanation: If we assign say, a = 1 and b = 1, then the first equation is
+/// satisfied, but not the second.  There is no way to assign the variables to
+/// satisfy both equations. Example 2:
+///
+/// Input: ["b==a","a==b"]
+/// Output: true
+/// Explanation: We could assign a = 1 and b = 1 to satisfy both equations.
+/// Example 3:
+///
+/// Input: ["a==b","b==c","a==c"]
+/// Output: true
+/// Example 4:
+///
+/// Input: ["a==b","b!=c","c==a"]
+/// Output: false
+/// Example 5:
+///
+/// Input: ["c==c","b==d","x!=z"]
+/// Output: true
+class union_find_char {
+ public:
+  union_find_char() {
+    parent_.resize(26);
+    std::iota(parent_.begin(), parent_.end(), 0);
+  }
+
+  void union_(int index1, int index2) { parent_[find(index1)] = find(index2); }
+
+  int find(int index) {
+    if (parent_[index] == index) return index;
+    parent_[index] = find(parent_[index]);
+    return parent_[index];
+  }
+
+ private:
+  std::vector<int> parent_;
+};
+inline bool equations_possible(std::vector<std::string> &equations) {
+  union_find_char temp;
+  for (auto it = equations.begin(); it != equations.end();) {
+    if ((*it)[1] == '=') {
+      int index1 = (*it)[0] - 'a';
+      int index2 = (*it)[3] - 'a';
+      temp.union_(index1, index2);
+      it = equations.erase(it);
+      continue;
+    }
+    ++it;
+  }
+
+  for (auto it : equations) {
+    if (temp.find(it[0] - 'a') == temp.find((it[3] - 'a'))) {
+      return false;
+    }
+  }
+  return true;
+}
+
+/// @name     min_window
+///
+/// @author   Lijiancong, pipinstall@163.com
+/// @date     2020-06-09 18:52:15
+/// @warning  线程不安全
+/// 76. Minimum Window Substring
+/// Given a string S and a string T, find the minimum window in S which
+/// will contain all the characters in T in complexity O(n)
+///
+/// Example:
+/// Input: S = "ADOBECODEBANC", T = "ABC"
+/// Output: "BANC"
+///
+/// Note:
+/// * If there is no such window in S that covers all characters in T, return
+///   the empty string "".
+/// * If there is such window, you are guaranteed that there will always be
+///   only unique minimum window in S.
+inline std::string min_window(std::string s, std::string t) {
+  /// 如果子串长于输入字符串则返回空字符串
+  if (s.size() < t.size()) {
+    return "";
+  }
+
+  std::unordered_map<char, int> min_substring_map;  ///< 用于保存输入字符串的字母出现次数
+  std::unordered_map<char, int> need_map; ///< 用于保存子字符串的字母出现次数
+  for (const auto &it : t) {
+    ++need_map[it];
+    min_substring_map[it] = 0;
+  }
+
+  int match_count = 0;        ///< 用于保存匹配次数
+  auto it_right = s.begin();  ///< 滑动窗口右窗口
+  auto it_left = s.begin();   ///< 滑动窗口左窗口
+  auto it_start = s.begin();  ///< 用于保存最小子串的起始位置
+  ptrdiff_t min_length = INT_MAX; ///< 用于保存最小长度
+
+  /// 滑动窗口, 右迭代器自增遍历string，获得对应字串字母的计数
+  for (; it_right != s.end();) {
+    if (min_substring_map.end() != min_substring_map.find(*it_right)) {
+      if (need_map[*it_right] == ++min_substring_map[*it_right]) {
+        ++match_count;
+      }
+    }
+
+    ++it_right;
+    while (match_count == need_map.size()) {
+      auto current_length = std::distance(it_left, it_right);
+      if (current_length < min_length) {
+        min_length = current_length;
+        it_start = it_left;
+      }
+      if (min_substring_map.end() != min_substring_map.find(*it_left)) {
+        if (--min_substring_map[*it_left] < need_map[*it_left]) {
+          --match_count;
+        }
+      }
+      ++it_left;
+    }
+  }
+  return min_length == INT_MAX ? "" : s.substr(std::distance(s.begin(), it_start), min_length);
+}
+
 }  // end of namespace Leetcode
-}  // end of namespace Lee
+}  // namespace Lee
 
 #endif  // end of LEET_CODE_H__

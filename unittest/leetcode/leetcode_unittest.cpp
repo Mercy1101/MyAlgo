@@ -244,10 +244,113 @@ SCENARIO("generate_pascal_trangel 简单测试",
         true_result.push_back({1});
         true_result.push_back({1, 1});
         true_result.push_back({1, 2, 1});
-        true_result.push_back({1,3,3,1});
-        true_result.push_back({1,4,6,4,1});
+        true_result.push_back({1, 3, 3, 1});
+        true_result.push_back({1, 4, 6, 4, 1});
         REQUIRE(Lee::compare_vector(result, true_result));
       }  ///< THEN
     }    ///< WHEN
   }      ///< GIVEN
+}  ///< SCENARIO
+
+SCENARIO(" equations_possible 简单测试", "[leetcode][equations_possible]") {
+  GIVEN("简单测试") {
+    WHEN("Input: [a==b, b!=a]") {
+      THEN("Output: false") {
+        std::vector<std::string> input;
+        input.emplace_back("a==b");
+        input.emplace_back("b!=a");
+        REQUIRE(!Lee::Leetcode::equations_possible(input));
+      }  ///< THEN
+    }    ///< WHEN
+
+    WHEN("Input: [b==a, a==b]") {
+      THEN("Output: true") {
+        std::vector<std::string> input;
+        input.emplace_back("a==b");
+        input.emplace_back("b==a");
+        REQUIRE(Lee::Leetcode::equations_possible(input));
+      }  ///< THEN
+    }    ///< WHEN
+
+    WHEN("Input: [a==b, b==c, a==c]") {
+      THEN("Output: true") {
+        std::vector<std::string> input;
+        input.emplace_back("a==b");
+        input.emplace_back("b==c");
+        input.emplace_back("a==c");
+        REQUIRE(Lee::Leetcode::equations_possible(input));
+      }  ///< THEN
+    }    ///< WHEN
+
+    WHEN("Input: [a==b, b!=c, c==a]") {
+      THEN("Output: false") {
+        std::vector<std::string> input;
+        input.emplace_back("a==b");
+        input.emplace_back("b!=c");
+        input.emplace_back("c==a");
+        REQUIRE(!Lee::Leetcode::equations_possible(input));
+      }  ///< THEN
+    }    ///< WHEN
+
+    WHEN("Input: [c==c, d==c, x!=z]") {
+      THEN("Output: true") {
+        std::vector<std::string> input;
+        input.emplace_back("c==c");
+        input.emplace_back("d==c");
+        input.emplace_back("x!=z");
+        REQUIRE(Lee::Leetcode::equations_possible(input));
+      }  ///< THEN
+    }    ///< WHEN
+  }      ///< GIVEN
+}  ///< SCENARIO
+
+SCENARIO("min_window 简单测试", "[leetcode][min_window]") {
+  GIVEN("简单测试") {
+    WHEN("Input: S = ADOBECODEBANC, T = ABC") {
+      THEN("Output: BANC") {
+        auto str = Lee::Leetcode::min_window("ADOBECODEBANC", "ABC");
+        REQUIRE((0 == str.compare("BANC")));
+      }  ///< THEN
+    }    ///< WHEN
+
+    WHEN("Input: S = ADOECODEANC, T = ABC") {
+      THEN("Output: empty_string") {
+        REQUIRE(Lee::Leetcode::min_window("ADOECODEANC", "ABC").empty());
+      }  ///< THEN
+    }    ///< WHEN
+
+    WHEN("Input: S = AB, T = A") {
+      THEN("Output: A") {
+        REQUIRE(
+            (0 ==
+            Lee::Leetcode::min_window("AB", "A").compare("A")));
+      }  ///< THEN
+    }    ///< WHEN
+  }      ///< GIVEN
+  GIVEN("输入字符串比子串小") {
+    WHEN("Innput: S = A, T = ABC") {
+      THEN("Output: empty_string") {
+        REQUIRE(Lee::Leetcode::min_window("A", "ABC").empty());
+      }  ///< THEN
+    } ///< WHEN
+    WHEN("Innput: S = A, T = AA") {
+      THEN("Output: empty_string") {
+        REQUIRE(Lee::Leetcode::min_window("A", "AA").empty());
+      }  ///< THEN
+    } ///< WHEN
+  } ///< GIVEN
+
+  GIVEN("子字符串有重复的") {
+    WHEN("Innput: S = ABAA, T = AA") {
+      THEN("Output: AA") {
+        REQUIRE(0 == Lee::Leetcode::min_window("ABAA", "AA").compare("AA"));
+      }  ///< THEN
+    }    ///< WHEN
+
+    WHEN("Innput: S = ABACHKA, T = AA") {
+      THEN("Output: ABA") {
+        REQUIRE(0 == Lee::Leetcode::min_window("ABACHKA", "AA").compare("ABA"));
+      }  ///< THEN
+    }    ///< WHEN
+  } ///< GIVEN
 }  ///< SCENARIO
