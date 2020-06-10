@@ -147,10 +147,13 @@ return
 Run, D:\github\MyAlgo
 return
 
+!2::
+Run, C:\Program Files\XMind\XMind.exe
+return
 
 ;(17)
 !b::
-Run, C:\boost_1_70_0\index.html
+Run, D:\1WorkStation\boost_1_72_0\index.html
 return
 
 ;(18)
