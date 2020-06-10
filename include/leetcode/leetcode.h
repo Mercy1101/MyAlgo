@@ -407,18 +407,19 @@ inline std::string min_window(std::string s, std::string t) {
     return "";
   }
 
-  std::unordered_map<char, int> min_substring_map;  ///< 用于保存输入字符串的字母出现次数
-  std::unordered_map<char, int> need_map; ///< 用于保存子字符串的字母出现次数
+  std::unordered_map<char, int>
+      min_substring_map;  ///< 用于保存输入字符串的字母出现次数
+  std::unordered_map<char, int> need_map;  ///< 用于保存子字符串的字母出现次数
   for (const auto &it : t) {
     ++need_map[it];
     min_substring_map[it] = 0;
   }
 
-  int match_count = 0;        ///< 用于保存匹配次数
-  auto it_right = s.begin();  ///< 滑动窗口右窗口
-  auto it_left = s.begin();   ///< 滑动窗口左窗口
-  auto it_start = s.begin();  ///< 用于保存最小子串的起始位置
-  ptrdiff_t min_length = INT_MAX; ///< 用于保存最小长度
+  int match_count = 0;             ///< 用于保存匹配次数
+  auto it_right = s.begin();       ///< 滑动窗口右窗口
+  auto it_left = s.begin();        ///< 滑动窗口左窗口
+  auto it_start = s.begin();       ///< 用于保存最小子串的起始位置
+  ptrdiff_t min_length = INT_MAX;  ///< 用于保存最小长度
 
   /// 滑动窗口, 右迭代器自增遍历string，获得对应字串字母的计数
   for (; it_right != s.end();) {
@@ -443,7 +444,39 @@ inline std::string min_window(std::string s, std::string t) {
       ++it_left;
     }
   }
-  return min_length == INT_MAX ? "" : s.substr(std::distance(s.begin(), it_start), min_length);
+  return min_length == INT_MAX
+             ? ""
+             : s.substr(std::distance(s.begin(), it_start), min_length);
+}
+
+/// 792. 匹配子序列的单词数
+/// 给定字符串 S 和单词字典 words, 求 words[i] 中是 S 的子序列的单词个数。
+///
+/// 示例:
+/// 输入:
+/// S = "abcde"
+/// words = ["a", "bb", "acd", "ace"]
+/// 输出: 3
+/// 解释: 有三个是 S 的子序列的单词: "a", "acd", "ace"。
+/// 注意:
+///
+/// 所有在words和 S 里的单词都只由小写字母组成。
+/// S 的长度在 [1, 50000]。
+/// words 的长度在 [1, 5000]。
+/// words[i]的长度在[1, 50]。
+inline int num_matching_subseq(std::string S, std::vector<std::string> &words) {
+  int count = 0;
+  for (const auto &it : words) {
+    int position = -1;
+    auto c = it.begin();
+    for (; c != it.end(); ++c) {
+      position = S.find_first_of(*c, position + 1);
+      if (position == -1) {
+        break;
+      }
+    }
+  }
+  return count;
 }
 
 }  // end of namespace Leetcode
