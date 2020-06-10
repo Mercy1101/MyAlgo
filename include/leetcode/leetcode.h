@@ -475,6 +475,9 @@ inline int num_matching_subseq(std::string S, std::vector<std::string> &words) {
         break;
       }
     }
+    if (c == it.end()) {
+      count++;
+    }
   }
   return count;
 }
