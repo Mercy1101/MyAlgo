@@ -21,6 +21,7 @@
 
 #include <algorithm>
 #include <iostream>
+#include <limits>
 #include <map>
 #include <numeric>
 #include <string>
@@ -467,11 +468,11 @@ inline std::string min_window(std::string s, std::string t) {
 inline int num_matching_subseq(std::string S, std::vector<std::string> &words) {
   int count = 0;
   for (const auto &it : words) {
-    int position = -1;
+    size_t position = std::string::npos;
     auto c = it.begin();
     for (; c != it.end(); ++c) {
       position = S.find_first_of(*c, position + 1);
-      if (position == -1) {
+      if (position == std::string::npos) {
         break;
       }
     }
@@ -480,6 +481,79 @@ inline int num_matching_subseq(std::string S, std::vector<std::string> &words) {
     }
   }
   return count;
+}
+
+/// 70. 爬楼梯
+/// 假设你正在爬楼梯。需要 n 阶你才能到达楼顶。
+///
+/// 每次你可以爬 1 或 2 个台阶。你有多少种不同的方法可以爬到楼顶呢？
+///
+/// 注意：给定 n 是一个正整数。
+///
+/// 示例 1：
+///
+/// 输入： 2
+/// 输出： 2
+/// 解释： 有两种方法可以爬到楼顶。
+/// 1.  1 阶 + 1 阶
+/// 2.  2 阶
+/// 示例 2：
+///
+/// 输入： 3
+/// 输出： 3
+/// 解释： 有三种方法可以爬到楼顶。
+/// 1.  1 阶 + 1 阶 + 1 阶
+/// 2.  1 阶 + 2 阶
+/// 3.  2 阶 + 1 阶
+inline int climb_statirs_helper(std::vector<int> &vec, int n) {
+  if (n == 1) {
+    return 1;
+  } else if (n == 2) {
+    return 2;
+  } else if (vec.at(n) == 0) {
+    vec.at(n) =
+        climb_statirs_helper(vec, n - 1) + climb_statirs_helper(vec, n - 2);
+  }
+  return vec.at(n);
+}
+
+inline int climb_stairs(int n) {
+  if (n < 1) {
+    return 0;
+  }
+  std::vector<int> vec;
+  vec.resize(n + 1, 0);
+  return climb_statirs_helper(vec, n);
+}
+
+/// inline int climb_stairs(int n){
+///   std::vector<int>
+/// }
+
+/// 673. 最长递增子序列的个数
+/// 给定一个未排序的整数数组，找到最长递增子序列的个数。
+///
+/// 示例 1:
+///
+/// 输入: [1,3,5,4,7]
+/// 输出: 2
+/// 解释: 有两个最长递增子序列，分别是 [1, 3, 4, 7] 和[1, 3, 5, 7]。
+/// 示例 2:
+///
+/// 输入: [2,2,2,2,2]
+/// 输出: 5
+/// 解释: 最长递增子序列的长度是1，并且存在5个子序列的长度为1，因此输出5。
+/// 注意: 给定的数组长度不超过 2000 并且结果一定是32位有符号整数。
+inline int findNumberOfLIS(std::vector<int> &nums) {
+  int inc_count = 0;
+  int pre_num = INT_MIN;
+  for (const auto &it : nums) {
+    if (pre_num < it) {
+      inc_count++;
+      continue;
+    } else {
+    }
+  }
 }
 
 }  // end of namespace Leetcode

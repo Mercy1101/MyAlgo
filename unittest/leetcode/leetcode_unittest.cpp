@@ -354,3 +354,19 @@ SCENARIO("min_window 简单测试", "[leetcode][min_window]") {
     }    ///< WHEN
   } ///< GIVEN
 }  ///< SCENARIO
+
+SCENARIO("climb_statirs 简单测试", "[leetcode][climb_statirs]") {
+  GIVEN("简单测试") {
+    WHEN("Input: 2") {
+      THEN("Output: 2") {
+        REQUIRE((2 == Lee::Leetcode::climb_stairs(2)));
+      }  ///< THEN
+    }    ///< WHEN
+
+    WHEN("Input: 3") {
+      THEN("Output: 3") {
+        REQUIRE((3 == Lee::Leetcode::climb_stairs(3)));
+      }  ///< THEN
+    }    ///< WHEN
+  } ///< GIVEN
+} ///< SCENARIO
