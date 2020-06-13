@@ -285,6 +285,29 @@ struct non_transferable {
   non_transferable &operator=(non_transferable &&) = delete;
 };
 
+/// @name     is_plus_overflow
+/// @brief    用于判断两数相加是否溢出
+///
+/// @param    num1  [in]
+/// @param    num2  [in]
+///
+/// @return   bool
+///   @retval true  溢出了
+///   @retval false 没有溢出
+///
+/// @author   Lijiancong, pipinstall@163.com
+/// @date     2020-06-11 07:52:38
+/// @warning  线程安全
+template <typename T1, typename T2>
+bool is_plus_overflow(T1 num1, T2 num2) {
+  static_assert(std::is_same<T1, T2>::value,
+                "is_plus_overflow need same type!");
+  static_assert(std::is_integral<T1>::value,
+                "is_plus_overflow need integral type!");
+  T1 result = num1 + num2;
+  return result < num1;
+}
+
 /// @name     IsMultiOverFlow
 /// @brief    测试两个有符号整型相乘会不会溢出
 ///
@@ -459,17 +482,7 @@ inline void quick_exit(const int &code, const std::string &exit_info) {
 template <typename T>
 bool compare_vector(std::vector<T> x, std::vector<T> y) {
   try {
-    if (x.size() != y.size()) {
-      return false;
-    }
-    std::sort(x.begin(), x.end());
-    std::sort(y.begin(), y.end());
-    for (int i = 0; i < x.size(); ++i) {
-      if (x.at(i) != y.at(i)) {
-        return false;
-      }
-    }
-    return true;
+    return x == y;
   } catch (std::exception e) {
     (void)e;
     return false;
