@@ -20,6 +20,7 @@
 #include <ctype.h>  // for isalnum
 
 #include <algorithm>
+#include <cmath>
 #include <iostream>
 #include <limits>
 #include <map>
@@ -517,7 +518,7 @@ inline int climb_statirs_helper(std::vector<int> &vec, int n) {
   return vec.at(n);
 }
 
-inline int climb_stairs(int n) {
+inline int climb_stairs_1(int n) {
   if (n < 1) {
     return 0;
   }
@@ -526,9 +527,99 @@ inline int climb_stairs(int n) {
   return climb_statirs_helper(vec, n);
 }
 
-/// inline int climb_stairs(int n){
-///   std::vector<int>
-/// }
+inline int climb_stairs(int n) {
+  std::vector<int> vec;
+  vec.resize(n + 2, 0);
+  vec.at(0) = 0;
+  vec.at(1) = 1;
+  vec.at(2) = 2;
+  for (int i = 3; i < n + 1; ++i) {
+    vec.at(i) = vec.at(i - 2) + vec.at(i - 1);
+  }
+  return vec.at(n);
+}
+
+/// 50. Pow(x, n)
+/// 实现 pow(x, n) ，即计算 x 的 n 次幂函数。
+///
+/// 示例 1:
+///
+/// 输入: 2.00000, 10
+/// 输出: 1024.00000
+/// 示例 2:
+///
+/// 输入: 2.10000, 3
+/// 输出: 9.26100
+/// 示例 3:
+///
+/// 输入: 2.00000, -2
+/// 输出: 0.25000
+/// 解释: 2-2 = 1/22 = 1/4 = 0.25
+/// 说明:
+///
+/// -100.0 < x < 100.0
+/// n 是 32 位有符号整数，其数值范围是 [−231, 231 − 1] 。
+inline double my_pow(double x, int n) {
+  long long N = n;
+  if (n < 0) {
+    N = -static_cast<long long>(n);
+  }
+  double result = 1.0;
+  double multi_num = x;
+  while (N > 0) {
+    if (N % 2 == 1) {
+      result *= multi_num;
+    }
+    multi_num *= multi_num;
+    N /= 2;
+  }
+
+  return n >= 0 ? result : 1 / result;
+}
+
+inline double my_pow1(double x, int n) {
+  /// x^n = e^(n * lnx)
+  double result = std::exp(n * std::log(std::abs(x)));
+  return (x <= 0 && (n % 2 == 1)) ? result : -result;
+}
+
+/// 372. 超级次方
+/// 你的任务是计算 ab 对 1337 取模，a 是一个正整数，b
+/// 是一个非常大的正整数且会以数组形式给出。
+///
+/// 示例 1:
+///
+/// 输入: a = 2, b = [3]
+/// 输出: 8
+/// 示例 2:
+///
+/// 输入: a = 2, b = [1,0]
+/// 输出: 1024
+inline int super_pow_helper(int num, int pow) {
+  constexpr int mod_num = 1337;
+  int res = 1;
+  while (pow != 0) {
+    if (pow & 1) {
+      res = res * num % mod_num;
+    }
+    num = num * num % mod_num;
+    pow >>= 1;
+  }
+  return res;
+}
+
+inline int superPow(int a, std::vector<int> &b) {
+  /// (ab)%c = ((a%c)(b%c)%c
+  constexpr int mod_num = 1337;
+  int size = static_cast<int>(b.size()) - 1;
+  int result = 1;
+  int helper = a % mod_num;
+  for (; size >= 0; --size) {
+    result = (result * super_pow_helper(helper, b.at(size))) % mod_num;
+    helper = super_pow_helper(helper, 10) % mod_num;
+  }
+  return result;
+}
 
 /// 673. 最长递增子序列的个数
 /// 给定一个未排序的整数数组，找到最长递增子序列的个数。

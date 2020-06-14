@@ -321,9 +321,7 @@ SCENARIO("min_window 简单测试", "[leetcode][min_window]") {
 
     WHEN("Input: S = AB, T = A") {
       THEN("Output: A") {
-        REQUIRE(
-            (0 ==
-            Lee::Leetcode::min_window("AB", "A").compare("A")));
+        REQUIRE((0 == Lee::Leetcode::min_window("AB", "A").compare("A")));
       }  ///< THEN
     }    ///< WHEN
   }      ///< GIVEN
@@ -332,13 +330,13 @@ SCENARIO("min_window 简单测试", "[leetcode][min_window]") {
       THEN("Output: empty_string") {
         REQUIRE(Lee::Leetcode::min_window("A", "ABC").empty());
       }  ///< THEN
-    } ///< WHEN
+    }    ///< WHEN
     WHEN("Innput: S = A, T = AA") {
       THEN("Output: empty_string") {
         REQUIRE(Lee::Leetcode::min_window("A", "AA").empty());
       }  ///< THEN
-    } ///< WHEN
-  } ///< GIVEN
+    }    ///< WHEN
+  }      ///< GIVEN
 
   GIVEN("子字符串有重复的") {
     WHEN("Innput: S = ABAA, T = AA") {
@@ -352,7 +350,7 @@ SCENARIO("min_window 简单测试", "[leetcode][min_window]") {
         REQUIRE(0 == Lee::Leetcode::min_window("ABACHKA", "AA").compare("ABA"));
       }  ///< THEN
     }    ///< WHEN
-  } ///< GIVEN
+  }      ///< GIVEN
 }  ///< SCENARIO
 
 SCENARIO("climb_statirs 简单测试", "[leetcode][climb_statirs]") {
@@ -368,5 +366,6 @@ SCENARIO("climb_statirs 简单测试", "[leetcode][climb_statirs]") {
         REQUIRE((3 == Lee::Leetcode::climb_stairs(3)));
       }  ///< THEN
     }    ///< WHEN
-  } ///< GIVEN
-} ///< SCENARIO
+  }      ///< GIVEN
+}  ///< SCENARIO
+
