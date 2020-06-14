@@ -299,13 +299,22 @@ struct non_transferable {
 /// @date     2020-06-11 07:52:38
 /// @warning  线程安全
 template <typename T1, typename T2>
-bool is_plus_overflow(T1 num1, T2 num2) {
+bool is_plus_overflow(T1 x, T2 y) {
+  /// 编译时判断两个入参的类型是否一致
   static_assert(std::is_same<T1, T2>::value,
                 "is_plus_overflow need same type!");
+  /// 编译时判断两个入参类型都为整数类型
   static_assert(std::is_integral<T1>::value,
                 "is_plus_overflow need integral type!");
-  T1 result = num1 + num2;
-  return result < num1;
+
+  [[maybe_unused]] T1 result = x + y;
+  if (x > 0 && y > 0) {
+    return result < x;
+  } else if (x < 0 && y < 0) {
+    return result > x;
+  } else {
+    return false;
+  }
 }
 
 /// @name     IsMultiOverFlow
