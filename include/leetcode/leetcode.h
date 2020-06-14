@@ -25,6 +25,7 @@
 #include <limits>
 #include <map>
 #include <numeric>
+#include <set>
 #include <string>
 #include <unordered_map>
 #include <vector>
@@ -595,8 +596,7 @@ inline double my_pow1(double x, int n) {
 ///
 /// 输入: a = 2, b = [1,0]
 /// 输出: 1024
-inline int super_pow_helper(int num, int pow) {
-  constexpr int mod_num = 1337;
+inline int super_pow_helper(int num, int pow, int mod_num) {
   int res = 1;
   while (pow != 0) {
     if (pow & 1) {
@@ -615,10 +615,122 @@ inline int superPow(int a, std::vector<int> &b) {
   int result = 1;
   int helper = a % mod_num;
   for (; size >= 0; --size) {
-    result = (result * super_pow_helper(helper, b.at(size))) % mod_num;
-    helper = super_pow_helper(helper, 10) % mod_num;
+    result = (result * super_pow_helper(helper, b.at(size), mod_num)) % mod_num;
+    helper = super_pow_helper(helper, 10, mod_num) % mod_num;
   }
   return result;
+}
+
+inline int superPow_2(int a, std::vector<int> &b) {
+  constexpr int mod_num = 1337;
+  int res = 1;
+  for (int x : b)
+    res = super_pow_helper(res, 10, mod_num) * super_pow_helper(a, x, mod_num) %
+          mod_num;
+  return res;
+}
+
+/// 1300. 转变数组后最接近目标值的数组和
+/// 给你一个整数数组 arr 和一个目标值 target
+/// ，请你返回一个整数 value ，使得将数组中所有大于 value 的值变成 value
+/// 后，数组的和最接近  target （最接近表示两者之差的绝对值最小）。
+///
+/// 如果有多种使得和最接近 target 的方案，请你返回这些整数中的最小值。
+///
+/// 请注意，答案不一定是 arr 中的数字。
+/// 示例 1：
+///
+/// 输入：arr = [4,9,3], target = 10
+/// 输出：3
+/// 解释：当选择 value 为 3 时，数组会变成 [3, 3, 3]，和为 9 ，这是最接近 target
+/// 的方案。 示例 2：
+///
+/// 输入：arr = [2,3,5], target = 10
+/// 输出：5
+/// 示例 3：
+///
+/// 输入：arr = [60864,25176,27249,21296,20204], target = 56803
+/// 输出：11361
+/// inline int find_best_value(std::vector<int> &arr, int target) {
+///   std::sort(arr.begin(), arr.end());
+///   auto begin = arr.begin();
+///   auto end = arr.end();
+///   auto mid = arr.begin();
+///
+///   std::set<int> offset = INX_MAX;  /// 用于保存距离目标值的差值
+///   /// std::find(arr.begin(), arr.end());
+///   while (mid != begin) {
+///     std::advance(mid, std::distance(begin, end));
+///     int result = 0;
+///     std::for_each(arr.begin(), arr.end(),
+///                   [&result, mid](int i) { result += std::min(*mid, i); });
+///     int temp = result - target;
+///     if (std::abs(temp) > std::abs(*offset.begin())) {
+///       end = mid;
+///       offset.insert(temp);
+///     } else {
+///       begin = mid;
+///     }
+///   }
+/// }
+
+/// 1.排序
+/// 2.前缀和：eg:[3,4,9] ，其前缀和为[0,3,7,16]
+/// 3.二分法：(1)定义起始区间：[1, arr_max](2)分区间：[l, mid] [mid + 1,
+/// r](3)判断：若大于target则向左取，若小于等于target向右取（此处若等于target，就可之前return
+/// mid) 4.getsum()表示mid的前缀和+value和，此处value = mid
+/// 5.最后一步判断是为了判断l是不是最小值，eg:[3,4,9] ，其当l = 4时，有[3,4,4] =
+/// 11，但当l = 3时，有[3,3,3] = 9 所以判断abs(11 - 10) < abs(9 - 11) ? 4 : 3;
+/// 6.lower_bound()返回第一个大于等于value的指针
+
+/// inline int getsum(std::vector<int> &arr, std::vector<int> &presum, int
+/// value) {
+///   auto iter = std::lower_bound(arr.begin(), arr.end(), value);  /// 迭代器
+///   int sun = presum.at(iter - arr.begin()) +
+///             (arr.end() - iter) * value;  /// 前缀和 + value和
+///   return sun;
+/// }
+/// inline int find_best_value(std::vector<int> &arr, int target) {
+///   std::sort(arr.begin(), arr.end());
+///   std::vector<int> presum(arr.size() + 1, 0);
+///   for (int i = 1; i <= arr.size(); i++) {
+///     presum.at(i) = presum.at(i - 1) + arr.at(i - 1);  ///< 前缀和
+///   }
+///   int l = 1, r = arr[arr.size() - 1];  ///(1, max)
+///   while (l < r) {
+///     int mid = 1 + r >> 1;  // 分区间
+///     getsum(arr, presum, mid) < target ? l = mid + 1 : r = mid;
+///   }
+///   return std::abs(getsum(arr, presum, l)-target < std::abs(getsum(arr,
+///   presum, l - 1) - target)) ? l:l-1;
+/// }
+
+inline std::vector<int> twoSum(std::vector<int> &nums, int target) {
+  std::vector<decltype(nums.begin())> itor;
+  for (auto it = nums.begin(); it != nums.end(); ++it) {
+    itor.push_back(it);
+  }
+  std::sort(itor.begin(), itor.end(),
+            [](decltype(nums.begin()) x, decltype(nums.begin()) y) {
+              return *x < *y;
+            });
+  auto it_left = itor.begin();
+  auto it_right = std::prev(itor.end());
+  while (it_left <= it_right) {
+    auto result = **it_left + **it_right;
+    if (result < target) {
+      ++it_left;
+    } else if (result > target) {
+      --it_right;
+    } else {
+      std::vector<int> temp{
+          static_cast<int>(std::distance(nums.begin(), *it_left)),
+          static_cast<int>(std::distance(nums.begin(), *it_right))};
+      return temp;
+    }
+  }
+  std::vector<int> temp{-1, -1};
+  return temp;
 }
 
 /// 673. 最长递增子序列的个数
@@ -647,7 +759,7 @@ inline int findNumberOfLIS(std::vector<int> &nums) {
   }
 }
 
-}  // end of namespace Leetcode
+}  // namespace Leetcode
 }  // namespace Lee
 
 #endif  // end of LEET_CODE_H__
