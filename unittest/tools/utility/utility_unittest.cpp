@@ -305,10 +305,9 @@ TEST_CASE("IsMultiOverFlow在unsigned long long 类型下的测试",
   y = 2;
   REQUIRE_FALSE(Lee::IsMultiOverFlow(x, y));
 
-  // x = (ULLONG_MAX / 2) + 1; 为什么这句话警告,算数溢出?
-  ///                         2019-12-05 13:39:24
-  // y = 2;
-  // REQUIRE(Lee::IsMultiOverFlow(x, y));
+  x = (ULLONG_MAX / 2) + 1; 
+  y = 2;
+  REQUIRE(Lee::IsMultiOverFlow(x, y));
 
   x = ULLONG_MAX / 5;
   y = 5;
@@ -662,3 +661,18 @@ TEMPLATE_TEST_CASE("arraysize 的模板测试", "[utility][arraysize]", int,
   TestType array_VLA[] = {0, 1, 2};
   REQUIRE(arraysize(array_VLA) == 3);
 }
+
+
+SCENARIO("is_plus_overflow 简单测试", "[utility][is_plus_overflow]") {
+  GIVEN("没有溢出的情况: int 类型") {
+    int x;
+    int y;
+    WHEN("Input: x = 0, y = 0") {
+      THEN("Output: false") {
+        x = 0;
+        y = 0;
+        REQUIRE(!Lee::is_plus_overflow(x, y));
+      }  ///< THEN
+    }    ///< WHEN
+  } ///< GIVEN
+} ///< SCENARIO
