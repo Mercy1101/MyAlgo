@@ -733,6 +733,108 @@ inline std::vector<int> twoSum(std::vector<int> &nums, int target) {
   return temp;
 }
 
+inline int max_profit(std::vector<int> &) { return 0; }
+
+/// 编写一个函数来查找字符串数组中的最长公共前缀。
+///
+/// 如果不存在公共前缀，返回空字符串 ""。
+///
+/// 示例 1:
+///
+/// 输入: ["flower","flow","flight"]
+/// 输出: "fl"
+/// 示例 2:
+///
+/// 输入: ["dog","racecar","car"]
+/// 输出: ""
+/// 解释: 输入不存在公共前缀。
+/// 说明:
+///
+/// 所有输入只包含小写字母 a-z 。
+inline std::string longest_common_prefix(std::vector<std::string> &strs) {
+#undef min
+  if (strs.empty()) {
+    return "";
+  }
+  std::string prefix = *strs.begin();
+
+  for (auto it = std::next(strs.begin()); it != strs.end(); ++it) {
+    int index = 0;
+    int length = static_cast<int>(std::min(prefix.size(), it->size()));
+    while (index < length && prefix.at(index) == it->at(index)) {
+      index++;
+    }
+    prefix = strs.at(0).substr(0, index);
+    if (prefix.empty()) {
+      return "";
+    }
+  }
+  return prefix;
+}
+
+/// 121. 买卖股票的最佳时机
+/// 给定一个数组，它的第 i 个元素是一支给定股票第 i 天的价格。
+///
+/// 如果你最多只允许完成一笔交易（即买入和卖出一支股票一次），设计一个算法来计算你所能获取的最大利润。
+///
+/// 注意：你不能在买入股票前卖出股票。
+///
+///  
+///
+/// 示例 1:
+///
+/// 输入: [7,1,5,3,6,4]
+/// 输出: 5
+/// 解释: 在第 2 天（股票价格 = 1）的时候买入，在第 5 天（股票价格 =
+/// 6）的时候卖出，最大利润 = 6-1 = 5 。
+///      注意利润不能是 7-1 = 6,
+///      因为卖出价格需要大于买入价格；同时，你不能在买入前卖出股票。
+/// 示例 2:
+///
+/// 输入: [7,6,4,3,1]
+/// 输出: 0
+/// 解释: 在这种情况下, 没有交易完成, 所以最大利润为 0。
+inline int maxProfit(std::vector<int> &prices) {
+  if (prices.empty()) {
+    return 0;
+  }
+  int min = prices.front();
+  int result = 0;
+  for (auto it : prices) {
+    result = std::max(result, it - min);
+    min = std::min(it, min);
+  }
+  return result;
+}
+
+/// 单调栈
+inline int maxProfit1(std::vector<int> &prices) {
+  prices.push_back(-1);
+  int result = 0;
+  std::vector<int> increase;
+  for (auto it : prices) {
+    if (!increase.empty() && increase.back() > it) {
+      result = std::max(result, increase.back() - increase.front());
+      increase.pop_back();
+    }
+    increase.push_back(it);
+  }
+}
+
+/// dp 区间和等于求差问题
+/// 区间和可以转换成求差的问题，求差问题，也可以转换成区间和的问题。
+/// dp[i]=max(0,dp[i−1])
+inline int maxProfit2(std::vector<int> &prices) {
+  int last = 0;
+  int profit = 0;
+
+  for (int i = 0; i < prices.size() - 1; ++i) {
+    last = std::max(0, last + prices[i + 1] - prices[i]);
+    profit = std::max(profit, last);
+  }
+  return profit;
+}
+
 /// 673. 最长递增子序列的个数
 /// 给定一个未排序的整数数组，找到最长递增子序列的个数。
 ///
