@@ -1,9 +1,9 @@
-﻿#include <catch2/catch.hpp>
+﻿#include "utility/utility.h"
+
+#include <catch2/catch.hpp>
 #include <cstdlib>  // for RAND_MAX
 #include <limits>
 #include <string>
-
-#include "utility/utility.h"
 
 TEST_CASE("KMP简单测试", "[utility][KMP]") {
   using namespace Lee;
@@ -305,7 +305,7 @@ TEST_CASE("IsMultiOverFlow在unsigned long long 类型下的测试",
   y = 2;
   REQUIRE_FALSE(Lee::IsMultiOverFlow(x, y));
 
-  x = (ULLONG_MAX / 2) + 1; 
+  x = (ULLONG_MAX / 2) + 1;
   y = 2;
   REQUIRE(Lee::IsMultiOverFlow(x, y));
 
@@ -655,18 +655,55 @@ TEST_CASE("Lee::GetRandomPassWord 的例子展示", "[utility][GetRandomPassWord
 }
 
 TEMPLATE_TEST_CASE("arraysize 的模板测试", "[utility][arraysize]", int,
-                        long long, unsigned long, double) {
+                   long long, unsigned long, double) {
   TestType array_16[16];
   REQUIRE(arraysize(array_16) == 16);
   TestType array_VLA[] = {0, 1, 2};
   REQUIRE(arraysize(array_VLA) == 3);
 }
 
-
 SCENARIO("is_plus_overflow 简单测试", "[utility][is_plus_overflow]") {
+#undef min
+  int x;
+  int y;
+  constexpr int min_int = std::numeric_limits<int>::min();
+  constexpr int max_int = std::numeric_limits<int>::max();
   GIVEN("没有溢出的情况: int 类型") {
-    int x;
-    int y;
+    WHEN("Input: x = 1, y = 1") {
+      THEN("Output: false") {
+        x = 1;
+        y = 1;
+        REQUIRE(!Lee::is_plus_overflow(x, y));
+      }  ///< THEN
+    }    ///< WHEN
+    WHEN("Input: x = -1, y = -1") {
+      THEN("Output: false") {
+        x = -1;
+        y = -1;
+        REQUIRE(!Lee::is_plus_overflow(x, y));
+      }  ///< THEN
+    }    ///< WHEN
+    WHEN("Input: x = max_int, y = 0") {
+      THEN("Output: false") {
+        x = max_int;
+        y = 0;
+        REQUIRE(!Lee::is_plus_overflow(x, y));
+      }  ///< THEN
+    }    ///< WHEN
+    WHEN("Input: x = max, y = min") {
+      THEN("Output: false") {
+        x = max_int;
+        y = min_int;
+        REQUIRE(!Lee::is_plus_overflow(x, y));
+      }  ///< THEN
+    }    ///< WHEN
+    WHEN("Input: x = 0, y = max") {
+      THEN("Output: false") {
+        x = 0;
+        y = max_int;
+        REQUIRE(!Lee::is_plus_overflow(x, y));
+      }  ///< THEN
+    }    ///< WHEN
     WHEN("Input: x = 0, y = 0") {
       THEN("Output: false") {
         x = 0;
@@ -674,5 +711,57 @@ SCENARIO("is_plus_overflow 简单测试", "[utility][is_plus_overflow]") {
         REQUIRE(!Lee::is_plus_overflow(x, y));
       }  ///< THEN
     }    ///< WHEN
-  } ///< GIVEN
-} ///< SCENARIO
+    WHEN("Input: x = 0, y = min") {
+      THEN("Output: false") {
+        x = 0;
+        y = min_int;
+        REQUIRE(!Lee::is_plus_overflow(x, y));
+      }  ///< THEN
+    }    ///< WHEN
+    WHEN("Input: x = min, y = max") {
+      THEN("Output: false") {
+        x = min_int;
+        y = max_int;
+        REQUIRE(!Lee::is_plus_overflow(x, y));
+      }  ///< THEN
+    }    ///< WHEN
+    WHEN("Input: x = min, y = 0") {
+      THEN("Output: false") {
+        x = min_int;
+        y = 0;
+        REQUIRE(!Lee::is_plus_overflow(x, y));
+      }  ///< THEN
+    }    ///< WHEN
+  }      ///< GIVEN
+
+  GIVEN("溢出的情况") {
+    WHEN("Input: x = max, y = 1") {
+      THEN("Output: true") {
+        x = max_int;
+        y = 1;
+        REQUIRE(Lee::is_plus_overflow(x, y));
+      }  ///< THEN
+    }    ///< WHEN
+    WHEN("Input: x = min, y = -1") {
+      THEN("Output: true") {
+        x = min_int;
+        y = -1;
+        REQUIRE(Lee::is_plus_overflow(x, y));
+      }  ///< THEN
+    }    ///< WHEN
+    WHEN("Input: x = min, y = min") {
+      THEN("Output: true") {
+        x = min_int;
+        y = min_int;
+        REQUIRE(Lee::is_plus_overflow(x, y));
+      }  ///< THEN
+    }    ///< WHEN
+    WHEN("Input: x = max, y = max") {
+      THEN("Output: true") {
+        x = max_int;
+        y = max_int;
+        REQUIRE(Lee::is_plus_overflow(x, y));
+      }  ///< THEN
+    }    ///< WHEN
+  }      ///< GIVEN
+}  ///< SCENARIO
