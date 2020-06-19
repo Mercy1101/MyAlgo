@@ -43,11 +43,6 @@
 
 #include "core.h"
 
-#ifdef _MSC_VER
-#  pragma warning(disable : 4702 26451)  // unreachable code
-#endif
-
-
 #ifdef FMT_DEPRECATED_INCLUDE_OS
 #  include "os.h"
 #endif

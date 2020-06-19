@@ -24,9 +24,9 @@
 #include <shared_mutex>
 #include <stdexcept>
 #include <thread>
+#include <type_traits>
 #include <utility>
 #include <vector>
-#include <type_traits>
 
 namespace Lee {
 inline namespace utility {
@@ -683,7 +683,7 @@ class function_wrapper {
 
   function_wrapper(function_wrapper&& other) : impl(std::move(other.impl)) {}
 
-  function_wrapper& operator=(function_wrapper&& other) {
+  function_wrapper& operator=(function_wrapper&& other) noexcept {
     impl = std::move(other.impl);
     return *this;
   }

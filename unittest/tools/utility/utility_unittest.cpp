@@ -26,25 +26,6 @@ TEST_CASE("KMP简单测试", "[utility][KMP]") {
   REQUIRE(pos == 16);
 }
 
-TEST_CASE("IsFileExist简单测试", "[utility][IsFileExist]") {
-  std::string Path;
-  /** 存在的情况 */
-  Path = "C:\\Program Files";
-  REQUIRE(Lee::IsFileExist(Path));
-  Path = "C:\\Program Files (x86)";
-  REQUIRE(Lee::IsFileExist(Path));
-  Path = "C:\\Windows";
-  REQUIRE(Lee::IsFileExist(Path));
-
-  /** 不存在的情况 */
-  Path = "C:\\Wws";
-  REQUIRE_FALSE(Lee::IsFileExist(Path));
-  Path = "C:\\sProgram Files (x86)s";
-  REQUIRE_FALSE(Lee::IsFileExist(Path));
-  Path = "C:\\sProram Fils";
-  REQUIRE_FALSE(Lee::IsFileExist(Path));
-}
-
 TEST_CASE("IsMultiOverFlow在int类型下的简单测试",
           "[utility][IsMultiOverFlow]") {
   int x = 0;

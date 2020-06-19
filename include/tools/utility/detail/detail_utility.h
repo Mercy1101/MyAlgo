@@ -472,8 +472,8 @@ inline void SleepForRandomMilliSecond(Lee::MilliSecond range_end) {
 /// @date     2020-01-07 16:35:46
 /// @warning  线程不安全
 inline void quick_exit(const int &code, const std::string &exit_info) {
-  LOG(LOG_ERROR, exit_info.c_str());
-  LOG(LOG_ERROR, "Exist the program!");
+  LOG_ERROR(exit_info);
+  LOG_ERROR("Exist the program!");
   exit(code);
 }
 

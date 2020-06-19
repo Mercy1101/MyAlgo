@@ -110,11 +110,11 @@ static inline void SpdLogProfiler(const char* LogText, ...) {
   static std::shared_ptr<spdlog::logger> rotating_logger;
   std::call_once(flag, [&]() {
     /** 检查路径有没有创建 */
-    auto strPath = Lee::GetRootPath();
+    auto strPath = ::lee::get_root_path();
     const std::string strLogRootFolder =
         strPath + "\\" + Lee::DEFAULT_LOG_FILE_FOLDER;
-    if (!Lee::IsFileExist(strLogRootFolder)) {
-      if (!Lee::CreateFileFolder(strLogRootFolder)) {
+    if (!::lee::is_file_exist(strLogRootFolder)) {
+      if (!::lee::create_file_folder(strLogRootFolder)) {
         std::cout << "Path " << strLogRootFolder << "is not exist!"
                   << std::endl;
         /// assert(false && "can't create log root floder");
@@ -124,8 +124,8 @@ static inline void SpdLogProfiler(const char* LogText, ...) {
 
     strPath +=
         "\\" + DEFAULT_LOG_ROOT_PATH + "\\" + DEFAULT_PROFILER_LOG_FOLDER_NAME;
-    if (!Lee::IsFileExist(strPath)) {
-      if (!Lee::CreateFileFolder(strPath)) {
+    if (!::lee::is_file_exist(strPath)) {
+      if (!::lee::create_file_folder(strPath)) {
         std::cout << "CreateFileFolder: " << strPath << " failed!" << std::endl;
         /// assert(false && "CreateFileFolder failed in Lee::profiler!");
         Lee::quick_exit(-1, "CreateFileFolder failed in Lee::profiler!");

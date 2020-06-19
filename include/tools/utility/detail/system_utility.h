@@ -29,10 +29,10 @@
 #include <iostream>
 #include <string>
 
-namespace Lee {
+namespace lee {
 inline namespace utility {
 inline namespace system {
-/// @name     IsFileExist
+/// @name     is_file_exist
 /// @brief    判断一个文件是否存在
 ///
 /// @param    strFilePathAndName  [in]    文件完整路径和文件名
@@ -44,12 +44,12 @@ inline namespace system {
 /// @author   Lijiancong, pipinstall@163.com
 /// @date     2019-11-05 13:54:29
 /// @warning  线程安全
-inline bool IsFileExist(const std::string& strFilePathAndName) {
+inline bool is_file_exist(const std::string& strFilePathAndName) {
   if (strFilePathAndName.empty()) return false;
   return (_access(strFilePathAndName.c_str(), 0) == 0) ? true : false;
 }
 
-/// @name     GetRootPath
+/// @name     get_root_path
 /// @brief    获取当前程序所在的根目录.(windows系统限定)
 ///
 /// @param    NONE
@@ -59,7 +59,7 @@ inline bool IsFileExist(const std::string& strFilePathAndName) {
 /// @author   Lijiancong, pipinstall@163.com
 /// @date     2019-11-06 14:33:49
 /// @warning  线程安全
-inline std::string GetRootPath() {
+inline std::string get_root_path() {
   static std::once_flag InstanceFlag;
   static std::string strPathName;
   std::call_once(InstanceFlag, [&]() {
@@ -78,7 +78,7 @@ inline std::string GetRootPath() {
   });
   return strPathName;
 }
-/// @name     CreateFileFolder
+/// @name     create_file_folder
 /// @brief    创建一个windows系统的文件夹
 ///
 /// @param    strFolderPath   [in]    要创建目录的绝对路径
@@ -93,7 +93,7 @@ inline std::string GetRootPath() {
 /// @warning  线程安全
 /// @note     注意:该函数只能创建一级目录,
 ///           如果上一级目录也不存在则需要先创建上一级目录,创建二级目录.
-inline bool CreateFileFolder(const std::string& strFolderPath) {
+inline bool create_file_folder(const std::string& strFolderPath) {
   if (strFolderPath.empty()) return false;
   return 0 == CreateDirectory(strFolderPath.c_str(), NULL) ? false : true;
 }

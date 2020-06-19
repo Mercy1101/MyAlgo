@@ -23,10 +23,10 @@
 #ifndef _PUBLIC_VERSION_H__
 #define _PUBLIC_VERSION_H__
 
-#include <string>
-#include <log/log.h>
-#include "utility/utility.h"    // for Lee::GetTimeString(Lee::GetCompileTimeStamp())
 #include "VersionConfig.h"
+#include "utility/utility.h"    // for Lee::GetTimeString(Lee::GetCompileTimeStamp())
+#include <log/log.h>
+#include <string>
 
 /** 当前软件版本 */
 const std::string VERSION("MyAlgo");
@@ -52,7 +52,7 @@ inline void PrintVersion()
                  "Label:        " + std::string(LABEL) + "\n" +
                  "Compile Time: " + Lee::GetTimeString(Lee::GetCompileTimeStamp()) + "\n" +
                  "*************************************************************\n";
-    LOG_NO_FUNCTIONNAME(LOG_INFO, strLogText);
+    LOG_INFO(strLogText);
 }
 
 #endif  // end of _PUBLIC_VERSION_H__

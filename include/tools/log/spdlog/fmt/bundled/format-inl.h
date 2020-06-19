@@ -28,7 +28,7 @@
 
 #ifdef _MSC_VER
 #  pragma warning(push)
-#  pragma warning(disable : 4702 26451)  // unreachable code
+#  pragma warning(disable : 4702)  // unreachable code
 #endif
 
 // Dummy implementations of strerror_r and strerror_s called if corresponding

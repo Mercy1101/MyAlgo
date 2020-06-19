@@ -1021,7 +1021,7 @@ inline std::vector<int> plusOne(std::vector<int> &digits) {
   return digits;
 }
 
-inline void moveZeroes(vector<int> &nums) {
+inline void moveZeroes(std::vector<int> &nums) {
   auto it_temp = nums.begin();
   for(auto it = nums.begin(); it != nums.end(); ++it){
     if(*it != 0){
