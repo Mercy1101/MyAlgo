@@ -53,10 +53,10 @@ inline namespace detail {
 ///
 /// @author   Lijiancong, pipinstall@163.com
 ///           Token From Scott Meyers <Effective Modern C++>
-///           条款一：理解模板型别推到
+///           条款一：理解模板型别推导
 ///
 /// @date     2019-12-01 18:48:08
-/// @warning  线程不安全
+/// @warning  线程安全
 /// @note     用法如ARRAY_SIZE(a)一样
 ///           只有原生数组可以使用该函数，std::array、std::string、
 ///           std::vector等容器不可以调用该函数
