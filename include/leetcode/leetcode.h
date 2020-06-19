@@ -733,8 +733,6 @@ inline std::vector<int> twoSum(std::vector<int> &nums, int target) {
   return temp;
 }
 
-inline int max_profit(std::vector<int> &) { return 0; }
-
 /// 编写一个函数来查找字符串数组中的最长公共前缀。
 ///
 /// 如果不存在公共前缀，返回空字符串 ""。
@@ -824,7 +822,7 @@ inline int maxProfit1(std::vector<int> &prices) {
 /// dp 区间和等于求差问题
 /// 区间和可以转换成求差的问题，求差问题，也可以转换成区间和的问题。
 /// dp[i]=max(0,dp[i−1])
-inline int maxProfit2(std::vector<int> &prices) {
+inline int maxProfit_dp1(std::vector<int> &prices) {
   int last = 0;
   int profit = 0;
 
@@ -833,6 +831,177 @@ inline int maxProfit2(std::vector<int> &prices) {
     profit = std::max(profit, last);
   }
   return profit;
+}
+inline int maxProfit_dp2(std::vector<int> &prices) {
+  auto n = prices.size();
+  if (n == 0) return 0;  // 边界条件
+  int minprice = prices[0];
+  std::vector<int> dp(n, 0);
+
+  for (int i = 1; i < n; i++) {
+    minprice = std::min(minprice, prices[i]);
+    dp[i] = std::max(dp[i - 1], prices[i] - minprice);
+  }
+  return dp[n - 1];
+}
+
+/// 给定一个数组，它的第 i 个元素是一支给定股票第 i 天的价格。
+///
+/// 设计一个算法来计算你所能获取的最大利润。你可以尽可能地完成更多的交易（多次买卖一支股票）。
+///
+/// 注意：你不能同时参与多笔交易（你必须在再次购买前出售掉之前的股票）。
+///
+///  
+///
+/// 示例 1:
+///
+/// 输入: [7,1,5,3,6,4]
+/// 输出: 7
+/// 解释: 在第 2 天（股票价格 = 1）的时候买入，在第 3 天（股票价格 =
+/// 5）的时候卖出, 这笔交易所能获得利润 = 5-1 = 4 。      随后，在第 4
+/// 天（股票价格 = 3）的时候买入，在第 5 天（股票价格 = 6）的时候卖出,
+/// 这笔交易所能获得利润 = 6-3 = 3 。 示例 2:
+///
+/// 输入: [1,2,3,4,5]
+/// 输出: 4
+/// 解释: 在第 1 天（股票价格 = 1）的时候买入，在第 5 天 （股票价格 =
+/// 5）的时候卖出, 这笔交易所能获得利润 = 5-1 = 4 。      注意你不能在第 1
+/// 天和第 2 天接连购买股票，之后再将它们卖出。  
+/// 因为这样属于同时参与了多笔交易，你必须在再次购买前出售掉之前的股票。 示例 3:
+///
+/// 输入: [7,6,4,3,1]
+/// 输出: 0
+/// 解释: 在这种情况下, 没有交易完成, 所以最大利润为 0。
+///  
+///
+/// 提示：
+///
+/// 1 <= prices.length <= 3 * 10 ^ 4
+/// 0 <= prices[i] <= 10 ^ 4
+inline int max_profit(std::vector<int> &prices) {
+  if (prices.size() < 2) {
+    return 0;
+  }
+
+  int result = 0;
+  for (int j = 1; j < prices.size(); ++j) {
+    result += std::max(prices.at(j) - prices.at(j - 1), 0);
+  }
+  return result;
+}
+
+/// 给定正整数数组 A，A[i] 表示第 i 个观光景点的评分，并且两个景点 i
+/// 和 j 之间的距离为 j - i。
+///
+/// 一对景点（i < j）组成的观光组合的得分为（A[i] + A[j] + i -
+/// j）：景点的评分之和减去它们两者之间的距离。
+///
+/// 返回一对观光景点能取得的最高分。
+///
+/// 示例：
+///
+/// 输入：[8,1,5,2,6]
+/// 输出：11
+/// 解释：i = 0, j = 2, A[i] + A[j] + i - j = 8 + 5 + 0 - 2 = 11
+///
+/// 提示：
+///
+/// 2 <= A.length <= 50000
+/// 1 <= A[i] <= 1000
+inline int maxScoreSightseeingPair(std::vector<int> &A) {
+  int result = 0;
+  int mx = A.front();
+  for (int j = 1; j < A.size(); ++j) {
+    result = std::max(result, mx + A.at(j) - j);
+    mx = std::max(mx, A.at(j) + j);
+  }
+  return result;
+}
+
+/// 2. 两数相加
+/// 给出两个 非空
+/// 的链表用来表示两个非负的整数。其中，它们各自的位数是按照 逆序 的方式存储的，并且它们的每个节点只能存储 一位 数字。
+///
+/// 如果，我们将这两个数相加起来，则会返回一个新的链表来表示它们的和。
+///
+/// 您可以假设除了数字 0 之外，这两个数都不会以 0 开头。
+///
+/// 示例：
+///
+/// 输入：(2 -> 4 -> 3) + (5 -> 6 -> 4)
+/// 输出：7 -> 0 -> 8
+/// 原因：342 + 465 = 807
+struct ListNode {
+  int val;
+  ListNode *next;
+  ListNode(int x) : val(x), next(nullptr) {}
+};
+inline ListNode *addTwoNumbers(ListNode *l1, ListNode *l2) {
+  std::string num1;
+  std::string num2;
+  while (l1 != nullptr) {
+    num1 += std::to_string(l1->val);
+    l1 = l1->next;
+  }
+
+  while (l2 != nullptr) {
+    num2 += std::to_string(l2->val);
+    l2 = l2->next;
+  }
+  std::reverse(num1.begin(), num1.end());
+  std::reverse(num2.begin(), num2.end());
+  auto result = std::to_string(std::stoll(num1) + std::stoll(num2));
+  ListNode *ans = new ListNode(0);
+  auto temp = ans;
+  auto it = result.rbegin();
+  while (true) {
+    std::string x;
+    x += *it;
+    temp->val = std::stoi(x);
+    if (++it != result.rend()) {
+      temp->next = new ListNode(0);
+      temp = temp->next;
+    } else {
+      break;
+    }
+  }
+  return ans;
+}
+
+inline void rotate(std::vector<int> &nums, int k) {
+  auto size = nums.size();
+  auto it_end = nums.end();
+  auto it = nums.end();
+  it -= k % size;
+  nums.insert(nums.begin(), it, it_end);
+  auto temp = nums.end();
+  auto it_temp = nums.end();
+  it_temp -= k % size;
+  nums.erase(it_temp, temp);
+}
+
+inline void rotate_1(std::vector<int> &nums, int k) {
+  std::rotate(nums.begin(), nums.end() - k % nums.size(), nums.end());
+}
+
+bool containsDuplicate(vector<int> &nums) {
+  std::map<int, int> map;
+  for (const auto &it : nums) {
+    if (++map[it] > 1) {
+      return true;
+    }
+  }
+  return false;
+}
+
+inline std::vector<int> intersect(std::vector<int> &nums1,
+                                  std::vector<int> &nums2) {
+                                              std::vector<int> result;
+  std::sort(nums1.begin(), nums1.end());
+  std::sort(nums2.begin(), nums2.end());
+  std::set_intersection(nums1.begin(), nums1.end(), nums2.begin(), nums2.end(),
+  std::back_inserter(result));
+  return result;
 }
 
 /// 673. 最长递增子序列的个数
@@ -849,17 +1018,7 @@ inline int maxProfit2(std::vector<int> &prices) {
 /// 输出: 5
 /// 解释: 最长递增子序列的长度是1，并且存在5个子序列的长度为1，因此输出5。
 /// 注意: 给定的数组长度不超过 2000 并且结果一定是32位有符号整数。
-inline int findNumberOfLIS(std::vector<int> &nums) {
-  int inc_count = 0;
-  int pre_num = INT_MIN;
-  for (const auto &it : nums) {
-    if (pre_num < it) {
-      inc_count++;
-      continue;
-    } else {
-    }
-  }
-}
+inline int findNumberOfLIS(std::vector<int> &nums) { (void)nums; }
 
 }  // namespace Leetcode
 }  // namespace Lee
