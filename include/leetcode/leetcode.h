@@ -984,7 +984,7 @@ inline void rotate_1(std::vector<int> &nums, int k) {
   std::rotate(nums.begin(), nums.end() - k % nums.size(), nums.end());
 }
 
-bool containsDuplicate(vector<int> &nums) {
+inline bool containsDuplicate(std::vector<int> &nums) {
   std::map<int, int> map;
   for (const auto &it : nums) {
     if (++map[it] > 1) {
@@ -996,12 +996,39 @@ bool containsDuplicate(vector<int> &nums) {
 
 inline std::vector<int> intersect(std::vector<int> &nums1,
                                   std::vector<int> &nums2) {
-                                              std::vector<int> result;
+  std::vector<int> result;
   std::sort(nums1.begin(), nums1.end());
   std::sort(nums2.begin(), nums2.end());
   std::set_intersection(nums1.begin(), nums1.end(), nums2.begin(), nums2.end(),
-  std::back_inserter(result));
+                        std::back_inserter(result));
   return result;
+}
+
+inline std::vector<int> plusOne(std::vector<int> &digits) {
+  if (digits.empty()) {
+    return digits;
+  }
+  auto i = std::prev(digits.end());
+  while (++(*i) / 10 != 0) {
+    *i = (*i) % 10;
+    if (i == digits.begin()) {
+      digits.insert(digits.begin(), 1);
+      return digits;
+    } else {
+      --i;
+    }
+  }
+  return digits;
+}
+
+inline void moveZeroes(vector<int> &nums) {
+  auto it_temp = nums.begin();
+  for(auto it = nums.begin(); it != nums.end(); ++it){
+    if(*it != 0){
+      std::swap(*it, *it_temp);
+      ++it_temp;
+    }
+  }
 }
 
 /// 673. 最长递增子序列的个数
