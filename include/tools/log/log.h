@@ -1,7 +1,16 @@
-﻿#pragma warning(disable:4819)
+﻿///////// ///////// ///////// ///////// ///////// ///////// ///////// /////////
+///
+/// @file       log.h
+/// @brief      这个文件主要定义了重写的新log模块的接口，
+///             会使用C++11以后的关键字，c++Builder不能使用
+///
+/// @author     Lijiancong, pipinstall@163.com
+/// @date       2019-09-17 10:37:35
+///////// ///////// ///////// ///////// ///////// ///////// ///////// /////////
 #ifndef MCT_UTILITY_DETAIL_LOG_LOG_H_
 #define MCT_UTILITY_DETAIL_LOG_LOG_H_
 
+#pragma warning(disable:4819)
 #include <stdarg.h>  // for va_list
 
 #include <cassert>
