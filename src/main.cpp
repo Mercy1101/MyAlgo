@@ -25,12 +25,9 @@ int main(int argc, char** argv) {
     auto it = Lee::Leetcode::addTwoNumbers(node1, node2);
     (void)it;
 
-    std::vector<int> vec{9};
 
-   auto vo = Lee::Leetcode::plusOne(vec);
-   auto vo1 = Lee::Leetcode::plusOne(vec);
-   (void)vo;
-   (void)vo1;
+    auto b = Lee::Leetcode::isPalindrome("0P");
+    (void)b;
     
   system("pause");
   return 0;

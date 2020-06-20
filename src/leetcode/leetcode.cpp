@@ -1,34 +1,13 @@
 ﻿#include "leetcode.h"
+#include "utility/utility.h"
 #include <algorithm>
 #include <iostream>
 #include <stack>
 #include <vector>
-#include "utility/utility.h"
 
 namespace Lee {
 namespace Leetcode {
 
-bool isPalindrome(std::string s) {
-  if (s.empty()) return false;
-  if (s.length() == 1 && !::isalnum(*s.begin())) return false;
-#pragma warning(disable : 4244)  // 屏蔽tolower的警告
-  std::transform(s.begin(), s.end(), s.begin(), ::tolower);
-  auto left = s.begin();
-  auto right = std::prev(s.end());
-  while (left < right) {
-    if (!::isalnum(*left)) {
-      ++left;
-    } else if (!::isalnum(*right)) {
-      --right;
-    } else if (*left != *right) {
-      return false;
-    } else {
-      ++left;
-      --right;
-    }
-  }
-  return true;
-}
 
 bool IsValidParentheses(std::string const& s) {
   if (s.empty()) return false;

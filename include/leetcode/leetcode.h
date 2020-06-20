@@ -1023,12 +1023,38 @@ inline std::vector<int> plusOne(std::vector<int> &digits) {
 
 inline void moveZeroes(std::vector<int> &nums) {
   auto it_temp = nums.begin();
-  for(auto it = nums.begin(); it != nums.end(); ++it){
-    if(*it != 0){
+  for (auto it = nums.begin(); it != nums.end(); ++it) {
+    if (*it != 0) {
       std::swap(*it, *it_temp);
       ++it_temp;
     }
   }
+}
+
+inline bool isPalindrome(std::string s) {
+  for (auto it = s.begin(); it != s.end();) {
+    if (std::isupper(*it)) {
+      *it = static_cast<char>(std::tolower(*it));
+      ++it;
+      continue;
+    }
+    if (std::isalpha(*it)|| std::isdigit(*it)) {
+      ++it;
+    } else {
+      it = s.erase(it);
+    }
+  }
+  if (s.empty()) {
+    return true;
+  }
+  std::string temp(s);
+  std::reverse(temp.begin(), temp.end());
+  return temp == s;
+}
+
+void x(){
+  std::string temp;
+  temp.find_first_of();
 }
 
 /// 673. 最长递增子序列的个数
