@@ -5,21 +5,6 @@
 #include "utility/utility.h"
 
 /**
- * @brief Lee::Leetcode::isPalindrome()函数的简单测试
- */
-TEST_CASE("isPalindrome简单测试", "[leetcode][isPalindrome]") {
-  using namespace Lee;
-  REQUIRE((Leetcode::isPalindrome("a")));
-  REQUIRE((Leetcode::isPalindrome("aba")));
-  REQUIRE((Leetcode::isPalindrome("ABa")));
-  REQUIRE((Leetcode::isPalindrome("A man, a plan, a canal: Panama")));
-
-  REQUIRE_FALSE((Leetcode::isPalindrome(",")));
-  REQUIRE_FALSE((Leetcode::isPalindrome("")));
-  REQUIRE_FALSE((Leetcode::isPalindrome("race a car")));
-}
-
-/**
  * @brief Lee::Leetcode::IsValidParentheses()函数的简单测试
  */
 TEST_CASE("IsValidParentheses简单测试", "[leetcode][IsValidParentheses]") {
@@ -369,3 +354,68 @@ SCENARIO("climb_statirs 简单测试", "[leetcode][climb_statirs]") {
   }      ///< GIVEN
 }  ///< SCENARIO
 
+SCENARIO("myAtoi 简单测试", "[leetcode][myAtoi]") {
+  GIVEN("简单测试") {
+    WHEN("Input: 42") {
+      THEN("Output: 42") {
+        REQUIRE((42 == Lee::Leetcode::myAtoi("42")));
+      }  ///< THEN
+    }    ///< WHEN
+
+    WHEN("Input: -42") {
+      THEN("Output: -42") {
+        REQUIRE((-42 == Lee::Leetcode::myAtoi("-42")));
+      }  ///< THEN
+    }    ///< WHEN
+
+    WHEN("Input: [               42]") {
+      THEN("Output: 42") {
+        REQUIRE((42 == Lee::Leetcode::myAtoi("42")));
+      }  ///< THEN
+    }    ///< WHEN
+
+    WHEN("Input: [-42]") {
+      THEN("Output: 0") {
+        REQUIRE((-42 == Lee::Leetcode::myAtoi("                -42")));
+      }  ///< THEN
+    }    ///< WHEN
+
+    WHEN("Input: +-42") {
+      THEN("Output: 0") {
+        REQUIRE((0 == Lee::Leetcode::myAtoi("+-42")));
+      }  ///< THEN
+    }    ///< WHEN
+
+    WHEN("Input: -+42") {
+      THEN("Output: 0") {
+        REQUIRE((0 == Lee::Leetcode::myAtoi("-+42")));
+      }  ///< THEN
+    }    ///< WHEN
+
+    WHEN("Input: [4193 with words]") {
+      THEN("Output: 4193") {
+        REQUIRE((4193 == Lee::Leetcode::myAtoi("4193 with words")));
+      }  ///< THEN
+    }    ///< WHEN
+    WHEN("Input: [-91283492332]") {
+      THEN("Output: INT_MIN") {
+        REQUIRE((INT_MIN == Lee::Leetcode::myAtoi("-91283492332")));
+      }  ///< THEN
+    }    ///< WHEN
+
+    WHEN("Input: [2147483646]") {
+      THEN("Output: 2147483646") {
+        REQUIRE((2147483646 == Lee::Leetcode::myAtoi("2147483646")));
+      }  ///< THEN
+    }    ///< WHEN
+
+
+    WHEN("Input: [2147483648]") {
+      THEN("Output:  2147483647") {
+        REQUIRE((2147483647 == Lee::Leetcode::myAtoi("2147483648")));
+      }  ///< THEN
+    }    ///< WHEN
+    
+    
+  }      ///< GIVEN
+}  ///< SCENARIO

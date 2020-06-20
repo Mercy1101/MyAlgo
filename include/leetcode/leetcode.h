@@ -1038,7 +1038,7 @@ inline bool isPalindrome(std::string s) {
       ++it;
       continue;
     }
-    if (std::isalpha(*it)|| std::isdigit(*it)) {
+    if (std::isalpha(*it) || std::isdigit(*it)) {
       ++it;
     } else {
       it = s.erase(it);
@@ -1052,9 +1052,101 @@ inline bool isPalindrome(std::string s) {
   return temp == s;
 }
 
-void x(){
-  std::string temp;
-  temp.find_first_of();
+inline int myAtoi(std::string str) {
+  str.erase(0, str.find_first_not_of(' '));
+  if (str.front() == '+') {
+    if (std::isdigit(*std::next(str.begin()))) {
+      str.erase(str.begin());
+    } else {
+      return 0;
+    }
+  }
+  int flag = 1;
+  if (str.front() == '-') {
+    if (!std::isdigit(*std::next(str.begin()))) {
+      return 0;
+    } else {
+      str.erase(str.begin());
+      flag = -1;
+    }
+  }
+  auto it_end = str.end();
+  for (auto it = str.begin(); it != str.end(); ++it) {
+    if (!std::isdigit(*it)) {
+      it_end = it;
+      break;
+    }
+  }
+
+  std::string num(str.begin(), it_end);
+  if (num.empty()) {
+    return 0;
+  }
+  long long result = 0;
+  for (int i = 0; i < num.size(); ++i) {
+    result += num.at(i) - '0';
+
+    if (result > INT_MAX && (flag == 1)) {
+      return INT_MAX;
+    }
+    if (result * flag < INT_MIN && (flag == -1)) {
+      return INT_MIN;
+    }
+    if (i == num.size() - 1) {
+      break;
+    }
+    result *= 10;
+  }
+  return static_cast<int>(result * flag);
+}
+
+inline int myAtoi1(std::string str) {
+  size_t len = str.length();
+  if (len == 0) return 0;
+  int index = 0;
+  int num = 0;
+  int flag = 1;
+  bool flag_set = false;
+  bool num_set = false;
+  while (index < len) {
+    if (str[index] == ' ' && !num_set && !flag_set) {
+      index++;
+      continue;
+    } else if (str[index] == '+' && !num_set && !flag_set) {
+      flag = 1;
+      flag_set = true;
+      index++;
+      continue;
+    } else if (str[index] == '-' && !num_set && !flag_set) {
+      flag_set = true;
+      flag = -1;
+      index++;
+      continue;
+    }
+
+    if (str[index] >= '0' && str[index] <= '9') {
+      int temp = str[index] - '0';
+
+      if (flag == 1 &&
+          (num > INT_MAX / 10 || num == INT_MAX / 10 && temp > 7)) {
+        return INT_MAX;
+      }
+      if (flag == -1 &&
+          (num < INT_MIN / 10 || num == INT_MIN / 10 && temp > 8)) {
+        return INT_MIN;
+      }
+      num = num * 10 + flag * temp;
+      if (!num_set) {
+        num_set = true;
+      }
+
+      index++;
+    } else {
+      break;
+    }
+  }
+
+  return num;
 }
 
 /// 673. 最长递增子序列的个数
