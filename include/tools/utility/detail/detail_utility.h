@@ -386,6 +386,43 @@ inline bool IsMultiOverFlow(unsigned long long x,
   return false;
 }
 
+template <typename T1, typename T2>
+bool is_multi_overflow(T1 x, T2 y) {
+  static_assert(std::is_same<T1, T2>::value,
+                "is_multi_overflow need same type!");
+  static_assert(std::is_integral<T1>::value,
+                " is_multi_overflow need integral type!");
+  int num_max = std::numeric_limits<T1>::max();
+  int num_min = std::numeric_limits<T1>::min();
+  if (x == 0 || y == 0 || x == 1 || y == 1) {
+    return false;
+  }
+  if (x == -1) {
+    return y == num_min;
+  } else if (y == -1) {
+    return x == num_min;
+  }
+
+  if (x > 0 && y > 0) {
+    /// 同为正号
+    return x > num_max / y;
+  } else if (x < 0 && y < 0) {
+    /// 同为负号
+    if (y == num_min && x <= -1) {
+      return true;
+    }
+    return x < num_min / -y;
+  } else if (x > 0 && y < 0 || (x < 0 && y > 0)) {
+    /// 异号的情况
+    if (x > y) {
+      std::swap(x, y);
+    }
+    return x < num_min / y;
+  } else {
+    return false;
+  }
+}
+
 /// @name     Multiplies_s
 /// @brief    对传入的两个参数，实现安全的乘法运算并返回结果
 ///           (如果结果溢出了，返回值会为空)
