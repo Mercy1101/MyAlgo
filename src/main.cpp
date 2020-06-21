@@ -14,21 +14,7 @@ int main(int argc, char** argv) {
   PrintVersion();
   CheckConfigFolder();
   Catch::Session().run(argc, argv);
-  /// 2, 4, 3 5, 6, 4
-    auto node1 = new Lee::Leetcode::ListNode(2);
-    node1->next = new Lee::Leetcode::ListNode(4);
-    node1->next->next = new Lee::Leetcode::ListNode(3);
 
-    auto node2 = new Lee::Leetcode::ListNode(5);
-    node2->next = new Lee::Leetcode::ListNode(6);
-    node2->next->next = new Lee::Leetcode::ListNode(4);
-    auto it = Lee::Leetcode::addTwoNumbers(node1, node2);
-    (void)it;
-
-
-    auto b = Lee::Leetcode::isPalindrome("0P");
-    (void)b;
-    
   system("pause");
   return 0;
 }
