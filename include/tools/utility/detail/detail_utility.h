@@ -392,6 +392,8 @@ bool is_multi_overflow(T1 x, T2 y) {
                 "is_multi_overflow need same type!");
   static_assert(std::is_integral<T1>::value,
                 " is_multi_overflow need integral type!");
+#undef min
+#undef max
   int num_max = std::numeric_limits<T1>::max();
   int num_min = std::numeric_limits<T1>::min();
   if (x == 0 || y == 0 || x == 1 || y == 1) {
