@@ -1156,11 +1156,11 @@ class automaton {
 
   void get(const char &c) {
     state_ = table[state_][get_col(c)];
-    if (state == "in_number") {
+    if (state_ == "in_number") {
       ans_ = ans_ * 10 + c - '0';
-      ans = sign_ == 1 ? std::min(ans, static_cast<int>(INT_MAX))
-                       : std::min(ans, -(long long)INT_MIN);
-    } else if (state == "singed") {
+      ans_ = sign_ == 1 ? std::min(ans_, static_cast<long long>(INT_MAX))
+                        : std::min(ans_, -(long long)INT_MIN);
+    } else if (state_ == "singed") {
       sign_ = c == '+' ? 1 : -1;
     }
   }
@@ -1178,7 +1178,7 @@ class automaton {
     if (std::isspace(c)) {
       return 0;
     }
-    if (c == '+' or c == '-') {
+    if (c == '+' || c == '-') {
       return 1;
     }
     if (std::isdigit(c)) {
@@ -1192,7 +1192,7 @@ inline int myAtoi2(std::string str) {
   for (char c : str) {
     automaton.get(c);
   }
-  return automaton.sign_ * automaton.ans_;
+  return static_cast<int>(automaton.sign_ * automaton.ans_);
 }
 
 inline int strStr(std::string haystack, std::string needle) {
@@ -1210,36 +1210,8 @@ inline int strStr(std::string haystack, std::string needle) {
     return static_cast<int>(result);
   }
 }
-inline int strStr1(std::string haystack, std::string needle) {
-  int h_size = haystack.size();
-  int n_size = needle.size();
-  std::unordered_map<char, int> offset;
 
-  for (int i = 0; i < n_size; ++i) {
-    offset[needle[i]] = n_size - 1;
-  }
-
-  int i = 0;
-  while (i <= h_size - n_size) {
-    if (haystack.substr(i, n_size) == needle) {
-      return i;
-    } else {
-      if (i + n_size > h_size - 1) {
-        return -1;
-
-      } else {
-        if (offset.find(haystack[i + n_size]) != offset.end()) {
-          i += offset[haystack[i + n_size]];
-        } else {
-          i += n_size + 1;
-        }
-      }
-    }
-  }
-  return -1;
-}
-
-std::vector<int> runningSum(std::vector<int> &nums) {
+inline std::vector<int> runningSum(std::vector<int> &nums) {
   if (nums.empty() || nums.size() == 1) {
     return nums;
   }
@@ -1247,6 +1219,28 @@ std::vector<int> runningSum(std::vector<int> &nums) {
     *i = *i + *std::prev(i);
   }
   return nums;
+}
+
+inline std::string longestCommonPrefix(std::vector<std::string> &strs) {
+  if (strs.empty()) {
+    return "";
+  }
+  auto prefix = strs.front();
+  for (auto it = std::next(strs.begin()); it != strs.end(); ++it) {
+    size_t i = 0;
+    size_t length = std::min(prefix.size(), it->size());
+    while (i < length) {
+      if (prefix.at(i) != it->at(i)) {
+        break;
+      }
+      i++;
+    }
+    prefix = it->substr(0, i);
+    if (prefix.empty()) {
+      return prefix;
+    }
+  }
+  return prefix;
 }
 
 /// 673. 最长递增子序列的个数
