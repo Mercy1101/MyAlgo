@@ -1164,9 +1164,37 @@ inline int strStr(std::string haystack, std::string needle) {
     return static_cast<int>(result);
   }
 }
+inline int strStr1(std::string haystack, std::string needle) {
+  int h_size = haystack.size();
+  int n_size = needle.size();
+  std::unordered_map<char, int> offset;
+
+  for (int i = 0; i < n_size; ++i) {
+    offset[needle[i]] = n_size - 1;
+  }
+
+  int i = 0;
+  while (i <= h_size - n_size) {
+    if (haystack.substr(i, n_size) == needle) {
+      return i;
+    } else {
+      if (i + n_size > h_size - 1) {
+        return -1;
+
+      } else {
+        if (offset.find(haystack[i + n_size]) != offset.end()) {
+          i += offset[haystack[i + n_size]];
+        } else {
+          i += n_size + 1;
+        }
+      }
+    }
+  }
+  return -1;
+}
 
 std::vector<int> runningSum(std::vector<int> &nums) {
-  if(nums.empty() || nums.size() == 1){
+  if (nums.empty() || nums.size() == 1) {
     return nums;
   }
   for (auto i = std::next(nums.begin()); i != nums.end(); ++i) {
