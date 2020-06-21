@@ -1150,41 +1150,50 @@ inline int myAtoi1(std::string str) {
 }
 
 class automaton {
-  public:
+ public:
   int sign_ = 1;
   long long ans_ = 0;
 
-  void get(const char &c){
+  void get(const char &c) {
     state_ = table[state_][get_col(c)];
-    if(state == "in_number"){
+    if (state == "in_number") {
       ans_ = ans_ * 10 + c - '0';
-      ans = sign_ == 1 ? std::min(ans, static_cast<int>(INT_MAX)) : std::min(ans, -(long long)INT_MIN);
-    } else if (state == "singed"){
+      ans = sign_ == 1 ? std::min(ans, static_cast<int>(INT_MAX))
+                       : std::min(ans, -(long long)INT_MIN);
+    } else if (state == "singed") {
       sign_ = c == '+' ? 1 : -1;
     }
   }
-  private:
+
+ private:
   std::string state_ = "state";
   std::unordered_map<std::string, std::vector<std::string>> table = {
-    {"start", {"start", "signed", "in_number", "end"}},
-    {"signed", {"end", "end", "in_number", "end"}},
-    {"in_number", {"end", "end", "in_number", "end"}},
-    {"end", {"end", "end", "end", "end"}},
+      {"start", {"start", "signed", "in_number", "end"}},
+      {"signed", {"end", "end", "in_number", "end"}},
+      {"in_number", {"end", "end", "in_number", "end"}},
+      {"end", {"end", "end", "end", "end"}},
   };
 
-  int get_col(const char& c){
-    if (std::isspace(c)){
+  int get_col(const char &c) {
+    if (std::isspace(c)) {
       return 0;
     }
-    if(c == '+' or c == '-'){
+    if (c == '+' or c == '-') {
       return 1;
     }
-    if(std::isdigit(c)){
+    if (std::isdigit(c)) {
       return 2;
     }
     return 3;
   }
 };
+inline int myAtoi2(std::string str) {
+  automaton automaton;
+  for (char c : str) {
+    automaton.get(c);
+  }
+  return automaton.sign_ * automaton.ans_;
+}
 
 inline int strStr(std::string haystack, std::string needle) {
   if (needle.empty()) {
