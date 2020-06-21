@@ -55,8 +55,12 @@ class KMP {
     size_t tp = 0;
     size_t mp = 0;
     for (tp = 0; tp < strText.size(); tp++) {
-      while (strText.at(tp) != strSubText.at(mp) && mp) mp = next[mp - 1];
-      if (strText.at(tp) == strSubText.at(mp)) mp++;
+      while (strText.at(tp) != strSubText.at(mp) && mp) {
+        mp = next[mp - 1];
+      }
+      if (strText.at(tp) == strSubText.at(mp)) {
+        mp++;
+      }
 
       if (mp == strSubText.size()) {
         pos = tp - mp + 1;
