@@ -1242,6 +1242,34 @@ inline std::string longestCommonPrefix(std::vector<std::string> &strs) {
   }
   return prefix;
 }
+inline ListNode *removeNthFromEnd(ListNode *head, int n) {
+  if (head == nullptr || n == 0) {
+    return head;
+  }
+  if (head->next == nullptr && n == 1) {
+    return nullptr;
+  }
+  auto fast_ptr = head;
+  auto slow_ptr = head;
+  while (fast_ptr != nullptr) {
+    if (n + 1 > 0) {
+      --n;
+      fast_ptr = fast_ptr->next;
+      continue;
+    } else {
+      fast_ptr = fast_ptr->next;
+      slow_ptr = slow_ptr->next;
+      continue;
+    }
+  }
+  if (slow_ptr->next == nullptr) {
+    slow_ptr = nullptr;
+  } else {
+    slow_ptr->val = slow_ptr->next->val;
+    slow_ptr->next = slow_ptr->next->next;
+  }
+  return head;
+}
 
 /// 673. 最长递增子序列的个数
 /// 给定一个未排序的整数数组，找到最长递增子序列的个数。
