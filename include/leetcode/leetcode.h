@@ -1149,6 +1149,32 @@ inline int myAtoi1(std::string str) {
   return num;
 }
 
+inline int strStr(std::string haystack, std::string needle) {
+  if (needle.empty()) {
+    return 0;
+  }
+  if (haystack.empty()) {
+    return -1;
+  }
+
+  auto result = haystack.find(needle);
+  if (result == std::string::npos) {
+    return -1;
+  } else {
+    return static_cast<int>(result);
+  }
+}
+
+std::vector<int> runningSum(std::vector<int> &nums) {
+  if(nums.empty() || nums.size() == 1){
+    return nums;
+  }
+  for (auto i = std::next(nums.begin()); i != nums.end(); ++i) {
+    *i = *i + *std::prev(i);
+  }
+  return nums;
+}
+
 /// 673. 最长递增子序列的个数
 /// 给定一个未排序的整数数组，找到最长递增子序列的个数。
 ///

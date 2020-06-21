@@ -409,13 +409,21 @@ SCENARIO("myAtoi 简单测试", "[leetcode][myAtoi]") {
       }  ///< THEN
     }    ///< WHEN
 
-
     WHEN("Input: [2147483648]") {
       THEN("Output:  2147483647") {
         REQUIRE((2147483647 == Lee::Leetcode::myAtoi("2147483648")));
       }  ///< THEN
     }    ///< WHEN
-    
-    
   }      ///< GIVEN
+}  ///< SCENARIO
+
+SCENARIO("strStr简单测试", "[leetcode][strStr]") {
+  GIVEN("简单测试") {
+    WHEN("Input: aaaa, bbba") {
+      THEN("Output: -1") {
+        REQUIRE((-1 == Lee::Leetcode::strStr("aaaaa", "bba")));
+      }  ///< THEN
+    }    ///< WHEN
+
+  }  ///< GIVEN
 }  ///< SCENARIO
