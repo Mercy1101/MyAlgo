@@ -16,6 +16,7 @@
 #define MYALGO_INCLUDE_TOOLS_UTILITY_DETAIL_FP_UTILITY_H_
 
 #include <iostream>
+#include <memory>
 #include <mutex>
 
 namespace Lee {
@@ -37,7 +38,7 @@ class lazy_val {
   mutable std::once_flag value_flag_;
 
  public:
-  const decltype(computation())& operator() const {
+  const decltype(computation()) &operator() const {
     std::call_once(value_flag_, [this] { cache_ = computation_(); });
     return cache_;
   }
@@ -70,7 +71,7 @@ class lazy_string_concat_helper<last_str, str...> {
   }
 
   lazy_string_concat_helper<std::string, last_str, str...> operator+(
-      const std::string& other) const {
+      const std::string &other) const {
     return lazy_string_concat_helper<std::string, last_str, str...>(other,
                                                                     *this);
   }
@@ -86,28 +87,75 @@ class lazy_string_concat_helper<> {
   void save(It) const {}
 
   lazy_string_concat_helper<std::string> operator+(
-      const std::string& other) const {
+      const std::string &other) const {
     return lazy_string_concat_helper<std::string>(other, *this);
   }
 };
 
-template<typename T>
+template <typename T>
 class lazy_ptr {
-public:
-    lazy_ptr() : child(0) {}
-    ~lazy_ptr() { delete child; }
-    T &operator*() {
-        if (!child) child = new T;
-        return *child;
-    }
-    // might dereference NULL pointer if unset...
-    // but if this is const, what else can be done?
-    const T &operator*() const { return *child; }
-    T *operator->() { return &**this; }
-    const T *operator->() const { return &**this; }
-private:
-    T *child;
+ public:
+  lazy_ptr() : child(0) {}
+  ~lazy_ptr() { delete child; }
+  T &operator*() {
+    if (!child) child = new T;
+    return *child;
+  }
+  // might dereference NULL pointer if unset...
+  // but if this is const, what else can be done?
+  const T &operator*() const { return *child; }
+  T *operator->() { return &**this; }
+  const T *operator->() const { return &**this; }
+
+ private:
+  T *child;
 };
+
+/// 函数式数据结构
+template <typename T>
+class list {
+ public:
+  /// 递归析构扁平化
+  ~node() {
+    auto next_node = std::move(tail);
+    while (next_node) {
+      if (!next_node.unique()) break;
+      std::shared_ptr<node> tail;
+      std::swap(tail, next_node->tail);
+      next_node.reset();
+      noext_node = std::move(tail);
+    }
+  }
+
+ private:
+  struct node {
+    T value;
+    std::shared_ptr<node> tail;
+  };
+  std::shared_ptr<node> m_head;
+};
+
+/// 代数数据类型及模式匹配
+void point_for(player which_player){
+  std::visit(
+    overloaded{
+      [&](const normal_scoring &state){
+        /// 增加得分，或者切换状态
+      },
+      [&](const forty_scoring &state){
+        /// 玩家胜，或切换到平局状态
+      },
+      [&](const deduce &state){
+        /// 切换到占先状态
+      },
+      [&](const advantage &state){
+        /// 玩家胜， 或者回到平局状态
+      },
+
+    }
+  );
+
+}
 
 }  // namespace fp
 }  // namespace utility
