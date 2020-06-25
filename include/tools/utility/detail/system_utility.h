@@ -111,24 +111,48 @@ inline bool create_file_folder(const std::string& strFolderPath) {
 /// @date     2020-06-24 21:08:01
 /// @warning  线程不安全
 inline std::string get_root_path_s() {
-  std::ostringstream ss;
-  ss << std::filesystem::current_path();
-  return ss.str();
+  return std::filesystem::current_path().generic_string();
 }
 
 /// @name     create_folder_s
 /// @brief    创建一个文件夹
 ///
-/// @param    NONE
+/// @param    floder_path
 ///
 /// @return   创建成功与否
 ///
 /// @author   Lijiancong, pipinstall@163.com
 /// @date     2020-06-24 21:08:01
 /// @warning  线程不安全
-inline bool create_folder_s(const std::string& foler_path) {
-  return std::filesystem::create_directory(foler_path);
+inline bool create_folder_s(const std::string& floder_path) {
+  return std::filesystem::create_directory(floder_path);
 }
+
+/// @name     is_file_exist_s
+/// @brief    判断文件是否存在
+///
+/// @param    file_path_name  [in]
+///
+/// @return   存在或不存在
+///
+/// @author   Lijiancong, pipinstall@163.com
+/// @date     2020-06-25 10:47:06
+/// @warning  线程不安全
+inline bool is_file_exist_s(const std::string& file_path_name) {
+  return std::filesystem::exists(file_path_name);
+}
+
+/// @name     remove_file_or_folder
+/// @brief    删除一个文件或者递归删除一个目录
+///
+/// @param    file_or_foler_name  [in] 文件名或文件目录名称
+///
+/// @return   删除成功与否
+///
+/// @author   Lijiancong, pipinstall@163.com
+/// @date     2020-06-25 10:57:20
+/// @warning  线程不安全
+inline bool remove_file_or_folder_s(const std::string& file_or_folder_name) { return 0 != std::filesystem::remove_all(file_or_folder_name); }
 
 }  // namespace system
 }  // namespace utility
