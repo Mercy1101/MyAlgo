@@ -25,10 +25,9 @@
 #include <typeindex>  // for std::typeindex()
 #include <typeinfo>   // for typeid
 
-#include "utility/detail/marco_utility.h"  // for Lee::Second
+#include "utility/detail/marco_utility.h"  // for lee::Second
 
-
-namespace Lee {
+namespace lee {
 inline namespace utility {
 inline namespace time {
 /// @name     GetCurrentTimeStamp
@@ -41,13 +40,13 @@ inline namespace time {
 /// @author   Lijiancong, pipinstall@163.com
 /// @date     2019-11-05 09:44:32
 /// @warning  线程安全
-inline Lee::Second GetCurrentTimeStamp() noexcept {
+inline lee::Second GetCurrentTimeStamp() noexcept {
   auto current_time_s = std::chrono::duration_cast<std::chrono::seconds>(
                             std::chrono::system_clock::now().time_since_epoch())
                             .count();
 #undef max  /// 这句话视为了取消window自带的max宏定义,让下面这句话能编译
   if (current_time_s >
-      std::numeric_limits<Lee::Second>::max() -
+      std::numeric_limits<lee::Second>::max() -
           static_cast<decltype(current_time_s)>(30 * 24 * 60 * 60)) {
     //    assert(false &&
     //           "Excute GetCurrentTimeStamp() failed!(current_time_s
@@ -57,7 +56,7 @@ inline Lee::Second GetCurrentTimeStamp() noexcept {
         << std::endl;
     return -1;
   }
-  return static_cast<Lee::Second>(current_time_s);
+  return static_cast<lee::Second>(current_time_s);
 }
 
 /// @name     GetCurrentMilliSecondStamp
@@ -70,13 +69,13 @@ inline Lee::Second GetCurrentTimeStamp() noexcept {
 /// @author   Lijiancong, pipinstall@163.com
 /// @date     2019-12-06 10:49:06
 /// @warning  线程不安全
-inline Lee::MilliSecond GetCurrentMilliSecondStamp() noexcept {
+inline lee::MilliSecond GetCurrentMilliSecondStamp() noexcept {
   auto current_time_s = std::chrono::duration_cast<std::chrono::milliseconds>(
                             std::chrono::system_clock::now().time_since_epoch())
                             .count();
 #undef max  /// 这句话视为了取消window自带的max宏定义,让下面这句话能编译
   if (current_time_s >
-      std::numeric_limits<Lee::MilliSecond>::max() -
+      std::numeric_limits<lee::MilliSecond>::max() -
           static_cast<decltype(current_time_s)>(30 * 24 * 60 * 60)) {
     ///    assert(false &&
     ///           "Excute GetCurrentMilliSecondStamp() failed!(current_time_s "
@@ -86,7 +85,7 @@ inline Lee::MilliSecond GetCurrentMilliSecondStamp() noexcept {
               << std::endl;
     return -1;
   }
-  return static_cast<Lee::MilliSecond>(current_time_s);
+  return static_cast<lee::MilliSecond>(current_time_s);
 }
 
 /// @name     GetCPUMilliSecond
@@ -114,9 +113,9 @@ inline clock_t GetCPUMilliSecond() noexcept {
 /// @date     2019-11-05 14:05:04
 /// @warning  线程不安全
 /// @example:
-///     std::cout << Lee::GetTimeString(1571290440) << std::endl;
+///     std::cout << lee::GetTimeString(1571290440) << std::endl;
 ///     输出：2019-10-17 13:34:00
-inline std::string GetTimeString(Lee::Second Time, const char *Format) {
+inline std::string GetTimeString(lee::Second Time, const char *Format) {
   if (Time < 0) {
     /// assert(false && "GetTimeString Param Time is invalid!");
     std::cout << "GetTimeString Param Time is invalid!" << std::endl;
@@ -130,20 +129,20 @@ inline std::string GetTimeString(Lee::Second Time, const char *Format) {
   strftime(p, sizeof(p), Format, &buf);
   return std::string(p);
 }
-inline std::string GetTimeString(Lee::Second Time) {
+inline std::string GetTimeString(lee::Second Time) {
   return GetTimeString(Time, "%F %T");
 }
 inline std::string GetTimeString(const char *Format) {
-  return GetTimeString(Lee::GetCurrentTimeStamp(), Format);
+  return GetTimeString(lee::GetCurrentTimeStamp(), Format);
 }
-inline std::string GetTimeString(Lee::MilliSecond Time) {
-  return GetTimeString(static_cast<Lee::Second>(Time / 1000), "%F %T");
+inline std::string GetTimeString(lee::MilliSecond Time) {
+  return GetTimeString(static_cast<lee::Second>(Time / 1000), "%F %T");
 }
-inline std::string GetTimeString(Lee::MilliSecond Time, const char *Format) {
-  return GetTimeString(static_cast<Lee::Second>(Time / 1000), Format);
+inline std::string GetTimeString(lee::MilliSecond Time, const char *Format) {
+  return GetTimeString(static_cast<lee::Second>(Time / 1000), Format);
 }
 inline std::string GetTimeString() {
-  return GetTimeString(Lee::GetCurrentTimeStamp(), "%F %T");
+  return GetTimeString(lee::GetCurrentTimeStamp(), "%F %T");
 }
 
 /// @name     GetCompileTimeStamp
@@ -157,7 +156,7 @@ inline std::string GetTimeString() {
 /// @author   Lijiancong, pipinstall@163.com
 /// @date     2019-11-06 10:07:38
 /// @warning  线程安全
-inline Lee::Second GetCompileTimeStamp() {
+inline lee::Second GetCompileTimeStamp() {
   static std::once_flag InstanceFlag;
   static time_t compile_time_s = 0;  ///< 单位为秒
   std::call_once(InstanceFlag, []() {
@@ -201,12 +200,12 @@ inline Lee::Second GetCompileTimeStamp() {
     tm.tm_year -= 1900;
     tm.tm_mon -= 1;
     compile_time_s = mktime(&tm);
-    if (compile_time_s <= 0 || compile_time_s > Lee::GetCurrentTimeStamp()) {
+    if (compile_time_s <= 0 || compile_time_s > lee::GetCurrentTimeStamp()) {
       std::cout << "GetCompileTimeStamp() is failed!" << std::endl;
       compile_time_s = -1;
     }
   });  /// std::call_once()
-  return static_cast<Lee::Second>(compile_time_s);
+  return static_cast<lee::Second>(compile_time_s);
 }
 
 /// @name     GetTodaySpecificTimeStamp_Agent
@@ -223,7 +222,7 @@ inline Lee::Second GetCompileTimeStamp() {
 /// @author   Lijiancong, pipinstall@163.com
 /// @date     2019-08-20 16:11:44
 /// @warning  线程不安全
-inline Lee::Second GetTodaySpecificTimeStamp(const int iHour, const int iMin,
+inline lee::Second GetTodaySpecificTimeStamp(const int iHour, const int iMin,
                                              const int iSec) {
   if (iHour < 0 || iHour > 23 || iMin < 0 || iMin > 59 || iSec < 0 ||
       iSec > 59) {
@@ -241,8 +240,36 @@ inline Lee::Second GetTodaySpecificTimeStamp(const int iHour, const int iMin,
   return static_cast<int>(mktime(&stTimer));
 }
 
+/// @name     get_weekday
+/// @brief    获取某特定日期是周几
+///
+/// @param    year  [in]
+/// @param    mouth [in]
+/// @param    day   [in]
+///
+/// @return   周几
+///
+/// @author   Lijiancong, pipinstall@163.com
+/// @date     2020-06-25 08:55:20
+/// @warning  线程不安全
+inline std::optional<int> get_weedday(const int year, const int mouth,
+                                      const int day) {
+  if (mouth < 1 || mouth > 12 || day < 1 || day > 31) {
+    return {};
+  }
+
+  int c = year / 100;
+  int y = year % 100;
+  int m = mouth;
+  if (year <= 1582 && mouth <= 10 && day < 4) {
+    return y + y / 4 + c / 4 - 2 * c + (13 * (m + 1)) / 5 + day + 2;
+  } else {
+    return (c / 4 - 2 * c + y + y / 4 + (13 * (m + 1)) / 5 + day - 1) % 7;
+  }
+}
+
 }  // namespace time
 }  // namespace utility
-}  // namespace Lee
+}  // namespace lee
 
 #endif  // end of MYALGO_INCLUDE_TOOLS_UTILITY_DETAIL_TIME_UTILITY_H_
