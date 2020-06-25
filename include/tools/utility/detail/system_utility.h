@@ -15,7 +15,7 @@
 #ifndef MYALGO_INCLUDE_TOOLS_UTILITY_DETAIL_SYSTEM_UTILITY_H_
 #define MYALGO_INCLUDE_TOOLS_UTILITY_DETAIL_SYSTEM_UTILITY_H_
 
-#  pragma warning(disable : 26451)  // unreachable code
+#pragma warning(disable : 26451)  // unreachable code
 
 #include <Windows.h>
 #include <crtdbg.h>   // for _CrtDumpMemoryLeaks()
@@ -26,7 +26,9 @@
 #include <stdlib.h>
 
 #include <cassert>
+#include <filesystem>
 #include <iostream>
+#include <sstream>
 #include <string>
 
 namespace lee {
@@ -98,8 +100,38 @@ inline bool create_file_folder(const std::string& strFolderPath) {
   return 0 == CreateDirectory(strFolderPath.c_str(), NULL) ? false : true;
 }
 
+/// @name     get_root_path_s
+/// @brief    获取根路径
+///
+/// @param    NONE
+///
+/// @return   当前路径
+///
+/// @author   Lijiancong, pipinstall@163.com
+/// @date     2020-06-24 21:08:01
+/// @warning  线程不安全
+inline std::string get_root_path_s() {
+  std::ostringstream ss;
+  ss << std::filesystem::current_path();
+  return ss.str();
+}
+
+/// @name     create_folder_s
+/// @brief    创建一个文件夹
+///
+/// @param    NONE
+///
+/// @return   创建成功与否
+///
+/// @author   Lijiancong, pipinstall@163.com
+/// @date     2020-06-24 21:08:01
+/// @warning  线程不安全
+inline bool create_folder_s(const std::string& foler_path) {
+  return std::filesystem::create_directory(foler_path);
+}
+
 }  // namespace system
 }  // namespace utility
-}  // namespace Lee
+}  // namespace lee
 
 #endif  // end of MYALGO_INCLUDE_TOOLS_UTILITY_DETAIL_SYSTEM_UTILITY_H_

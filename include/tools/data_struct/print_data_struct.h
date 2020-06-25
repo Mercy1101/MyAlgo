@@ -14,7 +14,7 @@
 #ifndef MYALGO_INCLUDE_TOOLS_DATASTRUCT_PRINT_DATA_STRUCT_H_
 #define MYALGO_INCLUDE_TOOLS_DATASTRUCT_PRINT_DATA_STRUCT_H_
 
-namespace Lee {
+namespace lee {
 inline namespace data_struct {
 inline namespace print_data_struct {
 /// @name     PrintCompleteBinaryTree
@@ -31,6 +31,6 @@ void PrintCompleteBinaryTree(const int &depth);
 
 }  // namespace print_data_struct
 }  // namespace data_struct
-}  // namespace Lee
+}  // namespace lee
 
 #endif  // end of MYALGO_INCLUDE_TOOLS_DATASTRUCT_PRINT_DATA_STRUCT_H_

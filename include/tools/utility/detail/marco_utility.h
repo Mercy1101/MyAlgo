@@ -41,7 +41,7 @@
     LOG(LOG_ERROR, "Error: %s", e.what()); \
   }
 
-namespace Lee {
+namespace lee {
 inline namespace utility {
 inline namespace marco {
 /// 长度单位定义
@@ -70,6 +70,6 @@ const std::string DEFAULT_LOG_FILE_FOLDER = "log";
 
 }  // namespace marco
 }  // namespace utility
-}  // namespace Lee
+}  // namespace lee
 
 #endif  // end of MYALGO_INCLUDE_TOOLS_UTILITY_DETAIL_MARCO_UTILITY_H_

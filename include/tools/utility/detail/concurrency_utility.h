@@ -28,7 +28,7 @@
 #include <utility>
 #include <vector>
 
-namespace Lee {
+namespace lee {
 inline namespace utility {
 inline namespace concurrency {
 
@@ -899,6 +899,6 @@ class ThreadPool_Sample {
 
 }  // namespace concurrency
 }  // namespace utility
-}  // namespace Lee
+}  // namespace lee
 
 #endif

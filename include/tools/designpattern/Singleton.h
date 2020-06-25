@@ -52,7 +52,7 @@
 * @example
 
 使用下面函数就可以得到一个指向该实例的指针
-auto g_pDialCfg = Lee::GetSingletonPtr<typename>();
+auto g_pDialCfg = lee::GetSingletonPtr<typename>();
 
 g_pDialCfg->GetData();  /// 可以获取该单例里存储的数据
 g_pDialCfg->SetData();  /// 可以改写该单例里存储的数据
@@ -62,15 +62,15 @@ g_pDialCfg->SetData();  /// 可以改写该单例里存储的数据
 #ifndef TOOLS_DESIGN_PATTERN_SINGLETON_H
 #define TOOLS_DESIGN_PATTERN_SINGLETON_H
 
-#include <thread>
+#include "utility/utility.h"    // for lee::non_transferable
 #include <mutex>
 #include <string>         // for memset_s()
-#include "utility/utility.h"    // for Lee::non_transferable
+#include <thread>
 
-namespace Lee { namespace DesignPattern_ { namespace Singleton_{
+namespace lee { namespace DesignPattern_ { namespace Singleton_{
 
     template <typename T>
-    class singleton : public Lee::non_transferable
+    class singleton : public lee::non_transferable
     {
     public:
         /**
@@ -160,12 +160,12 @@ namespace Lee { namespace DesignPattern_ { namespace Singleton_{
 * @note
 */
 template <typename T>
-Lee::DesignPattern_::Singleton_::singleton<T>* const GetSingletonPtr()
+lee::DesignPattern_::Singleton_::singleton<T>* const GetSingletonPtr()
 {
-    return Lee::DesignPattern_::Singleton_::singleton<T>::GetInstance();
+    return lee::DesignPattern_::Singleton_::singleton<T>::GetInstance();
 }
 
-} // end of namespace Lee
+} // end of namespace lee
 
 #endif // end of TOOLS_DESIGN_PATTERN_SINGLETON_H
 

@@ -19,7 +19,7 @@
 #include <initializer_list>
 #include <vector>
 
-namespace Lee {
+namespace lee {
 inline namespace data_struct {
 inline namespace binary_tree {
 
@@ -216,6 +216,6 @@ class Binary_Tree {
 
 }  // namespace binary_tree
 }  // namespace data_struct
-}  // namespace Lee
+}  // namespace lee
 
 #endif  // end of MYALGO_INCLUDE_TOOLS_DATASTRUCT_BINARY_TREE_H_

@@ -24,7 +24,7 @@
 #define _PUBLIC_VERSION_H__
 
 #include "VersionConfig.h"
-#include "utility/utility.h"    // for Lee::GetTimeString(Lee::GetCompileTimeStamp())
+#include "utility/utility.h"    // for lee::GetTimeString(lee::GetCompileTimeStamp())
 #include <log/log.h>
 #include <string>
 
@@ -50,7 +50,7 @@ inline void PrintVersion()
                  "\n*************************************************************\n" +
                  "Version:      " + std::string(VERSION) + "\n" +
                  "Label:        " + std::string(LABEL) + "\n" +
-                 "Compile Time: " + Lee::GetTimeString(Lee::GetCompileTimeStamp()) + "\n" +
+                 "Compile Time: " + lee::GetTimeString(lee::GetCompileTimeStamp()) + "\n" +
                  "*************************************************************\n";
     LOG_INFO(strLogText);
 }

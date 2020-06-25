@@ -5,8 +5,8 @@
 #include <stack>
 #include <vector>
 
-namespace Lee {
-namespace Leetcode {
+namespace lee {
+namespace leetcode {
 
 
 bool IsValidParentheses(std::string const& s) {
@@ -67,16 +67,16 @@ bool ParseChanNumber(const std::string& str,
       return true;
     }
   } catch (const std::invalid_argument& e) {
-    Lee::ignore_unused(e);
+    lee::ignore_unused(e);
     return false;
   } catch (const std::out_of_range& e) {
-    Lee::ignore_unused(e);
+    lee::ignore_unused(e);
     return false;
   } catch (const std::exception& e) {
-    Lee::ignore_unused(e);
+    lee::ignore_unused(e);
     return false;
   }
 }
 
-}  // end of namespace Leetcode
-}  // end of namespace Lee
+}  // end of namespace leetcode
+}  // end of namespace lee

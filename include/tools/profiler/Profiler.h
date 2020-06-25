@@ -10,7 +10,7 @@
 * @brief                这个文件主要写了Profiler的内容，
                         包括了函数时间的检测和内存使用情况的检测
 
-* @details              这个文件里定义了作用域，Lee::Profiler,
+* @details              这个文件里定义了作用域，lee::Profiler,
                         这个作用域里是Profiler的主要实现
 
 * @author               lijiancong
@@ -81,7 +81,7 @@ void SomeFunc(int i)
 #include "log/log.h"  // for DEFAULT_PROFILER_LOG_FOLDER_NAME
 #include "log/spdlog/sinks/rotating_file_sink.h"  // for spdlog
 #include "log/spdlog/spdlog.h"
-#include "utility/utility.h"  // for Lee::GetCurrentPath()
+#include "utility/utility.h"  // for lee::GetCurrentPath()
 
 #pragma comment(lib, "psapi.lib")
 
@@ -93,7 +93,7 @@ void SomeFunc(int i)
 #undef LEE_C11_PROFILER_MODE
 #endif
 
-namespace Lee {
+namespace lee {
 namespace Profiler_ {
 
 /**
@@ -112,13 +112,13 @@ static inline void SpdLogProfiler(const char* LogText, ...) {
     /** 检查路径有没有创建 */
     auto strPath = ::lee::get_root_path();
     const std::string strLogRootFolder =
-        strPath + "\\" + Lee::DEFAULT_LOG_FILE_FOLDER;
+        strPath + "\\" + lee::DEFAULT_LOG_FILE_FOLDER;
     if (!::lee::is_file_exist(strLogRootFolder)) {
       if (!::lee::create_file_folder(strLogRootFolder)) {
         std::cout << "Path " << strLogRootFolder << "is not exist!"
                   << std::endl;
         /// assert(false && "can't create log root floder");
-        Lee::quick_exit(-1, "can't create log root floder");
+        lee::quick_exit(-1, "can't create log root floder");
       }
     }
 
@@ -127,8 +127,8 @@ static inline void SpdLogProfiler(const char* LogText, ...) {
     if (!::lee::is_file_exist(strPath)) {
       if (!::lee::create_file_folder(strPath)) {
         std::cout << "CreateFileFolder: " << strPath << " failed!" << std::endl;
-        /// assert(false && "CreateFileFolder failed in Lee::profiler!");
-        Lee::quick_exit(-1, "CreateFileFolder failed in Lee::profiler!");
+        /// assert(false && "CreateFileFolder failed in lee::profiler!");
+        lee::quick_exit(-1, "CreateFileFolder failed in lee::profiler!");
       }
     }
     strPath += "\\profiler.log";
@@ -298,11 +298,11 @@ void SomeFunc(int i)
 #define LEE_C11_PROFILER_MODE
 #ifdef LEE_C11_PROFILER_MODE
 #define PROFILER_F() \
-  Lee::Profiler_::ProfilerInstance pRoFiLeR__(__func__, __FILE__, __LINE__)
+  lee::Profiler_::ProfilerInstance pRoFiLeR__(__func__, __FILE__, __LINE__)
 #else
 #define PROFILER_F() nullptr
 #endif  // end of LEE_C11_PROFILER_MODE
 
-}  // end of namespace Lee
+}  // end of namespace lee
 
 #endif  // end of TOOLS_PROFILER_PROFILER_H_

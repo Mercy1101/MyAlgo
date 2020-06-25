@@ -19,7 +19,7 @@
 #include <array>
 
 
-namespace Lee {
+namespace lee {
 inline namespace utility {
 inline namespace prime {
 /// @name     prime
@@ -1171,6 +1171,6 @@ inline uint32_t prime(const unsigned &index) {
 }
 }  // namespace prime
 }  // namespace utility
-}  // namespace Lee
+}  // namespace lee
 
 #endif  // end of MYALGO_INCLUDE_TOOLS_UTILITY_DETAIL_PRIME_UTILITY_H_

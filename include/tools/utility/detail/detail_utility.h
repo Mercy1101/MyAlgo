@@ -34,7 +34,7 @@
 #include "log/log.h"
 #include "utility/detail/random_utility.h"
 
-namespace Lee {
+namespace lee {
 inline namespace utility {
 inline namespace detail {
 /// @name     ArraySize
@@ -85,7 +85,7 @@ template <typename T, size_t N>
 char (&ArraySizeHelper(const T (&array)[N]))[N];
 #endif
 
-#define arraysize(array) (sizeof(::Lee::ArraySizeHelper(array)))
+#define arraysize(array) (sizeof(::lee::ArraySizeHelper(array)))
 
 /// @name     ignore_unused
 /// @brief    使用该空函数可以屏蔽编译器对未使用过的变量的警告
@@ -104,7 +104,7 @@ char (&ArraySizeHelper(const T (&array)[N]))[N];
 ///           2>F:\1WorkStation\test\src\main.cpp(53,9): warning C4101:
 ///             “i”: 未引用的局部变量
 ///           在定义变量i的下面写上这句话：
-///           Lee::ignore_unused(i);
+///           lee::ignore_unused(i);
 template <typename... Ts>
 inline constexpr void ignore_unused(Ts const &...) {}
 template <typename... Ts>
@@ -170,7 +170,7 @@ struct checked_deleter {
 
   template <class T>
   void operator()(T *x) const {
-    Lee::checked_delete(x);
+    lee::checked_delete(x);
   }
 };
 
@@ -190,7 +190,7 @@ struct checked_array_deleter {
 
   template <class T>
   void operator()(T *x) const {
-    Lee::checked_array_delete(x);
+    lee::checked_array_delete(x);
   }
 };
 
@@ -479,10 +479,10 @@ inline bool IsLittleEndian() noexcept {
 /// @author   Lijiancong, pipinstall@163.com
 /// @date     2019-12-05 13:31:45
 /// @warning  线程不安全
-inline void SleepForRandomMilliSecond(Lee::MilliSecond range_start,
-                                      Lee::MilliSecond range_end) {
+inline void SleepForRandomMilliSecond(lee::MilliSecond range_start,
+                                      lee::MilliSecond range_end) {
   /// 设置最大时间限制
-  constexpr Lee::MilliSecond SLEEP_FOR_RANGE_MAX_MILLISECOND = 30 * 1000;
+  constexpr lee::MilliSecond SLEEP_FOR_RANGE_MAX_MILLISECOND = 30 * 1000;
   if (range_start > range_start) std::swap(range_start, range_end);
   if (range_start < 0) range_start = 0;
   if (range_end < 0) range_end = 0;
@@ -491,11 +491,11 @@ inline void SleepForRandomMilliSecond(Lee::MilliSecond range_start,
     std::cout << "range_end is too large!" << std::endl;
     range_end = SLEEP_FOR_RANGE_MAX_MILLISECOND;
   }
-  Lee::MilliSecond sleep_time = Lee::GetRangeRandom(
+  lee::MilliSecond sleep_time = lee::GetRangeRandom(
       static_cast<int>(range_start), static_cast<int>(range_end));
   std::this_thread::sleep_for(std::chrono::milliseconds(sleep_time));
 }
-inline void SleepForRandomMilliSecond(Lee::MilliSecond range_end) {
+inline void SleepForRandomMilliSecond(lee::MilliSecond range_end) {
   SleepForRandomMilliSecond(0, range_end);
 }
 
@@ -539,6 +539,6 @@ bool compare_vector(std::vector<T> x, std::vector<T> y) {
 
 }  // namespace detail
 }  // namespace utility
-}  // namespace Lee
+}  // namespace lee
 
 #endif  // end of MYALGO_INCLUDE_TOOLS_UTILITY_DETAIL_DETAIL_UTILITY_H_

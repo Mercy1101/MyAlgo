@@ -2,10 +2,10 @@
 
 #include <catch2/catch.hpp>
 
-#include "utility/utility.h"  // for Lee::ignore_unsed()
+#include "utility/utility.h"  // for lee::ignore_unsed()
 
-using namespace Lee;
-using namespace Lee::DesignPattern_::Singleton_;
+using namespace lee;
+using namespace lee::DesignPattern_::Singleton_;
 
 /**
 * @name                Singleton.SimpleTest_Int
@@ -134,7 +134,7 @@ struct DialCfg {
 */
 TEST_CASE("结构体测试", "[design_pattern][Singleton]") {
   auto pInstance = GetSingletonPtr<DialCfg>();
-  Lee::ignore_unused(pInstance);
+  lee::ignore_unused(pInstance);
 
   DialCfg stTemp = {0};
   stTemp.bIsAutoReboot = true;

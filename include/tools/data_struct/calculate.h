@@ -23,7 +23,7 @@
 #include <optional>
 #include <string>
 
-namespace Lee {
+namespace lee {
 inline namespace data_struct {
 inline namespace calculate {
 
@@ -43,8 +43,8 @@ inline namespace calculate {
 ///     #include "caculate.h"
 ///
 ///     int main() {
-///       asserst((41 == Lee::calculate::cal("5+8*4+8/2")) && "计算错误！");
-///       asserst((41 == Lee::calculate::cal("  5+  8*4+8   /2 ")) &&
+///       asserst((41 == lee::calculate::cal("5+8*4+8/2")) && "计算错误！");
+///       asserst((41 == lee::calculate::cal("  5+  8*4+8   /2 ")) &&
 ///       "计算错误！"));
 ///     }
 /// @endcode
@@ -283,6 +283,6 @@ class simple_calculate {
 
 }  // namespace calculate
 }  // namespace data_struct
-}  // namespace Lee
+}  // namespace lee
 
 #endif

@@ -1,8 +1,8 @@
 ﻿#include "data_struct/print_data_struct.h"
-#include <iostream>
 #include "utility/utility.h"
+#include <iostream>
 
-namespace Lee {
+namespace lee {
 inline namespace data_struct {
 inline namespace print_data_struct {
  constexpr char g_letter[36] = {'0', '1', '2', '3', '4', '5', '6', '7', '8',
@@ -17,8 +17,8 @@ void PrintSpace(const int &space_number) {
 }
 
 void PrintElement(size_t element_number) {
-  while (element_number > Lee::ArraySize(g_letter) - 1) {
-    element_number -= (Lee::ArraySize(g_letter) - 1);
+  while (element_number > lee::ArraySize(g_letter) - 1) {
+    element_number -= (lee::ArraySize(g_letter) - 1);
   }
   std::cout << g_letter[element_number];
 }
@@ -38,10 +38,10 @@ void PrintCompleteBinaryTree(const int &depth) {
   }
 
   for (int i = 0; i < depth + 1; ++i) {  /// 深度循环
-    int element_count = Lee::power(2, i);
+    int element_count = lee::power(2, i);
     int last_offset = 0;
     for (int count = 0; count < element_count; ++count) {  /// 单行元素循环
-      auto off_set = (((count + 1) * 2) - 1) * Lee::power(2, (depth - i));
+      auto off_set = (((count + 1) * 2) - 1) * lee::power(2, (depth - i));
       if (count != 0) {
         PrintLine(off_set - last_offset);
       } else {
@@ -57,4 +57,4 @@ void PrintCompleteBinaryTree(const int &depth) {
 }
 }  // namespace print_data_struct
 }  // namespace data_struct
-}  // namespace Lee
+}  // namespace lee

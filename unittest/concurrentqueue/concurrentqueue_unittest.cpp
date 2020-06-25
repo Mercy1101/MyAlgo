@@ -1,8 +1,8 @@
 ﻿#include "concurrentqueue/concurrentqueue.h"
+#include "utility/utility.h"
 #include <cassert>
 #include <catch2/catch.hpp>
 #include <thread>
-#include "utility/utility.h"
 
 TEST_CASE("第一个例子", "[Concurrentqueue][Sample]") {
   moodycamel::ConcurrentQueue<int> q;
@@ -114,12 +114,12 @@ TEST_CASE("BulkUp批量例子", "[Concurrentqueue][Sample]") {
 TEST_CASE("dequeue大于队列值的结果", "[Concurrentqueue][Sample]") {
   moodycamel::ConcurrentQueue<int> q;
   int items[5];
-  for (int j = 0; j != Lee::ArraySize(items); ++j) {
+  for (int j = 0; j != lee::ArraySize(items); ++j) {
     items[j] = 10 + j;
   }
   /// 注意下面这句话的第二个参数,如果该数值超过了items所拥有的元素个数,将会将垃圾值入列
-  q.enqueue_bulk(items, Lee::ArraySize(items));
+  q.enqueue_bulk(items, lee::ArraySize(items));
   int items2[11];
   auto count = q.try_dequeue_bulk(items2, 10);
-  REQUIRE(count == Lee::ArraySize(items));
+  REQUIRE(count == lee::ArraySize(items));
 }

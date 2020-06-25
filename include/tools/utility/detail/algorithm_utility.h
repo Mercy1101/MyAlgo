@@ -24,7 +24,7 @@
 #include <string>
 #include <vector>
 
-namespace Lee {
+namespace lee {
 inline namespace utility {
 inline namespace algorithm {
 
@@ -237,6 +237,6 @@ void quicksort(ForwardIt first, ForwardIt last) {
 
 }  // namespace algorithm
 }  // namespace utility
-}  // namespace Lee
+}  // namespace lee
 
 #endif  // end of MYALGO_INCLUDE_TOOLS_UTILITY_DETAIL_ALGORITHM_UTILITY_H_

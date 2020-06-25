@@ -30,8 +30,8 @@
 #include <unordered_map>
 #include <vector>
 
-namespace Lee {
-namespace Leetcode {
+namespace lee {
+namespace leetcode {
 
 /**
  * @name                isPalindrome
@@ -1287,7 +1287,7 @@ inline ListNode *removeNthFromEnd(ListNode *head, int n) {
 /// 注意: 给定的数组长度不超过 2000 并且结果一定是32位有符号整数。
 inline int findNumberOfLIS(std::vector<int> &nums) { (void)nums; }
 
-}  // namespace Leetcode
-}  // namespace Lee
+}  // namespace leetcode
+}  // namespace lee
 
 #endif  // end of LEET_CODE_H__

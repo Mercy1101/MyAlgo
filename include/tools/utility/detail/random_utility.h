@@ -23,7 +23,7 @@
 #include "utility/detail/time_utility.h"  // for GetCurrentMilliSecondStamp()
 
 
-namespace Lee {
+namespace lee {
 inline namespace utility {
 inline namespace random {
 /// @name     GetRandom
@@ -39,7 +39,7 @@ inline namespace random {
 inline int GetRandom() noexcept {
   static std::once_flag InitFlag;
   std::call_once(InitFlag, []() {
-    srand(static_cast<unsigned>(Lee::GetCurrentMilliSecondStamp()));
+    srand(static_cast<unsigned>(lee::GetCurrentMilliSecondStamp()));
   });
   return rand();
 }
@@ -59,7 +59,7 @@ inline int GetRandom() noexcept {
 /// @warning  线程不安全
 inline int GetRangeRandom(int x, int y) noexcept {
   if (x > y) std::swap(x, y);
-  return (Lee::GetRandom() % (y - x + 1)) + x;
+  return (lee::GetRandom() % (y - x + 1)) + x;
 }
 inline int GetRangeRandom(int x) noexcept { return GetRangeRandom(0, x); }
 
@@ -86,7 +86,7 @@ inline T GetRangeRandomNumberFloat(T range_bound1, T range_bound2) {
   return u(e);
 }
 inline double GetRangeRandomNumberFloat(double range_end) {
-  return Lee::GetRangeRandomNumberFloat(0.0, range_end);
+  return lee::GetRangeRandomNumberFloat(0.0, range_end);
 }
 
 /// @name     GetRandomRangeNumberInt
@@ -113,7 +113,7 @@ inline T GetRangeRandomNumberInt(T range_bound1, T range_bound2) {
 }
 
 inline int GetRangeRandomNumberInt(int range_end) {
-  return Lee::GetRangeRandomNumberInt(0, range_end);
+  return lee::GetRangeRandomNumberInt(0, range_end);
 }
 
 /// @name     GetApproximationNumber
@@ -135,14 +135,14 @@ inline T GetApproximationNumber(const T &base_number,
   static_assert(std::is_integral(T) || std::is_floating_point(T),
                 "GetApproximationNumber need a POD type number!");
   double range_bound = base_number * deviation_percent;
-  auto random_number = Lee::GetRandomRangeNumberDouble(
+  auto random_number = lee::GetRandomRangeNumberDouble(
       base_number + range_bound, base_number - range_bound);
   return static_cast<T>(random_number);
 }
 constexpr double DEFAULT_DEVIATION_PERCENT = 0.1;
 template <typename T>
 inline T GetApproximationNumber(const T &base_number) {
-  Lee::GetApproximationNumber(base_number, DEFAULT_DEVIATION_PERCENT);
+  lee::GetApproximationNumber(base_number, DEFAULT_DEVIATION_PERCENT);
 }
 
 /// @name     GetRandomRangeNumber_WithoutRepeat
@@ -168,7 +168,7 @@ bool GetRandomRangeNumber_WithoutRepeat(const T &bound1, const T &bound2,
                 "GetRandomRangeNumber_WithoutRepeat need integral param!");
   random_number_vector->reserve(limit_number);
   for (int i = 0; i < limit_number; ++i) {
-    random_number_vector->emplace_back(Lee::GetRandomRange(bound1, bound2));
+    random_number_vector->emplace_back(lee::GetRandomRange(bound1, bound2));
   }
   std::sort(random_number_vector->begin(), random_number_vector->end());
   auto last =
@@ -251,7 +251,7 @@ inline std::string GetRandomPassWord(const int &length) {
       'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'};
   std::string password;
   for (int i = 0; i < length; ++i) {
-    auto index = Lee::GetRangeRandomNumberInt(62 - 1);
+    auto index = lee::GetRangeRandomNumberInt(62 - 1);
     password += letter[index];
   }
   return password;
@@ -260,6 +260,6 @@ inline std::string GetRandomPassWord() { return GetRandomPassWord(6); }
 
 }  // namespace random
 }  // namespace utility
-}  // namespace Lee
+}  // namespace lee
 
 #endif  // end of MYALGO_INCLUDE_TOOLS_UTILITY_DETAIL_RANDOM_UTILITY_H_

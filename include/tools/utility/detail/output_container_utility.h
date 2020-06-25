@@ -47,7 +47,7 @@
 #ifndef MYALGO_INCLUDE_TOOLS_UTILITY_DETAIL_OUTPUT_CONTAINER_UTILITY_H_
 #define MYALGO_INCLUDE_TOOLS_UTILITY_DETAIL_OUTPUT_CONTAINER_UTILITY_H_
 
-namespace Lee {
+namespace lee {
 inline namespace utility {
 inline namespace output_container {
 
@@ -156,7 +156,7 @@ std::ostream& operator<<(std::ostream& os, const std::pair<T, U>& pr) {
 
 }  // namespace output_container
 }  // namespace utility
-}  // namespace Lee
+}  // namespace lee
 
 #endif  ///< end of
         ///< MYALGO_INCLUDE_TOOLS_UTILITY_DETAIL_OUTPUT_CONTAINER_UTILITY_H_

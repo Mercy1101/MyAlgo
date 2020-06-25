@@ -7,18 +7,18 @@
 SCENARIO("binary_tree 二叉树的构造函数测试", "[data_struct][binary_tree]") {
   GIVEN("一个单独的元素来创建一个树") {
     WHEN("数值类型为int时") {
-      Lee::Binary_Tree<int> tree(1);
+      lee::Binary_Tree<int> tree(1);
       THEN("root不为空指针, root节点的data则为1, 左边和右边都是空指针") {
         REQUIRE(tree.GetRoot()->left == nullptr);
         REQUIRE(tree.GetRoot()->right == nullptr);
         REQUIRE(tree.GetRoot()->data == 1);
       }  /// THEN
     }    /// WHEN
-    REQUIRE(0 == Lee::Binary_Tree<int>::BinaryTreeNode::construct_count);
+    REQUIRE(0 == lee::Binary_Tree<int>::BinaryTreeNode::construct_count);
   }  /// GIVEN
   GIVEN("一个初值列表来创建一个树") {
     WHEN("只有一个元素的初值列表") {
-      Lee::Binary_Tree<int> tree{1};
+      lee::Binary_Tree<int> tree{1};
       THEN("root不为空指针, root节点的data则为1, 左边和右边都是空指针") {
         REQUIRE(tree.GetRoot()->left == nullptr);
         REQUIRE(tree.GetRoot()->right == nullptr);
@@ -26,10 +26,10 @@ SCENARIO("binary_tree 二叉树的构造函数测试", "[data_struct][binary_tre
       }  /// THEN
     }    /// WHEN
     WHEN("有多个元素的初值列表") {
-      Lee::Binary_Tree<int> tree{5, 2, 8, 7, 6, 10};
+      lee::Binary_Tree<int> tree{5, 2, 8, 7, 6, 10};
       THEN("root不为空指针， 一共有六个节点") {
         /// 验证有几个节点被创建
-        REQUIRE(Lee::Binary_Tree<int>::BinaryTreeNode::construct_count == 6);
+        REQUIRE(lee::Binary_Tree<int>::BinaryTreeNode::construct_count == 6);
         /// 验证root节点不为空
         auto node_ptr = tree.GetRoot();
         REQUIRE(node_ptr != nullptr);
@@ -59,34 +59,34 @@ SCENARIO("binary_tree 二叉树的构造函数测试", "[data_struct][binary_tre
         REQUIRE(node_ptr->right->left->right == nullptr);
       }  /// THEN
     }    /// WHEN
-    REQUIRE(Lee::Binary_Tree<int>::BinaryTreeNode::construct_count == 0);
+    REQUIRE(lee::Binary_Tree<int>::BinaryTreeNode::construct_count == 0);
     WHEN("零个元素的初值列表") {
-      Lee::Binary_Tree<int> tree{};
+      lee::Binary_Tree<int> tree{};
       THEN("会默认构造一个数值为0的根节点") {
-        REQUIRE(Lee::Binary_Tree<int>::BinaryTreeNode::construct_count == 1);
+        REQUIRE(lee::Binary_Tree<int>::BinaryTreeNode::construct_count == 1);
         REQUIRE(tree.GetRoot() != nullptr);
         REQUIRE(tree.GetRoot()->data == 0);
       }  /// THEN
     }    /// WHEN
-    REQUIRE(Lee::Binary_Tree<int>::BinaryTreeNode::construct_count == 0);
+    REQUIRE(lee::Binary_Tree<int>::BinaryTreeNode::construct_count == 0);
   }  /// GIVEN
 }  /// SCENARIO
 
 SCENARIO("binary_tree 二叉树的FindMin函数测试", "[data_struct][binary_tree]") {
   GIVEN("一个单独的元素的树") {
-    Lee::Binary_Tree<int> tree{5};
+    lee::Binary_Tree<int> tree{5};
     REQUIRE(tree.FindMin()->data == 5);
   }  ///< GIVEN
   GIVEN("一个有多个元素的树") {
-    Lee::Binary_Tree<int> tree{5, 2, 8, 7, 6, 10};
+    lee::Binary_Tree<int> tree{5, 2, 8, 7, 6, 10};
     REQUIRE(tree.FindMin()->data == 2);
   }  ///< GIVEN
-  REQUIRE(Lee::Binary_Tree<int>::BinaryTreeNode::construct_count == 0);
+  REQUIRE(lee::Binary_Tree<int>::BinaryTreeNode::construct_count == 0);
 }  ///< SCENARIO
 #if 0
 SCENARIO("binary_tree 二叉树的Delete函数测试", "[data_struct][binary_tree]") {
   GIVEN("一个单独的元素的树的删除") {
-    Lee::Binary_Tree<int> tree{5};
+    lee::Binary_Tree<int> tree{5};
     WHEN("删除一个不存的元素，则树节点不变") {
       tree.Delete(0);
       THEN("这棵树不会发生变化") {
@@ -99,14 +99,14 @@ SCENARIO("binary_tree 二叉树的Delete函数测试", "[data_struct][binary_tre
       tree.Delete(5);
       THEN("这棵树的根节点为空，所有节点都被释放") {
         REQUIRE(nullptr == tree.GetRoot());
-        REQUIRE(Lee::Binary_Tree<int>::BinaryTreeNode::construct_count == 0);
+        REQUIRE(lee::Binary_Tree<int>::BinaryTreeNode::construct_count == 0);
       }  /// THEN
     }    /// WHEN
   }  ///< GIVEN
   GIVEN("一个有多个元素的树的删除操作") {
-    Lee::Binary_Tree<int> tree{5, 2, 8, 7, 6, 10};
+    lee::Binary_Tree<int> tree{5, 2, 8, 7, 6, 10};
     REQUIRE(tree.FindMin()->data == 2);
   }  ///< GIVEN
-  REQUIRE(Lee::Binary_Tree<int>::BinaryTreeNode::construct_count == 0);
+  REQUIRE(lee::Binary_Tree<int>::BinaryTreeNode::construct_count == 0);
 }  ///< SCENARIO
 #endif
