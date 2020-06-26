@@ -1271,29 +1271,6 @@ inline ListNode *removeNthFromEnd(ListNode *head, int n) {
   return head;
 }
 
-ListNode *mergeTwoLists(ListNode *l1, ListNode *l2) {
-  ListNode *root = new ListNode(-1);
-  ListNode *temp = root;
-  while (l1 != nullptr && l2 != nullptr) {
-    if (l1->val > l2->val) {
-      root->next = l2;
-      l2 = l2->next;
-
-    } else {
-      root->next = l1;
-      l1 = l1->next;
-    }
-    root = root->next;
-  }
-  if (l1 == nullptr) {
-    root->next = l2;
-  } else {
-    root->next = l1;
-  }
-
-  return temp->next;
-}
-
 }  // namespace leetcode
 }  // namespace lee
 
