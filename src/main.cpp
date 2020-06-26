@@ -13,8 +13,6 @@
 int main(int argc, char** argv) {
   PrintVersion();
   CheckConfigFolder();
-  auto path = std::filesystem::path();
-  (void)path;
   Catch::Session().run(argc, argv);
 
   system("pause");

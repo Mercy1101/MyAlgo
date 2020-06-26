@@ -145,14 +145,16 @@ inline bool is_file_exist_s(const std::string& file_path_name) {
 /// @name     remove_file_or_folder
 /// @brief    删除一个文件或者递归删除一个目录
 ///
-/// @param    file_or_foler_name  [in] 文件名或文件目录名称
+/// @param    file_or_folder_name  [in] 文件名或文件目录名称
 ///
 /// @return   删除成功与否
 ///
 /// @author   Lijiancong, pipinstall@163.com
 /// @date     2020-06-25 10:57:20
 /// @warning  线程不安全
-inline bool remove_file_or_folder_s(const std::string& file_or_folder_name) { return 0 != std::filesystem::remove_all(file_or_folder_name); }
+inline bool remove_file_or_folder_s(const std::string& file_or_folder_name) {
+  return 0 != std::filesystem::remove_all(file_or_folder_name);
+}
 
 }  // namespace system
 }  // namespace utility

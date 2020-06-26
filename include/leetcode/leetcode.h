@@ -1294,25 +1294,6 @@ ListNode *mergeTwoLists(ListNode *l1, ListNode *l2) {
   return temp->next;
 }
 
-std::vector<std::vector<int>> levelOrder(TreeNode* root) {
-        if(!root) return {};
-        vector<vector<int>> res;
-        queue<TreeNode*> q;
-        q.push(root);
-        while(q.size()) {
-            int len = q.size();
-            vector<int> level;
-            for (int i = 0; i < len; i ++) {
-                TreeNode* t = q.front();
-                q.pop();
-                level.push_back(t->val);
-                if(t->left) q.push(t->left);
-                if(t->right) q.push(t->right);
-            }
-            res.push_back(level);
-        }
-        return res;
-    }
 }  // namespace leetcode
 }  // namespace lee
 

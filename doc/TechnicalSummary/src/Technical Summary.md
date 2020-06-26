@@ -4334,6 +4334,7 @@ struct Derived : public Base
 {
     Derived()   { std::cout << "Derived Construct!" << std::endl; }
     ~Derived() { std::cout << "Derived Deconstruct!" << std::endl; }
+    /// 或者 virtual ~Derived() override {}
 };
 
 int main()
