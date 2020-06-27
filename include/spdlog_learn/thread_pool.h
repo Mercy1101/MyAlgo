@@ -220,7 +220,7 @@ class circular_q {
   }
 
   // Return const reference to item by index.
-  // If index is out of range 0��size()-1, the behavior is undefined.
+  // If index is out of range 0~size()-1, the behavior is undefined.
   const T &at(size_t i) const {
     assert(i < size());
     return v_[(head_ + i) % max_items_];
@@ -263,7 +263,7 @@ class mpmc_blocking_queue {
   using item_type = T;
   explicit mpmc_blocking_queue(size_t max_items) : q_(max_items) {}
 
-  // try to enqueue and block if no room left
+  /// 尝试入列，如果空间不足则阻塞
   void enqueue(T &&item) {
     {
       std::unique_lock<std::mutex> lock(queue_mutex_);
@@ -273,7 +273,7 @@ class mpmc_blocking_queue {
     push_cv_.notify_one();
   }
 
-  // enqueue immediately. overrun oldest message in the queue if no room left.
+  /// 马上入列，如果没有空间则丢弃队列中老的消息
   void enqueue_nowait(T &&item) {
     {
       std::unique_lock<std::mutex> lock(queue_mutex_);
@@ -282,8 +282,8 @@ class mpmc_blocking_queue {
     push_cv_.notify_one();
   }
 
-  // try to dequeue item. if no item found. wait upto timeout and try again
-  // Return true, if succeeded dequeue item, false otherwise
+  /// 尝试出列。如果队列中没有消息，则等待到超时然后再次尝试
+  /// 假如出列成功则返回true, 否则返回false
   bool dequeue_for(T &popped_item, std::chrono::milliseconds wait_duration) {
     {
       std::unique_lock<std::mutex> lock(queue_mutex_);
@@ -305,9 +305,9 @@ class mpmc_blocking_queue {
 
  private:
   std::mutex queue_mutex_;
-  std::condition_variable push_cv_;
-  std::condition_variable pop_cv_;
-  circular_q<T> q_;
+  std::condition_variable push_cv_;  ///< 用于入列的条件变量
+  std::condition_variable pop_cv_;   ///< 用于出列的条件变量
+  circular_q<T> q_;                  ///< 用于保存信息的队列
 };
 
 // Extend log_msg with internal buffer to store its payload.
@@ -418,52 +418,6 @@ class backtracer {
       messages_.pop_front();
     }
   }
-};
-
-class pattern_formatter final : public formatter
-{
-public:
-    using custom_flags = std::unordered_map<char, std::unique_ptr<custom_flag_formatter>>;
-
-    explicit pattern_formatter(std::string pattern, pattern_time_type time_type = pattern_time_type::local,
-        std::string eol = spdlog::details::os::default_eol, custom_flags custom_user_flags = custom_flags());
-
-    // use default pattern is not given
-    explicit pattern_formatter(pattern_time_type time_type = pattern_time_type::local, std::string eol = spdlog::details::os::default_eol);
-
-    pattern_formatter(const pattern_formatter &other) = delete;
-    pattern_formatter &operator=(const pattern_formatter &other) = delete;
-
-    std::unique_ptr<formatter> clone() const override;
-    void format(const log_msg &msg, memory_buf_t &dest) override;
-
-    template<typename T, typename... Args>
-    pattern_formatter &add_flag(char flag, const Args &... args)
-    {
-        custom_handlers_[flag] = details::make_unique<T>(args...);
-        return *this;
-    }
-    void set_pattern(std::string pattern);
-
-private:
-    std::string pattern_;
-    std::string eol_;
-    pattern_time_type pattern_time_type_;
-    std::tm cached_tm_;
-    std::chrono::seconds last_log_secs_;
-    std::vector<std::unique_ptr<details::flag_formatter>> formatters_;
-    custom_flags custom_handlers_;
-
-    std::tm get_time_(const details::log_msg &msg);
-    template<typename Padder>
-    void handle_flag_(char flag, details::padding_info padding);
-
-    // Extract given pad spec (e.g. %8X)
-    // Advance the given it pass the end of the padding spec found (if any)
-    // Return padding.
-    static details::padding_info handle_padspec_(std::string::const_iterator &it, std::string::const_iterator end);
-
-    void compile_pattern_(const std::string &pattern);
 };
 
 class logger {
@@ -603,7 +557,8 @@ class logger {
   }
 
   void log(level_enum lvl, std::string_view msg) {
-    log(source_loc{}, lvl, msg);
+    std::string tmp(msg);
+    log(source_loc{}, lvl, tmp);
   }
 
   void log(source_loc loc, level_enum lvl, const std::string &msg) {
@@ -649,8 +604,7 @@ class logger {
   // return true if backtrace logging is enabled.
   inline bool should_backtrace() const { return tracer_.enabled(); }
 
-  inline void set_level(level_enum log_level)
-  {
+  inline void set_level(level_enum log_level) {
     level_.store(static_cast<int>(log_level));
   }
 
@@ -658,33 +612,28 @@ class logger {
     return static_cast<level_enum>(level_.load(std::memory_order_relaxed));
   }
 
-  inline const std::string& name() const { return name_;
-  }
+  inline const std::string &name() const { return name_; }
 
-// set formatting for the sinks in this logger.
-// each sink will get a separate instance of the formatter object.
-inline void set_formatter(std::unique_ptr<formatter> f)
-{
-    for (auto it = sinks_.begin(); it != sinks_.end(); ++it)
-    {
-        if (std::next(it) == sinks_.end())
-        {
-            // last element - we can be move it.
-            (*it)->set_formatter(std::move(f));
-            break; // to prevent clang-tidy warning
-        }
-        else
-        {
-            (*it)->set_formatter(f->clone());
-        }
+  // set formatting for the sinks in this logger.
+  // each sink will get a separate instance of the formatter object.
+  inline void set_formatter(std::unique_ptr<formatter> f) {
+    for (auto it = sinks_.begin(); it != sinks_.end(); ++it) {
+      if (std::next(it) == sinks_.end()) {
+        // last element - we can be move it.
+        (*it)->set_formatter(std::move(f));
+        break;  // to prevent clang-tidy warning
+      } else {
+        (*it)->set_formatter(f->clone());
+      }
     }
-}
-
-inline void set_pattern(std::string pattern,
-  pattern_time_type time_type = pattern_time_type::local) {
-    auto new_formatter = std::make_unique<pattern_formatter>(std::move(pattern), time_type);
-    set_formatter(std::move(new_formatter));
   }
+
+  /// inline void set_pattern(std::string pattern,
+  ///   pattern_time_type time_type = pattern_time_type::local) {
+  ///     auto new_formatter =
+  ///     std::make_unique<pattern_formatter>(std::move(pattern), time_type);
+  ///     set_formatter(std::move(new_formatter));
+  ///   }
 
   // backtrace support.
   // efficiently store all debug/trace messages in a circular buffer until
@@ -712,8 +661,8 @@ inline void set_pattern(std::string pattern,
  protected:
   std::string name_;
   std::vector<std::shared_ptr<sink>> sinks_;
-  std::atomic<int> level_{level_enum::info};
-  std::atomic<int> flush_level_{level_enum::off};
+  std::atomic<int> level_{static_cast<int>(level_enum::info)};
+  std::atomic<int> flush_level_{static_cast<int>(level_enum::off)};
   std::function<void(const std::string &err_msg)> custom_err_handler_{nullptr};
   backtracer tracer_;
 
@@ -750,7 +699,7 @@ inline void set_pattern(std::string pattern,
   void err_handler_(const std::string &msg);
 };
 
-void swap(logger &a, logger &b);
+inline void swap(logger &a, logger &b) { a.swap(b); }
 
 class async_logger final : public std::enable_shared_from_this<async_logger>,
                            public logger {
@@ -775,13 +724,58 @@ class async_logger final : public std::enable_shared_from_this<async_logger>,
       std::weak_ptr<thread_pool> tp,
       async_overflow_policy overflow_policy = async_overflow_policy::block);
 
-  std::shared_ptr<logger> clone(std::string new_name) override;
+  inline std::shared_ptr<spdlog::logger> spdlog::async_logger::clone(
+      std::string new_name) override {
+    auto cloned = std::make_shared<spdlog::async_logger>(*this);
+    cloned->name_ = std::move(new_name);
+    return cloned;
+  }
 
  protected:
-  void sink_it_(const log_msg &msg) override;
-  void flush_() override;
-  void backend_sink_it_(const log_msg &incoming_log_msg);
-  void backend_flush_();
+  // send the log message to the thread pool
+  inline void spdlog::async_logger::sink_it_(const log_msg &msg) {
+    if (auto pool_ptr = thread_pool_.lock()) {
+      pool_ptr->post_log(shared_from_this(), msg, overflow_policy_);
+    } else {
+      throw("async log: thread pool doesn't exist anymore");
+    }
+  }
+
+  // send flush request to the thread pool
+  inline void spdlog::async_logger::flush_() {
+    if (auto pool_ptr = thread_pool_.lock()) {
+      pool_ptr->post_flush(shared_from_this(), overflow_policy_);
+    } else {
+      throw("async flush: thread pool doesn't exist anymore");
+    }
+  }
+
+  /// 线程池做的真正的任务
+  inline void spdlog::async_logger::backend_sink_it_(const log_msg &msg) {
+    for (auto &sink : sinks_) {
+      /// 判断是否输出到命令行窗口
+      if (sink->should_log(msg.level)) {
+        try {
+          sink->log(msg);
+        } catch (...) {
+        }
+      }
+    }
+
+    /// 判断是否马上写文件
+    if (should_flush_(msg)) {
+      backend_flush_();
+    }
+  }
+
+  inline void spdlog::async_logger::backend_flush_() {
+    for (auto &sink : sinks_) {
+      try {
+        sink->flush();
+      } catch (...) {
+      }
+    }
+  }
 
  private:
   std::weak_ptr<thread_pool> thread_pool_;
@@ -816,9 +810,20 @@ struct async_msg : log_msg_buffer {
 
 class thread_pool {
  public:
-  using item_type = async_msg;
-  using q_type = mpmc_blocking_queue<item_type>;
+  using item_type = async_msg;  ///< 本线程池主要处理的是异步消息
+  using q_type = mpmc_blocking_queue<item_type>;  ///< 消息队列
 
+  /// @name     thread_pool
+  /// @brief    构造函数，创建了一定数量的线程，并规定执行哪个函数
+  ///
+  /// @param    q_max_item      [in] 用于初始化任务队列最大的数量
+  /// @param    thread_n        [in] 用于初始化最大线程数量
+  /// @param    on_thread_start [in] 每个线程执行的初始化函数(只执行一次)
+  ///
+  /// @return   NONE
+  ///
+  /// @date     2020-06-27 13:32:47
+  /// @warning  线程不安全
   inline thread_pool(size_t q_max_items, size_t threads_n,
                      std::function<void()> on_thread_start)
       : q_(q_max_items) {
@@ -835,13 +840,15 @@ class thread_pool {
     }
   }
 
+  /// 委托构造函数，用于输入默认入参 std::function<void()>
   inline thread_pool::thread_pool(size_t q_max_items, size_t threads_n)
       : thread_pool(q_max_items, threads_n, [] {}) {}
 
-  // message all threads to terminate gracefully join them
+  /// 告诉所有线程中止，并且执行join()
   ~thread_pool() {
     try {
       for (size_t i = 0; i < threads_.size(); i++) {
+        /// 对每一个线程池发送一个中止消息
         post_async_msg_(async_msg(async_msg_type::terminate),
                         async_overflow_policy::block);
       }
@@ -850,18 +857,22 @@ class thread_pool {
         t.join();
       }
     } catch (...) {
+      /// 析构函数中不能有异常，所以在这里做一个全捕获
     }
   }
 
+  /// 拷贝构造函数和移动构造符删除，标志本class不能拷贝不能移动
   thread_pool(const thread_pool &) = delete;
   thread_pool &operator=(thread_pool &&) = delete;
 
+  /// 用于发送任务消息，并判断是否需要打印到命令行或写入文件
   void post_log(async_logger_ptr &&worker_ptr, const log_msg &msg,
                 async_overflow_policy overflow_policy) {
     async_msg async_m(std::move(worker_ptr), async_msg_type::log, msg);
     post_async_msg_(std::move(async_m), overflow_policy);
   }
 
+  /// 用于发送任务消息，并判断是否需要马上写入文件
   void post_flush(async_logger_ptr &&worker_ptr,
                   async_overflow_policy overflow_policy) {
     post_async_msg_(async_msg(std::move(worker_ptr), async_msg_type::flush),
@@ -871,10 +882,19 @@ class thread_pool {
   size_t overrun_counter() { return q_.overrun_counter(); }
 
  private:
-  q_type q_;
+  q_type q_;                          ///< 任务消息队列
+  std::vector<std::thread> threads_;  ///< 线程池
 
-  std::vector<std::thread> threads_;
-
+  /// @name     post_async_msg_
+  /// @brief    用于从队列中插入消息, 相当于生产者
+  ///
+  /// @param    new_msg         [in] 用于传入异步日志消息(使用右值方便移动)
+  /// @param    overflow_policy [in] 消息数量溢出的策略
+  ///
+  /// @return   NONE
+  ///
+  /// @date     2020-06-27 13:42:18
+  /// @warning  线程不安全
   void post_async_msg_(async_msg &&new_msg,
                        async_overflow_policy overflow_policy) {
     if (overflow_policy == async_overflow_policy::block) {
@@ -884,33 +904,55 @@ class thread_pool {
     }
   }
 
+  /// @name     worker_loop_
+  /// @brief    用于每个线程执行的死循环，当process_next_msg_返回false时候
+  ///           线程自己退出
+  ///
+  /// @param    NONE
+  ///
+  /// @return   NONE
+  ///
+  /// @date     2020-06-27 13:51:13
+  /// @warning  线程不安全
   void worker_loop_() {
     while (process_next_msg_()) {
     }
   }
 
-  // process next message in the queue
-  // return true if this thread should still be active (while no terminate msg
-  // was received)
+  /// @name     process_next_msg_
+  /// @brief    处理队列中的下一个消息，相当于消费者
+  ///
+  /// @param    NONE
+  ///
+  /// @return   如果不是中止线程消息，则返回true, 反之返回false
+  ///
+  /// @date     2020-06-27 13:53:45
+  /// @warning  线程不安全
   bool process_next_msg_() {
     async_msg incoming_async_msg;
+    /// 从任务消息队列中取消息，如果没有任务则等待获取任务,
+    /// 如十秒后仍然没有获取到则直接返回
     bool dequeued =
         q_.dequeue_for(incoming_async_msg, std::chrono::seconds(10));
     if (!dequeued) {
       return true;
     }
 
+    /// 获取到消息后则进行处理
     switch (incoming_async_msg.msg_type) {
       case async_msg_type::log: {
+        /// 打印消息到命令行且判断是否要马上刷新文件
         incoming_async_msg.worker_ptr->backend_sink_it_(incoming_async_msg);
         return true;
       }
       case async_msg_type::flush: {
+        /// 刷新文件
         incoming_async_msg.worker_ptr->backend_flush_();
         return true;
       }
 
       case async_msg_type::terminate: {
+        /// 用于终止本线程池的信号
         return false;
       }
 
