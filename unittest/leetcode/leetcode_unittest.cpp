@@ -427,3 +427,49 @@ SCENARIO("strStr简单测试", "[leetcode][strStr]") {
 
   }  ///< GIVEN
 }  ///< SCENARIO
+
+    
+SCENARIO("lengthOfLongestSubstring 简单测试", "[leetcode][lengthOfLongestSubstring]") {
+  GIVEN("简单测试") {
+    WHEN("Input: abcabcbb") {
+      THEN("Output: 3") {
+        REQUIRE((3 == lee::leetcode::lengthOfLongestSubstring("abcabcbb")));
+      }  ///< THEN
+    }    ///< WHEN
+    WHEN("Input: bbbbbbb") {
+      THEN("Output: b") {
+        REQUIRE((1 == lee::leetcode::lengthOfLongestSubstring("bbbbbbb")));
+      }  ///< THEN
+    }    ///< WHEN
+    WHEN("Input: pwwkew") {
+      THEN("Output: 3") {
+        REQUIRE((3 == lee::leetcode::lengthOfLongestSubstring("pwwkew")));
+      }  ///< THEN
+    }    ///< WHEN
+    WHEN("Input: ") {
+      THEN("Output: 0") {
+        REQUIRE((0 == lee::leetcode::lengthOfLongestSubstring("")));
+      }  ///< THEN
+    }    ///< WHEN
+
+  }  ///< GIVEN
+}  ///< SCENARIO
+
+SCENARIO("checkInclusion 简单测试", "[leetcode][checkInclusion]") {
+  GIVEN("简单测试") {
+    WHEN("Input: s1 = ab s2 = eidbaooo") {
+      THEN("Output: true") {
+        REQUIRE(lee::leetcode::checkInclusion("ab", "eidbaooo"));
+      }  ///< THEN
+    }    ///< WHEN
+
+    WHEN("Input: s1 = ab s2 = eidboaooo") {
+      THEN("Output: false") {
+        REQUIRE(!lee::leetcode::checkInclusion("ab", "eidboaooo"));
+      }  ///< THEN
+    }    ///< WHEN
+  }  ///< GIVEN
+}  ///< SCENARIO
+
+    
+    

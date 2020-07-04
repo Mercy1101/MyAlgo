@@ -1271,6 +1271,72 @@ inline ListNode *removeNthFromEnd(ListNode *head, int n) {
   return head;
 }
 
+/// 给定一个字符串，请你找出其中不含有重复字符的 最长子串 的长度。
+inline int lengthOfLongestSubstring(std::string s) {
+#undef max
+  if (s.empty()) {
+    return 0;
+  }
+  auto left_it = s.begin();
+  auto right_it = s.begin();
+  int length = 0;
+  std::unordered_map<char, int> char_map;
+  while (right_it != s.end()) {
+    if (++char_map[*right_it] == 2) {
+      /// 左迭代器前进
+      while (left_it != s.end() && left_it != right_it) {
+        if (--char_map[*left_it] == 1) {
+          ++left_it;
+          break;
+        }
+        ++left_it;
+      }
+    }
+    ++right_it;
+    length =
+        std::max(static_cast<int>(std::distance(left_it, right_it)), length);
+  }
+  return length;
+}
+
+inline bool checkInclusion(std::string s1, std::string s2) {
+  if (s1.empty()) {
+    return true;
+  }
+  if (s2.empty()) {
+    return false;
+  }
+
+  std::unordered_map<char, int> char_map;
+  for (const auto &it : s1) {
+    ++char_map[it];
+  }
+
+  auto left_it = s2.begin();
+  auto right_it = s2.begin();
+  while (right_it != s2.end()) {
+    --char_map[*right_it];
+    auto temp = right_it;
+    ++right_it;
+    while (char_map[*temp] < 0 && left_it != right_it) {
+      ++char_map[*left_it];
+      ++left_it;
+    }
+
+    if (static_cast<size_t>(std::distance(left_it, right_it)) == s1.size()) {
+      return true;
+    }
+  }
+  return false;
+}
+
+
+/// 字符串相乘
+/// 给定两个以字符串形式表示的非负整数 num1 和 num2，返回 num1 和 num2 的乘积，它们的乘积也表示为字符串形式。
+    inline string multiply(string num1, string num2) {
+        if()
+    }
+
 }  // namespace leetcode
 }  // namespace lee
 
