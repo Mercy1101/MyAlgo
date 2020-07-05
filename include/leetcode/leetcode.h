@@ -24,7 +24,9 @@
 #include <iostream>
 #include <limits>
 #include <map>
+#include <math.h>
 #include <numeric>
+#include <queue>
 #include <set>
 #include <string>
 #include <unordered_map>
@@ -1330,12 +1332,167 @@ inline bool checkInclusion(std::string s1, std::string s2) {
   return false;
 }
 
-
 /// 字符串相乘
-/// 给定两个以字符串形式表示的非负整数 num1 和 num2，返回 num1 和 num2 的乘积，它们的乘积也表示为字符串形式。
-    inline string multiply(string num1, string num2) {
-        if()
+/// 给定两个以字符串形式表示的非负整数 num1 和 num2，返回 num1 和 num2
+/// 的乘积，它们的乘积也表示为字符串形式。
+inline std::string multiply(std::string num1, std::string num2) {
+  if ((num1.size() == 1 && num1.at(0) == '0') ||
+      (num2.size() == 1 && num2.at(0) == '0')) {
+    return "0";
+  }
+  if (num1.empty() || num2.empty()) {
+    return "";
+  }
+
+  std::vector<int> v1, v2, result;
+  result.resize(num1.size() + num2.size() + 1, 0);
+  for (auto it = num1.rbegin(); it != num1.rend(); ++it) {
+    std::string temp(1, *it);
+    v1.push_back(std::stoi(temp));
+  }
+  for (auto it = num2.rbegin(); it != num2.rend(); ++it) {
+    std::string temp(1, *it);
+    v2.push_back(std::stoi(temp));
+  }
+
+  size_t offset = 0;
+  for (auto &it1 : v1) {
+    size_t count = 0;
+    for (auto &it2 : v2) {
+      result.at(count + offset) += it1 * it2;
+      ++count;
     }
+    ++offset;
+  }
+  std::string result_string;
+  int plus_num = 0;
+  for (auto &it : result) {
+    plus_num += it;
+    result_string = std::to_string(plus_num % 10) + result_string;
+    plus_num /= 10;
+  }
+
+  while (plus_num != 0) {
+    result_string = std::to_string(plus_num % 10) + result_string;
+    plus_num /= 10;
+  }
+
+  while (result_string.size() > 1 && result_string.at(0) == '0') {
+    result_string.erase(result_string.begin());
+  }
+  return result_string;
+}
+
+struct TreeNode {
+  int val;
+  TreeNode* left;
+  TreeNode* right;
+  TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+};
+/// 序列化和反序列化二叉搜索树
+/// 序列化是将数据结构或对象转换为一系列位的过程，
+/// 以便它可以存储在文件或内存缓冲区中，或通过网络连接链路传输，
+/// 以便稍后在同一个或另一个计算机环境中重建。
+///
+/// 设计一个算法来序列化和反序列化二叉搜索树。
+/// 对序列化/反序列化算法的工作方式没有限制。
+/// 您只需确保二叉搜索树可以序列化为字符串，
+/// 并且可以将该字符串反序列化为最初的二叉搜索树。
+///
+/// 编码的字符串应尽可能紧凑。
+///
+/// 注意：不要使用类成员/全局/静态变量来存储状态。
+/// 你的序列化和反序列化算法应该是无状态的。
+// Encodes a tree to a single string.
+inline std::string serialize(TreeNode* root) {
+  if (root == nullptr) {
+    return "null";
+  }
+  std::vector<TreeNode*> queue;
+  std::vector<std::vector<std::string>> result;
+  queue.push_back(root);
+  int height = 0;
+  while (!queue.empty() &&
+    !std::all_of(queue.begin(), queue.end(),
+      [](const TreeNode* node) { return node == nullptr; })) {
+    std::vector<std::string> temp;
+    int count = static_cast<int>(std::pow(2, height));
+    while (count-- != 0) {
+      auto front = queue.front();
+      queue.erase(queue.begin());
+      if (front == nullptr) {
+        temp.push_back("null");
+        queue.push_back(nullptr);
+        queue.push_back(nullptr);
+      }
+      else {
+        temp.push_back(std::to_string(front->val));
+        queue.push_back(front->left);
+        queue.push_back(front->right);
+      }
+    }
+    result.push_back(temp);
+    ++height;
+  }
+
+  std::string str = "[";
+  /// 组装字符串
+  for (auto& it : result) {
+    for (auto& it1 : it) {
+      str += it1 + ",";
+    }
+  }
+  if (str.back() == ',') {
+    str.erase(std::prev(str.end()));
+    str += "]";
+  }
+  return str;
+}
+
+inline void split(const std::string& s, std::vector<std::string>& tokens,
+  const std::string& delimiters = " ") {
+  std::string::size_type lastPos = s.find_first_not_of(delimiters, 0);
+  std::string::size_type pos = s.find_first_of(delimiters, lastPos);
+  while (std::string::npos != pos || std::string::npos != lastPos) {
+    tokens.push_back(s.substr(lastPos, pos - lastPos));
+    lastPos = s.find_first_not_of(delimiters, pos);
+    pos = s.find_first_of(delimiters, lastPos);
+  }
+}
+// Decodes your encoded data to tree.
+inline TreeNode* deserialize(std::string data) {
+  if (data.front() != '[' || data.back() != ']') {
+    return nullptr;
+  }
+  data.erase(data.begin());
+  data.erase(std::prev(data.end()));
+  std::vector<std::string> vec_str;
+  split(data, vec_str, ",");
+  if (vec_str.empty() || vec_str.front() == "null") {
+    return nullptr;
+  }
+
+  std::vector<TreeNode*> result;
+  for (const auto& it : vec_str) {
+    if (it == "null") {
+      result.push_back(nullptr);
+    }
+    else {
+      result.push_back(new TreeNode(std::stoi(it)));
+    }
+  }
+
+  for (size_t i = 0; i < result.size(); ++i) {
+    if(result.at(i) != nullptr){
+      if (result.size() > i * 2 + 2) {
+      result.at(i)->left = result.at(i*2+1);
+      result.at(i)->right = result.at(i*2+2);
+      }
+    } 
+  }
+
+  return result.at(0); 
+}
 
 }  // namespace leetcode
 }  // namespace lee
