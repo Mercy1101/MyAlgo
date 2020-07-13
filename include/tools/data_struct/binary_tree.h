@@ -214,108 +214,26 @@ class Binary_Tree {
   Tree root_;
 };
 
-template <typename T>
-class tree {
- private:
-  struct tree_node {
-    tree_node *left;
-    tree_node *right;
-    T val;
-    tree_node(const T &element) : left(nullptr), right(nullptr), val(element) {}
-  };
-  tree_node *root_;
+#include <future>
+#include <iostream>
+#include <mutex>
+#include <thread>
+#include <type_traits>
 
- public:
-  tree(const T &element) {
-    root_ = new tree_node(element);
-    root_->left = nullptr;
-    root_->right = nullptr;
-  }
+class thread_pool{
 
-  ~tree() {
-    if (root_ != nullptr) {
-      delete_tree(root_->left);
-    }
-  }
-
-  tree(const tree &other) = delete;
-  tree(const tree &&other) = delete;
-  tree operator=(const tree &x) = delete;
-  tree operator=(tree &&x) = delete;
-
-  delete_tree(tree_node *node) {
-    if (node == nullptr) {
-      return;
-    }
-    delete_tree(node->left);
-    delete_tree(node->right);
-    delete node;
-  }
-
-  void insert(const T &element) { insert_(element, root_); }
-
-  void remove(const T &element) { remove_(element, root_); }
-  tree_node *find_min(const T &element) { return find_min_(element, root_); }
-
- private:
-  void insert_(const T &element, tree_node *tree) {
-    if (tree == nullptr) {
-      tree = new tree_node(element);
-    } else {
-      if (element > tree->val) {
-        insert_(element, tree->right);
-      } else if (element < tree->val) {
-        insert_(element, tree->left);
-      } else {
-        /// Do Nothing
-      }
-    }
-  }
-
-  void remove_(const T &element, tree_node *node) {
-    if (node == nullptr) {
-      return;  /// if not find do nothing
-    } else {
-      if (element > node->val) {
-        remove_(element, node->right);
-      } else if (element < node->val) {
-        remove_(element, node->left);
-      } else {
-        /// finded it
-        if (node->left != nullptr && node->right != nullptr) {
-          t->val = find_min_(node->right)->val;
-          remove_(t->val, t->right);
-        } else {
-          auto temp = node;
-          node = node->left == nullptr ? node->right : node->left;
-          delete temp;
-        }
-      }
-    }
-  }
-
-  tree_node *find_min_(tree_node *node) {
-    if (node == nullptr) {
-      return nullptr;
-    }
-    if (node->left == nullptr) {
-      return node;
-    } else {
-      return find_min_(node);
-    }
-  }
-
-  bool contain_(const T &element, tree_node *node) {
-    if (node == nullptr) {
-      return false;
-    } else if (element > node->val) {
-      contain_(element, node->right);
-    } else if (element < node->val) {
-      contain_(element, node->left);
-    } else {
-      return true;
-    }
-  }
+public:
+thread_pool(){}
+~thread_pool(){}
+thread_pool(const thread_pool& other) = delete;
+thead_pool(thread_pool&& other) = delete;
+thread_pool operator=(const thread_pool& other) = delete;
+thread_pool operator=(thread_pool&& other) = delete;
+private:
+std::vector<std::thread> worker_;
+std::queue<std::function<void()>> task_;
+std::mutex task_mutex_;
+bool stop_;
 };
 
 }  // namespace binary_tree
