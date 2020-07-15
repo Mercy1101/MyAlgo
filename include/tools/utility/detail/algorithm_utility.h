@@ -235,6 +235,25 @@ void quicksort(ForwardIt first, ForwardIt last) {
   quicksort(middle2, last);
 }
 
+        template <typename it>
+        typename std::iterator_traits<it>::difference_type
+            distance(it from , it to) {
+            if constexpr (typename std::iterator_traits<it>::iterator_category() == std::random_access_iterator_tag) {
+                return to - from;
+            }
+            else if constexpr(typename std::iterator_traits<it>::iterator_category() == std::input_iterator_tag) {
+                typename std::iterator_traits<it>::difference_type res = 0;
+                for (; from != to; ++from) {
+                    ++res;
+                }
+                return res;
+            }
+            else 
+            {
+                return -1;
+            }
+        }
+
 }  // namespace algorithm
 }  // namespace utility
 }  // namespace lee
