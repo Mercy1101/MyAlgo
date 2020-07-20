@@ -531,6 +531,7 @@ std::string to_hex(const size_t dec) {
   h << std::hex << (dec);
   std::string result("0x");
   result += h.str();
+  return result;
 }
 
 /// @name     pointer_to_hex
@@ -545,8 +546,9 @@ std::string to_hex(const size_t dec) {
 /// @warning  线程不安全
 template <typename T>
 std::string pointer_to_hex(const T pointer) {
-  static_assert(std::is_pointer<T>::value, "to_hex param is not a pointer!");
-  return to_hex(static_cast<size_t>(pointer));
+  static_assert(std::is_pointer<T>::value,
+                " pointer_to_hex param is not a pointer!");
+  return to_hex(reinterpret_cast<size_t>(pointer));
 }
 
 }  // namespace detail
