@@ -516,6 +516,39 @@ inline void quick_exit(const int &code, const std::string &exit_info) {
   exit(code);
 }
 
+/// @name     to_hex
+/// @brief    创建16进制字符串
+///
+/// @param    dec [in]
+///
+/// @return   形如"0x123"的16进制字符串
+///
+/// @author   lijiancong, pipinstall@163.com
+/// @date     2020-07-20 10:11:58
+/// @warning  线程不安全
+std::string to_hex(const size_t dec) {
+  std::ostringstream h;
+  h << std::hex << (dec);
+  std::string result("0x");
+  result += h.str();
+}
+
+/// @name     pointer_to_hex
+/// @brief    指针转换为16进制字符串
+///
+/// @param    pointer [in]  必须为指针类型
+///
+/// @return   形如"0x123"的16进制字符串
+///
+/// @author   lijiancong, pipinstall@163.com
+/// @date     2020-07-20 10:22:00
+/// @warning  线程不安全
+template <typename T>
+std::string pointer_to_hex(const T pointer) {
+  static_assert(std::is_pointer<T>::value, "to_hex param is not a pointer!");
+  return to_hex(static_cast<size_t>(pointer));
+}
+
 }  // namespace detail
 }  // namespace utility
 }  // namespace lee
