@@ -235,24 +235,61 @@ void quicksort(ForwardIt first, ForwardIt last) {
   quicksort(middle2, last);
 }
 
-        template <typename it>
-        typename std::iterator_traits<it>::difference_type
-            distance(it from , it to) {
-            if constexpr (typename std::iterator_traits<it>::iterator_category() == std::random_access_iterator_tag) {
-                return to - from;
-            }
-            else if constexpr(typename std::iterator_traits<it>::iterator_category() == std::input_iterator_tag) {
-                typename std::iterator_traits<it>::difference_type res = 0;
-                for (; from != to; ++from) {
-                    ++res;
-                }
-                return res;
-            }
-            else 
-            {
-                return -1;
-            }
-        }
+template <typename it>
+typename std::iterator_traits<it>::difference_type distance(it from, it to) {
+  if constexpr (typename std::iterator_traits<it>::iterator_category() ==
+                std::random_access_iterator_tag) {
+    return to - from;
+  } else if constexpr (typename std::iterator_traits<it>::iterator_category() ==
+                       std::input_iterator_tag) {
+    typename std::iterator_traits<it>::difference_type res = 0;
+    for (; from != to; ++from) {
+      ++res;
+    }
+    return res;
+  } else {
+    return -1;
+  }
+}
+
+template <class _Ty>
+class enable_shared_from_this {  // provide member functions that create
+                                 // shared_ptr to this
+ public:
+  [[nodiscard]] std::shared_ptr<_Ty> shared_from_this() {
+    return std::shared_ptr<_Ty>(_Wptr);
+  }
+
+  [[nodiscard]] std::shared_ptr<const _Ty> shared_from_this() const {
+    return std::shared_ptr<const _Ty>(_Wptr);
+  }
+
+  [[nodiscard]] std::weak_ptr<_Ty> weak_from_this() noexcept { return _Wptr; }
+
+  [[nodiscard]] std::weak_ptr<const _Ty> weak_from_this() const noexcept {
+    return _Wptr;
+  }
+
+ protected:
+  constexpr enable_shared_from_this() noexcept : _Wptr() {}
+
+  enable_shared_from_this(const enable_shared_from_this&) noexcept : _Wptr() {
+    // construct (must value-initialize _Wptr)
+  }
+
+  enable_shared_from_this& operator=(
+      const enable_shared_from_this&) noexcept {  // assign (must not change
+                                                  // _Wptr)
+    return *this;
+  }
+
+  ~enable_shared_from_this() = default;
+
+ private:
+  template <class _Yty>
+  friend class shared_ptr;  ///< 为什么这里要有个友元
+  mutable std::weak_ptr<_Ty> _Wptr;
+};
 
 }  // namespace algorithm
 }  // namespace utility
