@@ -3822,6 +3822,8 @@ void worker_thread() {
 
 ![ContainerTypes](.\picture\ContainerTypes.png)
 
+
+
 ### 严格弱序（strict weak ordering）
 
 关联式容器（set、multiset、map和multimap）的排序准则的定义，和std::sort的排序准则定义必须遵守严格弱序，详细描述见官方解释([strict weak ordering.pdf](./pdf/strict weak ordering.pdf))。

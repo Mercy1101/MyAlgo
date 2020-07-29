@@ -322,8 +322,7 @@ class formatter {
   virtual void format(const details::log_msg &msg, memory_buf_t &dest) = 0;
   virtual std::unique_ptr<formatter> clone() const = 0;
 };
-class sink {
- public:
+class sink { public:
   virtual ~sink() = default;
   virtual void log(const log_msg &msg) = 0;
   virtual void flush() = 0;
