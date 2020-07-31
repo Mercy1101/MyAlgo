@@ -291,6 +291,70 @@ class enable_shared_from_this {  // provide member functions that create
   mutable std::weak_ptr<_Ty> _Wptr;
 };
 
+/// input iterators
+template <class _InIt, class _Diff>
+inline void _Advance1(_InIt& _Where, _Diff _Off, std::input_iterator_tag) {
+  if (_Off < 0) {
+    assert(false && "negative offset in advance");
+  }
+
+  for (; 0 < _Off; --_Off) ++_Where;
+}
+
+/// bidirectional iterators
+template <class _BidIt, class _Diff>
+inline void _Advance1(_BidIt& _Where, _Diff _Off,
+                      std::bidirectional_iterator_tag) {
+  for (; 0 < _Off; --_Off) ++_Where;
+  for (; _Off < 0; ++_Off) --_Where;
+}
+
+/// random-access iterators
+template <class _RanIt, class _Diff>
+inline void _Advance1(_RanIt& _Where, _Diff _Off,
+                      std::random_access_iterator_tag) {
+  _Where += _Off;
+}
+
+// we remove_const_t before _Iter_cat_t for better diagnostics if the user
+// passes an iterator that is const
+template <class _InIt, class _Diff>
+inline void advance(_InIt& _Where, _Diff _Off) {
+  _Advance1(_Where, _Off,
+            std::iterator_traits<_Iter>::iterator_category<
+                std::remove_const_t<_InIt>>());
+}
+
+// TEMPLATE FUNCTION next
+template <class _InIt>
+inline _InIt next(
+    _InIt _First,
+    std::iterator_traits<_InIt>::iterator_category<_InIt> _Off = 1) {
+  static_assert(
+      std::is_base_of<
+          std::input_iterator_tag,
+          typename std::iterator_traits<_InIt>::iterator_category>::value,
+      "next requires input iterator");
+
+  lee::advance(_First, _Off);
+  return (_First);
+}
+
+// TEMPLATE FUNCTION prev
+template <class _BidIt>
+inline _BidIt prev(
+    _BidIt _First,
+    std::iterator_traits<_BidIt>::iterator_category<_BidIt> _Off = 1) {
+  static_assert(
+      std::is_base_of<
+          std::bidirectional_iterator_tag,
+          typename std::iterator_traits<_BidIt>::iterator_category>::value,
+      "prev requires bidirectional iterator");
+
+  lee::advance(_First, -_Off);
+  return (_First);
+}
+
 }  // namespace algorithm
 }  // namespace utility
 }  // namespace lee
