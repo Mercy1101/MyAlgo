@@ -239,16 +239,18 @@ template <typename it>
 typename std::iterator_traits<it>::difference_type distance(it from, it to) {
   if constexpr (typename std::iterator_traits<it>::iterator_category() ==
                 std::random_access_iterator_tag) {
+    /// 随机访问迭代器
     return to - from;
   } else if constexpr (typename std::iterator_traits<it>::iterator_category() ==
                        std::input_iterator_tag) {
+    /// input 迭代器
     typename std::iterator_traits<it>::difference_type res = 0;
     for (; from != to; ++from) {
       ++res;
     }
     return res;
   } else {
-    return -1;
+    static_assert("unknow iterator type.");
   }
 }
 
@@ -291,38 +293,41 @@ class enable_shared_from_this {  // provide member functions that create
   mutable std::weak_ptr<_Ty> _Wptr;
 };
 
-/// input iterators
+/// 输入迭代器的情况
 template <class _InIt, class _Diff>
-inline void _Advance1(_InIt& _Where, _Diff _Off, std::input_iterator_tag) {
+inline void advance_impl(_InIt& _Where, _Diff _Off, std::input_iterator_tag) {
+  /// 检查该偏移量不能为负值
   if (_Off < 0) {
     assert(false && "negative offset in advance");
   }
-
+  /// 使用自增运算符来计算
   for (; 0 < _Off; --_Off) ++_Where;
 }
 
-/// bidirectional iterators
+/// 双向迭代器
 template <class _BidIt, class _Diff>
-inline void _Advance1(_BidIt& _Where, _Diff _Off,
-                      std::bidirectional_iterator_tag) {
+inline void advance_impl(_BidIt& _Where, _Diff _Off,
+                         std::bidirectional_iterator_tag) {
+  /// 使用自增运算符来计算
   for (; 0 < _Off; --_Off) ++_Where;
+  /// 如果偏移量为负值则使用自减运算符
   for (; _Off < 0; ++_Off) --_Where;
 }
 
-/// random-access iterators
+/// 随机访问迭代器
 template <class _RanIt, class _Diff>
-inline void _Advance1(_RanIt& _Where, _Diff _Off,
-                      std::random_access_iterator_tag) {
+inline void advance_impl(_RanIt& _Where, _Diff _Off,
+                         std::random_access_iterator_tag) {
+  /// 使用operator += ，常量复杂度
   _Where += _Off;
 }
 
-// we remove_const_t before _Iter_cat_t for better diagnostics if the user
-// passes an iterator that is const
 template <class _InIt, class _Diff>
 inline void advance(_InIt& _Where, _Diff _Off) {
-  _Advance1(_Where, _Off,
-            std::iterator_traits<_Iter>::iterator_category<
-                std::remove_const_t<_InIt>>());
+  advance_impl(_Where, _Off,
+               /// 在萃取迭代器的特性时去掉其const的属性来提高性能
+               std::iterator_traits<_Iter>::iterator_category<
+                   std::remove_const_t<_InIt>>());
 }
 
 // TEMPLATE FUNCTION next
