@@ -22,7 +22,6 @@
 
 #include "utility/detail/time_utility.h"  // for GetCurrentMilliSecondStamp()
 
-
 namespace lee {
 inline namespace utility {
 inline namespace random {
@@ -257,6 +256,53 @@ inline std::string GetRandomPassWord(const int &length) {
   return password;
 }
 inline std::string GetRandomPassWord() { return GetRandomPassWord(6); }
+
+/// @name     kunth_shuffle
+/// @brief    洗牌算法
+///
+/// @param    vec [in/out]
+///
+/// @return   NONE
+///
+/// @author   Lijiancong, pipinstall@163.com
+/// @date     2020-08-02 15:22:28
+/// @warning  线程不安全
+template <typename T>
+void kunth_shuffle(std::vector<T> &vec) {
+  static std::random_device r;
+  static std::default_random_engine e(r());
+  for (size_t i = 0; i < vec.size(); ++i) {
+    std::uniform_int_distribution<T> u(i, vec.size() - 1);
+    std::swap(vec.at(u(e)), vec.at(i));
+  }
+}
+
+/// @name     shuffle
+/// @brief    std::shuffle 的实现
+///
+/// @param    first [in]
+/// @param    end   [in]
+/// @param    g     [in]  随机数引擎
+///
+/// @return   NONE
+///
+/// @author   Lijiancong, pipinstall@163.com
+/// @date     2020-08-02 15:23:39
+/// @warning  线程不安全
+/// @note     URBG: UniformRandomBitGenerator
+template <class RandomIt, class URBG>
+void shuffle(RandomIt first, RandomIt last, URBG &&g) {
+  typedef typename std::iterator_traits<RandomIt>::difference_type diff_t;
+  typedef std::uniform_int_distribution<diff_t> distr_t;
+  typedef typename distr_t::param_type param_t;
+
+  distr_t D;
+  diff_t n = last - first;
+  for (diff_t i = n - 1; i > 0; --i) {
+    using std::swap;
+    swap(first[i], first[D(g, param_t(0, i))]);
+  }
+}
 
 }  // namespace random
 }  // namespace utility
