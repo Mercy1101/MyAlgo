@@ -170,7 +170,7 @@ SCENARIO("top_k_frequent 简单测试", "[leetcode][top_k_frequent]") {
         std::vector<int> input{1, 1, 1, 2, 2, 3};
         std::vector<int> true_result{1};
         std::vector<int> result = lee::leetcode::top_k_frequent(input, 1);
-        REQUIRE(lee::compare_vector(result, true_result));
+        REQUIRE((result == true_result));
       }  ///< THEN
     }    ///< WHEN
 
@@ -179,7 +179,7 @@ SCENARIO("top_k_frequent 简单测试", "[leetcode][top_k_frequent]") {
         std::vector<int> input{1};
         std::vector<int> true_result{1};
         std::vector<int> result = lee::leetcode::top_k_frequent(input, 1);
-        REQUIRE(lee::compare_vector(result, true_result));
+        REQUIRE((result == true_result));
       }  ///< THEN
     }    ///< WHEN
   }      ///< GIVEN
@@ -231,7 +231,7 @@ SCENARIO("generate_pascal_trangel 简单测试",
         true_result.push_back({1, 2, 1});
         true_result.push_back({1, 3, 3, 1});
         true_result.push_back({1, 4, 6, 4, 1});
-        REQUIRE(lee::compare_vector(result, true_result));
+        REQUIRE((result == true_result));
       }  ///< THEN
     }    ///< WHEN
   }      ///< GIVEN

@@ -240,6 +240,35 @@ inline lee::Second GetTodaySpecificTimeStamp(const int iHour, const int iMin,
   return static_cast<int>(mktime(&stTimer));
 }
 
+/// @name     get_specific_timestamp
+/// @brief    获取特定日期的时间戳
+///
+/// @param    year  [in]
+/// @param    mouth [in]
+/// @param    day   [in]
+/// @param    hour  [in]
+/// @param    min   [in]
+/// @param    sec   [in]
+///
+/// @return   特定日期时间戳
+///
+/// @author   Lijiancong, pipinstall@163.com
+/// @date     2020-08-02 15:47:05
+/// @warning  线程不安全
+inline time_t get_specific_timestamp(const int year, const int mouth,
+                                     const int day, const int hour,
+                                     const int min, const int sec) {
+  tm time = {0};
+  time.tm_year = year - 1900;
+  time.tm_mon = mouth - 1;
+  time.tm_mday = day;
+  time.tm_hour = hour;
+  time.tm_min = min;
+  time.tm_sec = sec;
+
+  return mktime(&time);
+}
+
 /// @name     get_weekday
 /// @brief    获取某特定日期是周几
 ///

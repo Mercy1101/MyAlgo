@@ -214,28 +214,6 @@ class Binary_Tree {
   Tree root_;
 };
 
-#include <future>
-#include <iostream>
-#include <mutex>
-#include <thread>
-#include <type_traits>
-
-class thread_pool{
-
-public:
-thread_pool(){}
-~thread_pool(){}
-thread_pool(const thread_pool& other) = delete;
-thead_pool(thread_pool&& other) = delete;
-thread_pool operator=(const thread_pool& other) = delete;
-thread_pool operator=(thread_pool&& other) = delete;
-private:
-std::vector<std::thread> worker_;
-std::queue<std::function<void()>> task_;
-std::mutex task_mutex_;
-bool stop_;
-};
-
 }  // namespace binary_tree
 }  // namespace data_struct
 }  // namespace lee

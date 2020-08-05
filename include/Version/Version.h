@@ -1,24 +1,9 @@
-/** 
+﻿/** 
  * Copyright (c) 2019 Lijiancong. All rights reserved.
  * 
  * Use of this source code is governed by a MIT license
  * that can be found in the License file.
  */
-
-///////// ///////// ///////// ///////// ///////// ///////// ///////// ///////// ///////// ///////// ///////// ///////// 
-/**
-* @file                 Version.h
-* @brief                ����ļ���Ҫд�˹��������汾�Ĵ�ӡ����
-
-* @details              �汾�ŵĺ궨����.cpp�ļ��У���main�����еĵ�һ�е���PrintVersion()������
-                        �����������д�ӡ�汾��Ϣ�ͱ���ʱ�䡣
-
-* @author               Lijiancong, pipinstall@163.com
-* @date                 2019-11-14 16:49:19
-
-* @note
-*/
-///////// ///////// ///////// ///////// ///////// ///////// ///////// ///////// ///////// ///////// ///////// ///////// 
 
 #ifndef _PUBLIC_VERSION_H__
 #define _PUBLIC_VERSION_H__
@@ -28,9 +13,7 @@
 #include <log/log.h>
 #include <string>
 
-/** ��ǰ�����汾 */
 const std::string VERSION("MyAlgo");
-/** ��ǰ���������ǩ�� */
 const std::string LABEL = std::to_string(CURRENT_TAGS_NUMBER);
 
 /**

@@ -268,7 +268,7 @@ inline std::string GetRandomPassWord() { return GetRandomPassWord(6); }
 /// @date     2020-08-02 15:22:28
 /// @warning  线程不安全
 template <typename T>
-void kunth_shuffle(std::vector<T> &vec) {
+inline void kunth_shuffle(std::vector<T> &vec) {
   static std::random_device r;
   static std::default_random_engine e(r());
   for (size_t i = 0; i < vec.size(); ++i) {
@@ -291,7 +291,7 @@ void kunth_shuffle(std::vector<T> &vec) {
 /// @warning  线程不安全
 /// @note     URBG: UniformRandomBitGenerator
 template <class RandomIt, class URBG>
-void shuffle(RandomIt first, RandomIt last, URBG &&g) {
+inline void shuffle(RandomIt first, RandomIt last, URBG &&g) {
   typedef typename std::iterator_traits<RandomIt>::difference_type diff_t;
   typedef std::uniform_int_distribution<diff_t> distr_t;
   typedef typename distr_t::param_type param_t;
