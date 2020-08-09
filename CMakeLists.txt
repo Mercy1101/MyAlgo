@@ -22,19 +22,6 @@ set(SOURCES
     src/main.cpp
 )
 
-# 初始化文件
-set(INIT_FILE_SOURCES src/init/init.cpp)
-
-# spdlog的一个源文件
-set(SPD_LOG_SOURCES
-    include/tools/log/spdlog.cpp
-    include/tools/log/stdout_sinks.cpp
-    include/tools/log/spdlog.cpp
-    include/tools/log/fmt.cpp
-    include/tools/log/file_sinks.cpp
-    include/tools/log/color_sinks.cpp
-    include/tools/log/async.cpp
-)
 
 # leetcode源文件
 set(LEET_CODE_FILE_SOURCES src/leetcode/leetcode.cpp)
@@ -46,9 +33,6 @@ set(TOOLS_FILE_SOURCES src/tools/data_struct/print_data_struct.cpp)
 set(UNITTEST_SOURCE
   # 自己实现的 Singleton 的单元测试文件
   unittest/tools/designpattern/Singleton_unittest.cpp
-
-  # 自己封装的 log 模块的单元测试文件
-  unittest/tools/log/log_unittest.cpp
 
   # 自己写的工具集utility 的单元测试文件
   unittest/tools/utility/utility_unittest.cpp
@@ -71,9 +55,6 @@ set(UNITTEST_SOURCE
   # utility/file_line_reader 的测试单元文件
   # unittest/tools/utility/file_line_reader_utility_unittest.cpp
 
-  # profiler 模块的测试文件
-  unittest/tools/profiler/profiler_unittest.cpp
-
   # 并行工具的单元测试文件
   unittest/tools/utility/concurrency_utility_unittest.cpp
 
@@ -83,7 +64,6 @@ set(UNITTEST_SOURCE
 
 # 把源文件添加进工程中
 add_executable(${EXECUTABLE_EXE_NAME} ${SOURCES}
-                                      ${INIT_FILE_SOURCES}
                                       ${UNITTEST_SOURCE}
                                       ${LEET_CODE_FILE_SOURCES}
                                       ${TOOLS_FILE_SOURCES}
@@ -105,17 +85,7 @@ target_include_directories(${EXECUTABLE_EXE_NAME}
 
         # 添加spdlog模块的包含路径
         ${PROJECT_SOURCE_DIR}/include/tools/log
-
-        # boost库的包含路径
-        #$ENV{BOOST_ROOT}
 )
-
-# 东进驱动函数的lib文件
-#set(DONGJIN_API_LIB 
-#  NewSig.lib
-#  Tc08a32.lib)
-
-#target_link_libraries(${EXECUTABLE_EXE_NAME} ${DONGJIN_API_LIB})
 
 # 设置VS警告等级为Warning4
 if(MSVC)
@@ -158,6 +128,7 @@ ADD_DEFINITIONS(-DDBG_MACRO_NO_WARNING)
 # 设置GCC最高警告级别
 if ( CMAKE_COMPILER_IS_GNUCC )
     set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -Wall")
+    set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -std=c++2a")
 endif()
 # 设置MSVC最高警告级别
 if ( MSVC )
@@ -166,9 +137,29 @@ if ( MSVC )
     set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} /std:c++latest") # 设置使用最新C++标准
 endif()
 
+#设置C++标准
+set(CMAKE_CXX_STANDARD 20)
+# 给开源库留的路径
+# set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
+#找寻boost库
+# set(Boost_USE_STATIC_LIBS ON) 
+# set(Boost_USE_MULTITHREADED ON)  
+# set(Boost_USE_STATIC_RUNTIME OFF) 
+# find_package(Boost REQUIRED) 
+# 
+# if(Boost_FOUND)
+#     include_directories(${Boost_INCLUDE_DIRS}) 
+#     #add_executable(${EXECUTABLE_EXE_NAME} file1.cxx file2.cxx) 
+#     target_link_libraries(${EXECUTABLE_EXE_NAME} ${Boost_LIBRARIES})
+# endif()
 
+# 找寻benchmark
+find_package(benchmark REQUIRED)
+add_subdirectory(benchmark)
+target_link_libraries(${EXECUTABLE_EXE_NAME} benchmark::benchmark)
 #enable_testing()
 # add_test(NAME MyAlgo COMMAND MyAlgo WORKING_DIRECTORY ${UNIT_TEST_BIN_OUTPUT_DIR})
 #add_test(NAME MyAlgo COMMAND -C Release WORKING_DIRECTORY ${UNIT_TEST_BIN_OUTPUT_DIR})
+
 
 
