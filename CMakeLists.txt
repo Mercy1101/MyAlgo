@@ -13,10 +13,7 @@ set(EXECUTABLE_OUTPUT_PATH ../bin)
 project (${EXECUTABLE_EXE_NAME})
 
 # 添加静态库的连接路径
-#link_directories(
-                 # Boost库的路径
-                 # $ENV{BOOST_LIB_DIR})
-
+link_directories(/usr/local/lib/)
 # main函数
 set(SOURCES
     src/main.cpp
@@ -52,14 +49,11 @@ set(UNITTEST_SOURCE
   # utility/binary_tree 的测试单元文件
   unittest/tools/data_struct/binary_tree_unittest.cpp
 
-  # utility/file_line_reader 的测试单元文件
-  # unittest/tools/utility/file_line_reader_utility_unittest.cpp
-
   # 并行工具的单元测试文件
   unittest/tools/utility/concurrency_utility_unittest.cpp
 
   # 四则运算的测试单元文件
-  unittest/tools/data_struct/calculate_unittest.cpp
+  # unittest/tools/data_struct/calculate_unittest.cpp
 )
 
 # 把源文件添加进工程中
@@ -115,9 +109,6 @@ foreach(CompilerFlag ${CompilerFlags})
 endforeach()
 endif(MSVC)
 
-# 定义这个宏,是为了正常编译spdlog
-#target_compile_definitions(${EXECUTABLE_EXE_NAME} PRIVATE SPDLOG_COMPILED_LIB)
-#target_compile_definitions(${EXECUTABLE_EXE_NAME} PRIVATE SPDLOG_HEADER_ONLY)
 target_compile_definitions(${EXECUTABLE_EXE_NAME} PRIVATE CATCH_CONFIG_ENABLE_BENCHMARKING)
 
 
@@ -129,6 +120,7 @@ ADD_DEFINITIONS(-DDBG_MACRO_NO_WARNING)
 if ( CMAKE_COMPILER_IS_GNUCC )
     set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -Wall")
     set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -std=c++2a")
+    set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -lprofiler")
 endif()
 # 设置MSVC最高警告级别
 if ( MSVC )
@@ -157,6 +149,9 @@ set(CMAKE_CXX_STANDARD 20)
 find_package(benchmark REQUIRED)
 add_subdirectory(benchmark)
 target_link_libraries(${EXECUTABLE_EXE_NAME} benchmark::benchmark)
+
+# 找寻gpreftool
+target_link_libraries(${EXECUTABLE_EXE_NAME} libtcmalloc_and_profiler.a)
 #enable_testing()
 # add_test(NAME MyAlgo COMMAND MyAlgo WORKING_DIRECTORY ${UNIT_TEST_BIN_OUTPUT_DIR})
 #add_test(NAME MyAlgo COMMAND -C Release WORKING_DIRECTORY ${UNIT_TEST_BIN_OUTPUT_DIR})
