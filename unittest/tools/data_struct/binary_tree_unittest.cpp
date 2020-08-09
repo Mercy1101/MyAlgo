@@ -2,8 +2,6 @@
 
 #include <catch2/catch.hpp>
 
-#include "profiler/Profiler.h"
-
 SCENARIO("binary_tree 二叉树的构造函数测试", "[data_struct][binary_tree]") {
   GIVEN("一个单独的元素来创建一个树") {
     WHEN("数值类型为int时") {

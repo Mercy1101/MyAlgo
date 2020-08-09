@@ -16,6 +16,7 @@
 
 #include <stdio.h>
 #include <time.h>
+#include <string.h>
 
 #include <cassert>
 #include <chrono>
@@ -124,7 +125,11 @@ inline std::string GetTimeString(lee::Second Time, const char *Format) {
 
   time_t t = Time;
   tm buf;
+  #ifdef _WIN32
   localtime_s(&buf, &t);
+  #else
+  localtime_r(&t, &buf);
+  #endif
   char p[32] = {0};
   strftime(p, sizeof(p), Format, &buf);
   return std::string(p);
@@ -162,9 +167,9 @@ inline lee::Second GetCompileTimeStamp() {
   std::call_once(InstanceFlag, []() {
     tm tm = {0};
     char Mmm[4] = {0};
-    strcpy_s(Mmm, sizeof(Mmm), "Jan");
-    sscanf_s(__DATE__, "%3s %d %d", Mmm, static_cast<unsigned>(sizeof(Mmm)),
-             &tm.tm_mday, &tm.tm_year);
+    strncpy(Mmm, "Jan", sizeof(Mmm));
+    sscanf(__DATE__, "%3s %d %d", Mmm,
+           &tm.tm_mday, &tm.tm_year);
 
     std::string Month(Mmm);
     if (Month.find("Jan") != std::string::npos) {
@@ -195,7 +200,7 @@ inline lee::Second GetCompileTimeStamp() {
       tm.tm_mon = 0;
     }
 
-    sscanf_s(__TIME__, "%d:%d:%d", &tm.tm_hour, &tm.tm_min, &tm.tm_sec);
+    sscanf(__TIME__, "%d:%d:%d", &tm.tm_hour, &tm.tm_min, &tm.tm_sec);
     /** 修正参数 */
     tm.tm_year -= 1900;
     tm.tm_mon -= 1;
@@ -233,7 +238,11 @@ inline lee::Second GetTodaySpecificTimeStamp(const int iHour, const int iMin,
 
   time_t t = ::time(nullptr);
   tm stTimer = {0};
+#ifdef _WIN32
   localtime_s(&stTimer, &t);
+#else
+  localtime_r(&t, &stTimer);
+#endif
   stTimer.tm_hour = iHour;
   stTimer.tm_min = iMin;
   stTimer.tm_sec = iSec;

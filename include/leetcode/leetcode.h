@@ -20,6 +20,7 @@
 #include <ctype.h>  // for isalnum
 
 #include <algorithm>
+#include <climits>
 #include <cmath>
 #include <iostream>
 #include <limits>

@@ -79,12 +79,12 @@ class simple_calculate {
   std::optional<int> calculate(const std::string& expression) {
     try {
       if (!confirm_expression_valid(expression)) {
-        throw std::exception("Expression is invalid!");
+         ("Expression is invalid!");
       }
 
       std::string parsed_string = parse_expression(expression);
       if (!isalnum(parsed_string.at(0))) {
-        throw std::exception("Expression is invalid!");
+         ("Expression is invalid!");
       }
 
       std::vector<int> number_list;
@@ -122,7 +122,7 @@ class simple_calculate {
       auto it = operator_list.front();
       operator_list.erase(operator_list.begin());
       if (number_list.empty()) {
-        throw std::exception("number_stack is invalid!");
+         ("number_stack is invalid!");
       }
       auto temp_result = number_list.front();
       number_list.erase(number_list.begin());
@@ -204,7 +204,7 @@ class simple_calculate {
     number_list.push_back(
         std::stoi(parsed_string.substr(start_index, parsed_string.size())));
     if (number_list.size() != operator_list.size() + 1) {
-      throw std::exception("invalid number!");
+       ("invalid number!");
     }
   }
 
@@ -230,11 +230,11 @@ class simple_calculate {
       return first_number * second_number;
     } else if ('/' == op) {
       if (second_number == 0) {
-        throw std::exception("div zero error!");
+         ("div zero error!");
       }
       return first_number / second_number;
     } else {
-      throw std::exception("unkonw operator!");
+       ("unknow operator!");
     }
   }
 

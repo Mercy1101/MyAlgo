@@ -333,10 +333,6 @@ TEST_CASE("Multiplies_s()例子", "[utility][Multiplies_s]") {
   REQUIRE(xx2.value_or(1) == 1);
 }
 
-TEST_CASE("IsLittleEndian()例子", "[utility][IsLittleEndian]") {
-  lee::IsLittleEndian() ? dbg("电脑是小端的") : dbg("电脑是大端的");
-}
-
 TEST_CASE("GetRandom(), 随机函数测试", "[utility][GetRandom]") {
   for (int i = 0; i < 1000; ++i) {
     auto random_number = lee::GetRandom();
@@ -629,10 +625,6 @@ SCENARIO("GetRangeRandomNumberFloat(), 等概率生成实数(浮点数)函数测
 }
 
 TEST_CASE("lee::GetRandomPassWord 的例子展示", "[utility][GetRandomPassWord]") {
-  dbg(lee::GetRandomPassWord(8));
-  dbg(lee::GetRandomPassWord(16));
-  dbg(lee::GetRandomPassWord(32));
-  dbg(lee::GetRandomPassWord(64));
 }
 
 TEMPLATE_TEST_CASE("arraysize 的模板测试", "[utility][arraysize]", int,

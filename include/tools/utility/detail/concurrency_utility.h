@@ -456,10 +456,11 @@ class lock_free_stack {
     counted_node_ptr new_node;
     new_node.ptr = new node(data);
     new_node.external_count = 1;
-    new_node.ptr->next =
-        head.load(std::memory_order_relaxed) while (!head.compare_exchange_weak(
-            new_node.ptr->next, new_node, std::memory_order_release,
-            std::memory_order_relaxed));
+    new_node.ptr->next = head.load(std::memory_order_relaxed);
+    while (!head.compare_exchange_weak(new_node.ptr->next, new_node,
+                                       std::memory_order_release,
+                                       std::memory_order_relaxed))
+      ;
   }
   std::shared_ptr<T> pop() {
     counted_node_ptr old_head = head.load(std::memory_order_relaxed);
@@ -628,7 +629,7 @@ void parallel_partial_sum(Iterator first, Iterator last) {
   unsigned long const hardware_threads = std::thread::hardware_concurrency();
 
   unsigned long const num_threads =
-      std::min(herdware_threads != 0 ? hardware_threads : 2, max_threads);
+      std::min(hardware_threads != 0 ? hardware_threads : 2, max_threads);
 
   unsigned long const block_size = length / num_threads;
 
@@ -825,7 +826,6 @@ class thread_pool {
     }
     return res;
   }
-
 };
 
 /// @name     ThreadPool_Sample

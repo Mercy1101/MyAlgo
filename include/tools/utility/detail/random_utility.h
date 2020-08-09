@@ -131,10 +131,10 @@ inline int GetRangeRandomNumberInt(int range_end) {
 template <typename T>
 inline T GetApproximationNumber(const T &base_number,
                                 const double &deviation_percent) {
-  static_assert(std::is_integral(T) || std::is_floating_point(T),
+  static_assert(std::is_integral<T>::value || std::is_floating_point<T>::value,
                 "GetApproximationNumber need a POD type number!");
   double range_bound = base_number * deviation_percent;
-  auto random_number = lee::GetRandomRangeNumberDouble(
+  auto random_number = lee::GetRangeRandomNumberFloat(
       base_number + range_bound, base_number - range_bound);
   return static_cast<T>(random_number);
 }
@@ -163,11 +163,11 @@ template <typename T>
 bool GetRandomRangeNumber_WithoutRepeat(const T &bound1, const T &bound2,
                                         const int &limit_number,
                                         std::vector<T> *random_number_vector) {
-  static_assert(std::is_integral(T),
+  static_assert(std::is_integral<T>::value,
                 "GetRandomRangeNumber_WithoutRepeat need integral param!");
   random_number_vector->reserve(limit_number);
   for (int i = 0; i < limit_number; ++i) {
-    random_number_vector->emplace_back(lee::GetRandomRange(bound1, bound2));
+    random_number_vector->emplace_back(lee::GetRangeRandom(bound1, bound2));
   }
   std::sort(random_number_vector->begin(), random_number_vector->end());
   auto last =

@@ -23,6 +23,7 @@
 #include <mutex>
 #include <string>
 #include <vector>
+#include "utility/detail/random_utility.h"
 
 namespace lee {
 inline namespace utility {
@@ -175,7 +176,7 @@ bool is_palindrome(BidirectionalIterator begin, BidirectionalIterator end) {
  */
 template <typename T>
 static int partition_(T list[], int begin, int end) {
-  int pivot_idx = RANDOM(begin, end);
+  int pivot_idx = lee::GetRangeRandom(begin, end);
   T pivot = list[pivot_idx];
   swap(list[begin], list[pivot_idx]);
 
@@ -233,25 +234,6 @@ void quicksort(ForwardIt first, ForwardIt last) {
       middle1, last, [pivot](const auto& em) { return !(pivot < em); });
   quicksort(first, middle1);
   quicksort(middle2, last);
-}
-
-template <typename it>
-typename std::iterator_traits<it>::difference_type distance(it from, it to) {
-  if constexpr (typename std::iterator_traits<it>::iterator_category() ==
-                std::random_access_iterator_tag) {
-    /// 随机访问迭代器
-    return to - from;
-  } else if constexpr (typename std::iterator_traits<it>::iterator_category() ==
-                       std::input_iterator_tag) {
-    /// input 迭代器
-    typename std::iterator_traits<it>::difference_type res = 0;
-    for (; from != to; ++from) {
-      ++res;
-    }
-    return res;
-  } else {
-    static_assert("unknow iterator type.");
-  }
 }
 
 template <class _Ty>

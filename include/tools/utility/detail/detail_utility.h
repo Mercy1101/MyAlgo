@@ -22,6 +22,7 @@
 #include <cassert>
 #include <chrono>
 #include <ctime>
+#include <sstream>
 #include <functional>
 #include <limits>
 #include <mutex>
@@ -31,7 +32,7 @@
 #include <thread>
 #include <type_traits>
 
-#include "log/log.h"
+/// #include "log/log.h"
 #include "utility/detail/random_utility.h"
 
 namespace lee {
@@ -483,7 +484,7 @@ inline void SleepForRandomMilliSecond(lee::MilliSecond range_start,
                                       lee::MilliSecond range_end) {
   /// 设置最大时间限制
   constexpr lee::MilliSecond SLEEP_FOR_RANGE_MAX_MILLISECOND = 30 * 1000;
-  if (range_start > range_start) std::swap(range_start, range_end);
+  if (range_start > range_end) std::swap(range_start, range_end);
   if (range_start < 0) range_start = 0;
   if (range_end < 0) range_end = 0;
   if (range_end > SLEEP_FOR_RANGE_MAX_MILLISECOND) {
@@ -511,8 +512,6 @@ inline void SleepForRandomMilliSecond(lee::MilliSecond range_end) {
 /// @date     2020-01-07 16:35:46
 /// @warning  线程不安全
 inline void quick_exit(const int &code, const std::string &exit_info) {
-  LOG_ERROR(exit_info);
-  LOG_ERROR("Exist the program!");
   exit(code);
 }
 

@@ -176,7 +176,7 @@ class Binary_Tree {
       t->element = findMin(t->right)->element;
       Delete(t->element, t->right);
     } else {
-      BinaryNode *oldNode = t;
+      BinaryTreeNode *oldNode = t;
       t = (t->left != nullptr) ? t->left : t->right;
       delete oldNode;
     }
