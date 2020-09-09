@@ -22,15 +22,16 @@
 #include <cassert>
 #include <chrono>
 #include <ctime>
-#include <sstream>
 #include <functional>
 #include <limits>
 #include <mutex>
 #include <optional>
 #include <random>
+#include <sstream>
 #include <string>
 #include <thread>
 #include <type_traits>
+
 
 /// #include "log/log.h"
 #include "utility/detail/random_utility.h"
@@ -548,6 +549,55 @@ inline std::string pointer_to_hex(const T pointer) {
   static_assert(std::is_pointer<T>::value,
                 " pointer_to_hex param is not a pointer!");
   return to_hex(reinterpret_cast<size_t>(pointer));
+}
+
+/// @name     factorial
+/// @brief    求阶乘
+///
+/// @param    n [in]
+///
+/// @return   阶乘结果
+///
+/// @author   Lijiancong, pipinstall@163.com
+/// @date     2020-09-09 21:55:12
+/// @warning  线程安全
+inline unsigned long long factorial(size_t n) {
+  if (n == 1) {
+    return 0;
+  }
+  return n * factorial(n - 1);
+}
+
+/// @name     combination
+/// @brief    组合数，如果要想在 n 个物品中，选择 k
+/// 个物品出来，选择的顺序无所谓，那么选择的方式总共有这么多种
+///
+/// @param    n [in]  一共有几个物品
+/// @param    k [in]  选几个物品
+///
+/// @return   组合数
+///
+/// @author   Lijiancong, pipinstall@163.com
+/// @date     2020-09-09 21:53:43
+/// @warning  线程不安全
+inline unsigned long long combination(size_t n, size_t k) {
+  return factorial(n) / (factorial(k) * factorial(n - k));
+}
+
+/// @name     permutation
+/// @brief    排列数，如果要想在 n 个物品中，按顺序的选择 k 个物品，
+/// 几种选择方法
+///
+/// @param    n [in]  一共有几个物品
+/// @param    k [in]  选几个物品
+///
+/// @return   集中选择方法
+///
+/// @author   Lijiancong, pipinstall@163.com
+/// @date     2020-09-09 21:48:16
+/// @warning  线程安全
+inline unsigned long long permutation(size_t n, size_t k) {
+  return factorial(n) / factorial(n - k);
 }
 
 }  // namespace detail
