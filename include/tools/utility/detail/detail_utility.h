@@ -32,7 +32,6 @@
 #include <thread>
 #include <type_traits>
 
-
 /// #include "log/log.h"
 #include "utility/detail/random_utility.h"
 
@@ -600,8 +599,42 @@ inline unsigned long long permutation(size_t n, size_t k) {
   return factorial(n) / factorial(n - k);
 }
 
+/// @name     remove_repeat_element
+/// @brief    去除二维数组中重复的元素
+///
+/// @param    res [in/out]
+///
+/// @return   res
+///
+/// @author   Lijiancong, pipinstall@163.com
+/// @date     2020-09-11 20:41:39
+inline std::vector<std::vector<int>> &remove_repeat_element(
+    std::vector<std::vector<int>> &res) {
+  std::sort(res.begin(), res.end(),
+            [](const std::vector<int> &l, const std::vector<int> &r) {
+              if (l.size() == r.size()) {
+                for (size_t i = 0; i < l.size(); ++i) {
+                  if (l.at(i) == r.at(i)) {
+                    continue;
+                  } else {
+                    return l.at(i) < r.at(i);
+                  }
+                }
+                return true;
+              } else {
+                return l.size() < r.size();
+              }
+            });
+  auto it = std::unique(res.begin(), res.end(),
+                        [](const std::vector<int> &l,
+                           const std::vector<int> &r) { return l == r; });
+  res.erase(it, res.end());
+  return res;
+}
 }  // namespace detail
+
 }  // namespace utility
+}  // namespace lee
 }  // namespace lee
 
 #endif  // end of MYALGO_INCLUDE_TOOLS_UTILITY_DETAIL_DETAIL_UTILITY_H_
