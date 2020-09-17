@@ -620,7 +620,7 @@ inline std::vector<std::vector<int>> &remove_repeat_element(
                     return l.at(i) < r.at(i);
                   }
                 }
-                return true;
+                return false;
               } else {
                 return l.size() < r.size();
               }
@@ -631,6 +631,25 @@ inline std::vector<std::vector<int>> &remove_repeat_element(
   res.erase(it, res.end());
   return res;
 }
+
+/// 并查集模板
+struct UnionFind {
+  std::vector<int> ancestor;
+
+  UnionFind(int n) {
+    ancestor.resize(n);
+    for (int i = 0; i < n; ++i) {
+      ancestor[i] = i;
+    }
+  }
+
+  int find(int index) {
+    return index == ancestor[index] ? index
+                                    : ancestor[index] = find(ancestor[index]);
+  }
+
+  void merge(int u, int v) { ancestor[find(u)] = find(v); }
+};
 }  // namespace detail
 
 }  // namespace utility
