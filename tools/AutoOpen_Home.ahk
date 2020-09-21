@@ -58,7 +58,6 @@ CapsLock & q::
 d = %A_YYYY%-%A_MM%-%A_DD% %A_Hour%:%A_Min%:%A_Sec%
 clipboard = %d%
 SetCapsLockState, AlwaysOff
-Send,^0
 SendInput,/// @name     {Enter}
 SendInput,/// @brief    {Enter}
 SendInput,///{Enter}
