@@ -299,8 +299,7 @@ inline void shuffle(RandomIt first, RandomIt last, URBG &&g) {
   distr_t D;
   diff_t n = last - first;
   for (diff_t i = n - 1; i > 0; --i) {
-    using std::swap;
-    swap(first[i], first[D(g, param_t(0, i))]);
+    std::swap(first[i], first[D(g, param_t(0, i))]);
   }
 }
 
