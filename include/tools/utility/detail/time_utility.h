@@ -15,14 +15,15 @@
 #define MYALGO_INCLUDE_TOOLS_UTILITY_DETAIL_TIME_UTILITY_H_
 
 #include <stdio.h>
-#include <time.h>
 #include <string.h>
+#include <time.h>
 
 #include <cassert>
 #include <chrono>
 #include <ctime>
 #include <limits>     // for std::numeric_limits()
 #include <mutex>      // for std::call_once()
+#include <optional>
 #include <typeindex>  // for std::typeindex()
 #include <typeinfo>   // for typeid
 

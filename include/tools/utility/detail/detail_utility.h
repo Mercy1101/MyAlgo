@@ -512,6 +512,7 @@ inline void SleepForRandomMilliSecond(lee::MilliSecond range_end) {
 /// @date     2020-01-07 16:35:46
 /// @warning  线程不安全
 inline void quick_exit(const int &code, const std::string &exit_info) {
+  std::cerr << exit_info << std::endl;
   exit(code);
 }
 
