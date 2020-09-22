@@ -1,5 +1,4 @@
 ﻿#define CATCH_CONFIG_RUNNER
-#include <gperftools/profiler.h>
 
 #include <catch2/catch.hpp>  // include after defining CATCH_CONFIG_RUNNER
 #include <iostream>
@@ -7,9 +6,7 @@
 #include "utility/utility.h"
 
 int main(int argc, char** argv) {
-  ProfilerStart("main");
   Catch::Session().run(argc, argv);
-  ProfilerStop();
   return 0;
 }
 /// #include <benchmark/benchmark.h>

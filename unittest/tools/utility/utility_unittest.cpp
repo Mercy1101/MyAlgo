@@ -637,6 +637,7 @@ TEMPLATE_TEST_CASE("arraysize 的模板测试", "[utility][arraysize]", int,
 
 SCENARIO("is_plus_overflow 简单测试", "[utility][is_plus_overflow]") {
 #undef min
+#undef max
   int x;
   int y;
   constexpr int min_int = std::numeric_limits<int>::min();

@@ -89,6 +89,7 @@ if(MSVC)
   else()
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W4")
   endif()
+  add_definitions(-D_CRT_SECURE_NO_WARNINGS)
 elseif(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
   # Update if necessary
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wno-long-long -pedantic")
@@ -146,13 +147,13 @@ set(CMAKE_CXX_STANDARD 20)
 # endif()
 
 # 找寻benchmark
-find_package(benchmark REQUIRED)
-add_subdirectory(benchmark)
-target_link_libraries(${EXECUTABLE_EXE_NAME} benchmark::benchmark)
-
+# find_package(benchmark REQUIRED)
+# add_subdirectory(benchmark)
+# target_link_libraries(${EXECUTABLE_EXE_NAME} benchmark::benchmark)
+# 
 # 找寻gpreftool
-target_link_libraries(${EXECUTABLE_EXE_NAME} libtcmalloc_and_profiler.a)
-#enable_testing()
+# target_link_libraries(${EXECUTABLE_EXE_NAME} libtcmalloc_and_profiler.a)
+# enable_testing()
 # add_test(NAME MyAlgo COMMAND MyAlgo WORKING_DIRECTORY ${UNIT_TEST_BIN_OUTPUT_DIR})
 #add_test(NAME MyAlgo COMMAND -C Release WORKING_DIRECTORY ${UNIT_TEST_BIN_OUTPUT_DIR})
 
