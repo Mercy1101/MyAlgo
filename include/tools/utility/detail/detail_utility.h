@@ -650,10 +650,48 @@ struct UnionFind {
 
   void merge(int u, int v) { ancestor[find(u)] = find(v); }
 };
+
+template <typename T>
+class optional {
+ public:
+  optional() : val_(), has_val_(false) {}
+  optional(T val) : val_(val), has_val_(true) {}
+  ~optional() = default;
+  optional(const optional &other) {
+    this->val_ = other.val_;
+    this->has_val_ = other.has_val_;
+  }
+  optional(optional &&other) {
+    this->val_ = other.val_;
+    this->has_val_ = other.has_val_;
+  }
+  optional &operator=(const optional &other) {
+    this->val_ = other.val_;
+    this->has_val_ = other.has_val_;
+    return *this;
+  }
+  optional &operator=(optional &&other) {
+    this->val_ = other.val_;
+    this->has_val_ = other.has_val_;
+    return *this;
+  }
+
+  bool has_value() { return has_val_; }
+  T value() {
+    if (!has_val_) {
+      throw std::runtime_error("has no value in this");
+    }
+    return val_;
+  }
+  T value_or(const T &val) { return has_val_ ? val_ : val; }
+
+ private:
+  T val_{};
+  bool has_val_ = false;
+};
 }  // namespace detail
 
 }  // namespace utility
-}  // namespace lee
 }  // namespace lee
 
 #endif  // end of MYALGO_INCLUDE_TOOLS_UTILITY_DETAIL_DETAIL_UTILITY_H_

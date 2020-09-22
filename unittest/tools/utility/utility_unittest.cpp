@@ -738,3 +738,38 @@ SCENARIO("is_plus_overflow 简单测试", "[utility][is_plus_overflow]") {
     }    ///< WHEN
   }      ///< GIVEN
 }  ///< SCENARIO
+
+lee::optional<int> cal(int x, int y) {
+  if (y == 0) {
+    return lee::optional<int>();
+  }
+  return lee::optional<int>(x / y);
+}
+
+SCENARIO("optional 简单测试", "[utility][optional]") {
+  auto cal = [](const int x, const int y) -> lee::optional<int> {
+    if (y == 0) {
+      return lee::optional<int>();
+    }
+    return lee::optional<int>(x / y);
+  };
+  GIVEN("正常返回值: int 类型") {
+    WHEN("Input: x = 4, y = 2") {
+      THEN("Output: 2") {
+        auto temp1 = cal(4, 2);
+        REQUIRE(temp1.value() == 2);
+        REQUIRE(temp1.value_or(0) == 2);
+        REQUIRE(temp1.has_value());
+      }  ///< THEN
+    }    ///< WHEN
+    GIVEN("不正常返回值: int 类型") {
+      WHEN("Input: x = 4, y = 0") {
+        THEN("Output: ") {
+          auto temp1 = cal(4, 0);
+          REQUIRE(temp1.value_or(0) == 0);
+          REQUIRE(!temp1.has_value());
+        }  ///< THEN
+      }    ///< WHEN
+    }
+  }
+}
