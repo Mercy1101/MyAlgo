@@ -19,7 +19,6 @@ set(SOURCES
     src/main.cpp
 )
 
-
 # leetcode源文件
 set(LEET_CODE_FILE_SOURCES src/leetcode/leetcode.cpp)
 
@@ -112,11 +111,6 @@ endif(MSVC)
 
 target_compile_definitions(${EXECUTABLE_EXE_NAME} PRIVATE CATCH_CONFIG_ENABLE_BENCHMARKING)
 
-
-# 定义这个宏为了避免dbg文件中的警告
-ADD_DEFINITIONS(-DDBG_MACRO_NO_WARNING)
-# ADD_DEFINITIONS(-_CRT_SECUER_NO_WARNINGS)
-
 # 设置GCC最高警告级别
 if ( CMAKE_COMPILER_IS_GNUCC )
     set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -Wall")
@@ -132,30 +126,3 @@ endif()
 
 #设置C++标准
 set(CMAKE_CXX_STANDARD 20)
-# 给开源库留的路径
-# set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
-#找寻boost库
-# set(Boost_USE_STATIC_LIBS ON) 
-# set(Boost_USE_MULTITHREADED ON)  
-# set(Boost_USE_STATIC_RUNTIME OFF) 
-# find_package(Boost REQUIRED) 
-# 
-# if(Boost_FOUND)
-#     include_directories(${Boost_INCLUDE_DIRS}) 
-#     #add_executable(${EXECUTABLE_EXE_NAME} file1.cxx file2.cxx) 
-#     target_link_libraries(${EXECUTABLE_EXE_NAME} ${Boost_LIBRARIES})
-# endif()
-
-# 找寻benchmark
-# find_package(benchmark REQUIRED)
-# add_subdirectory(benchmark)
-# target_link_libraries(${EXECUTABLE_EXE_NAME} benchmark::benchmark)
-# 
-# 找寻gpreftool
-# target_link_libraries(${EXECUTABLE_EXE_NAME} libtcmalloc_and_profiler.a)
-# enable_testing()
-# add_test(NAME MyAlgo COMMAND MyAlgo WORKING_DIRECTORY ${UNIT_TEST_BIN_OUTPUT_DIR})
-#add_test(NAME MyAlgo COMMAND -C Release WORKING_DIRECTORY ${UNIT_TEST_BIN_OUTPUT_DIR})
-
-
-
