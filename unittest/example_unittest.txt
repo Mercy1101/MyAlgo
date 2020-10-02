@@ -2,5 +2,6 @@
 #include "my_algo.hpp"
 
 TEST_CASE("简单测试", "[lee][]") {
+  using namespace lee;
   REQUIRE(true);
 }
