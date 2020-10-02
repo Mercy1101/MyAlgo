@@ -83,7 +83,7 @@ inline clock_t get_cpu_milli_second() noexcept {
 ///     输出：2019-10-17 13:34:00
 inline std::string get_time_string(time_t Time, const char *Format) {
   if (Time < 0) {
-    std::cout << "get_time_string Param Time is invalid!" << std::endl;
+    throw std::logic_error("invalid time param!");
     Time = 0;
   }
 
@@ -163,7 +163,7 @@ inline time_t get_compile_time() {
     tm.tm_mon -= 1;
     compile_time_s = mktime(&tm);
     if (compile_time_s <= 0 || compile_time_s > lee::get_time_stamp()) {
-      std::cout << "GetCompileTimeStamp() is failed!" << std::endl;
+      throw std::logic_error("error time param!");
       compile_time_s = -1;
     }
   });  /// std::call_once()

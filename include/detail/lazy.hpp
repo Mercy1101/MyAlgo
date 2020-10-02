@@ -17,7 +17,6 @@
 #include <functional>
 #include <mutex>
 
-
 namespace lee {
 inline namespace lazy {
 

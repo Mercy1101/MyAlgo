@@ -17,6 +17,8 @@
 #include <optional>
 #include <random>
 
+namespace lee {
+inline namespace math {
 /// @name     is_plus_overflow
 /// @brief    用于判断两数相加是否溢出
 ///
@@ -31,7 +33,7 @@
 /// @date     2020-06-11 07:52:38
 /// @warning  线程安全
 template <typename T1, typename T2>
-bool is_plus_overflow(T1 x, T2 y) {
+inline bool is_plus_overflow(T1 x, T2 y) {
   /// 编译时判断两个入参的类型是否一致
   static_assert(std::is_same<T1, T2>::value,
                 "is_plus_overflow need same type!");
@@ -82,7 +84,7 @@ bool is_plus_overflow(T1 x, T2 y) {
 /// @date     2019-11-15 11:45:53
 /// @warning  线程不安全
 template <typename T1, typename T2>
-bool is_multi_overflow(T1 x, T2 y) {
+inline bool is_multi_overflow(T1 x, T2 y) {
   static_assert(std::is_same<T1, T2>::value,
                 "is_multi_overflow need same type!");
   static_assert(std::is_integral<T1>::value,
@@ -134,7 +136,7 @@ bool is_multi_overflow(T1 x, T2 y) {
 /// @date     2019-12-06 15:28:56
 /// @warning  线程安全
 template <typename T1, typename T2>
-std::optional<T1> multi_s(const T1 x, const T2 y) noexcept {
+inline std::optional<T1> multi_s(const T1 x, const T2 y) noexcept {
   static_assert(std::is_same<T1, T2>::value, "Multiplies_s need same type!");
   static_assert(std::is_integral<T1>::value,
                 "Multiplies_s need integral type!");
@@ -202,7 +204,7 @@ inline unsigned long long permutation(size_t n, size_t k) {
 /// @author   Lijiancong, pipinstall@163.com
 /// @date     2020-10-02 10:16:40
 /// @warning  线程安全
-double my_pow1(double x, int n) {
+inline double my_pow1(double x, int n) {
   /// x^n = e^(n * lnx)
   double result = std::exp(n * std::log(std::abs(x)));
   return ((x <= 0 && (n % 2 == 1)) ? -result : result);
@@ -210,7 +212,7 @@ double my_pow1(double x, int n) {
 /// @brief    快速降幂法，求pow
 ///           (Taken from Knuth, The Art of Computer Programming, Volume2:
 //             Seminumerical Algorithms, Section 4.6.3)
-double my_pow2(double x, int n) {
+inline double my_pow2(double x, int n) {
   auto my_pow_helper = [](double num, long long m) {
     double result = 1.0;
     double multi_num = num;
@@ -226,5 +228,7 @@ double my_pow2(double x, int n) {
   long long N = n;
   return n >= 0 ? my_pow_helper(x, N) : 1 / my_pow_helper(x, -N);
 }
+}  // namespace math
+}  // namespace lee
 
 #endif  ///< end of INCLUDE_DETAIL_MATH_HPP_

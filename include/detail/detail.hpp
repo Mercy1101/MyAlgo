@@ -371,7 +371,6 @@ inline std::vector<std::vector<int>> &remove_repeat_element(
   return res;
 }
 
-
 template <typename T>
 class optional {
  public:
