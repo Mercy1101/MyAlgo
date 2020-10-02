@@ -17,19 +17,20 @@ set(SOURCES
     src/main.cc
 )
 
-# 单元测试的文件
-set(UNITTEST_SOURCE
-)
+# 添加unittest文件夹下所有文件
+aux_source_directory(${PROJECT_SOURCE_DIR}/unittest TEST_SOURCE_FILE)
 
 # 把源文件添加进工程中
 add_executable(${EXECUTABLE_EXE_NAME} ${SOURCES}
-                                      ${UNITTEST_SOURCE}
+                                      ${TEST_SOURCE_FILE}
 )
 
 # 设置包含路径
 target_include_directories(${EXECUTABLE_EXE_NAME}
     PRIVATE 
         ${PROJECT_SOURCE_DIR}/include
+        # catch2单元测试的包含路径
+        ${PROJECT_SOURCE_DIR}/thrid_party/catch
 )
 
 if(MSVC)
