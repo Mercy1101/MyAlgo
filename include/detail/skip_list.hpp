@@ -1,4 +1,4 @@
-///////// ///////// ///////// ///////// ///////// ///////// ///////// /////////
+﻿///////// ///////// ///////// ///////// ///////// ///////// ///////// /////////
 /// Copyright (c) 2019,2020 Lijiancong. All rights reserved.
 ///
 /// Use of this source code is governed by a MIT license
@@ -13,6 +13,8 @@
 
 #ifndef INCLUDE_DETAIL_SKIP_LIST_HPP_
 #define INCLUDE_DETAIL_SKIP_LIST_HPP_
+
+#include <random>
 
 namespace lee {
 inline namespace skiplist {
@@ -46,7 +48,7 @@ class skip_list {
   void add(int num) {
     int r_level = 1;
     /// 当层级小于最大层级，则继续随机增加层级
-    while (r_level <= max_level && (rand() & 1 == 0)) {
+    while (r_level <= max_level && ((std::rand() & 1) == 0)) {
       ++r_level;
     }
 
@@ -99,8 +101,8 @@ class skip_list {
   }
 
  private:
-  int max_level = 0;  ///< 最大的层级数，动态生成
-  Node *head = nullptr; ///< 头节点
+  int max_level = 0;     ///< 最大的层级数，动态生成
+  Node *head = nullptr;  ///< 头节点
 };
 
 }  // namespace skiplist
