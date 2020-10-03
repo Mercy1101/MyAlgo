@@ -26,5 +26,6 @@
 #include "detail/skip_list.hpp"
 #include "detail/time.hpp"
 #include "detail/union_find.hpp"
+#include "detail/big_int.hpp"
 
 #endif
