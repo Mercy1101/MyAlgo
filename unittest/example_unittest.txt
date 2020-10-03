@@ -1,7 +1,7 @@
 #include "catch/catch.hpp"
 #include "my_algo.hpp"
 
-TEST_CASE("简单测试", "[lee][]") {
+TEST_CASE("example 简单测试", "[lee][]") {
   using namespace lee;
   REQUIRE(true);
 }
