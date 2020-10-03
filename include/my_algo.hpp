@@ -23,6 +23,7 @@
 #include "detail/lru_cache.hpp"
 #include "detail/math.hpp"
 #include "detail/random.hpp"
+#include "detail/skip_list.hpp"
 #include "detail/time.hpp"
 #include "detail/union_find.hpp"
 
