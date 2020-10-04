@@ -1,5 +1,13 @@
-﻿#include "catch/catch.hpp"
+﻿#include <iostream>
+
+#include "catch/catch.hpp"
 #include "my_algo.hpp"
+
+TEST_CASE("big_int() 默认构造函数测试", "[lee][big_int]") {
+  using namespace lee;
+  big_int temp;
+  REQUIRE(temp.to_string() == "0");
+}
 
 TEST_CASE("big_int(long long) 构造函数测试, 正数入参", "[lee][big_int]") {
   using namespace lee;
@@ -22,11 +30,13 @@ TEST_CASE("big_int(long long) 构造函数测试, 负数入参", "[lee][big_int]
   REQUIRE(num.to_string() == "-1000000000");
   big_int num1(n - 1);
   REQUIRE(num1.to_string() == "-1000000001");
-  big_int num2(-0);
-  REQUIRE(num2.to_string() == "0");
+  big_int num2(n + 1);
+  REQUIRE(num2.to_string() == "-999999999");
+  big_int num3(-0);
+  REQUIRE(num3.to_string() == "0");
   auto min = std::numeric_limits<long long>::lowest();
-  big_int num3(min);
-  REQUIRE(num3.to_string() == std::to_string(min));
+  big_int num4(min);
+  REQUIRE(num4.to_string() == std::to_string(min));
 }
 
 TEST_CASE("big_int(const big_int&) 拷贝构造函数测试", "[lee][big_int]") {
@@ -35,14 +45,27 @@ TEST_CASE("big_int(const big_int&) 拷贝构造函数测试", "[lee][big_int]") 
   big_int num(n);
   big_int copy(num);
   REQUIRE(num == copy);
+  REQUIRE(num.to_string() == "1000000000");
+  REQUIRE(copy.to_string() == "1000000000");
   num += 1;
   REQUIRE(num != copy);
+  REQUIRE(num.to_string() == "1000000001");
+  REQUIRE(copy.to_string() == "1000000000");
+}
 
+TEST_CASE("big_int operator=(const big_int&) 拷贝构造符测试",
+          "[lee][big_int]") {
+  using namespace lee;
+  long long n = static_cast<long long>(1e9);
   big_int num1(n);
   big_int copy1 = num1;
-  REQUIRE(num1 == copy);
+  REQUIRE(num1 == copy1);
+  REQUIRE(num1.to_string() == "1000000000");
+  REQUIRE(copy1.to_string() == "1000000000");
   num1 += 1;
-  REQUIRE(num1 != copy);
+  REQUIRE(num1 != copy1);
+  REQUIRE(num1.to_string() == "1000000001");
+  REQUIRE(copy1.to_string() == "1000000000");
 }
 
 TEST_CASE("big_int(const std::string&) 构造函数测试", "[lee][big_int]") {
@@ -72,6 +95,7 @@ TEST_CASE("big_int(const std::string&) 构造函数测试", "[lee][big_int]") {
   REQUIRE(bt6.to_string() == str6);
 }
 
+#if false
 TEST_CASE("big_int::operator+(big_int&) 函数测试", "[lee][big_int]") {
   using namespace lee;
   big_int bt0("1234567812345678");
@@ -94,3 +118,4 @@ TEST_CASE("big_int::operator+(big_int&) 函数测试", "[lee][big_int]") {
   big_int bt9("0");
   REQUIRE((bt8 + bt9).to_string() == "0");
 }
+#endif
