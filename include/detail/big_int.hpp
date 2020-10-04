@@ -26,9 +26,15 @@ class big_int {
   big_int() {}
   big_int(long long i) {
     positive_ = (i >= 0);
+    if (!positive_ && i != std::numeric_limits<long long>::lowest()) {
+      i *= -1;
+    }
     while (i != 0) {
-      num_.push_back(static_cast<int>(i % base_));
+      auto temp = static_cast<int>(i % base_);
+      if (temp < 0) temp *= -1;
+      num_.push_back(temp);
       i /= base_;
+      if (i < 0) i *= -1;
     }
   }
 
@@ -40,7 +46,7 @@ class big_int {
 
     int size = static_cast<int>(str.size());
     while (true) {
-      if (size == 0) {
+      if (size <= 0) {
         break;
       }
       if (!positive_ && size <= 1) {
@@ -51,7 +57,12 @@ class big_int {
       int prefix = 1;
       for (int i = size - 1; i >= 0 && i >= size - 9; --i) {
         if (str.at(i) < '0' || str.at(i) > '9') {
-          throw std::logic_error("invalid param in big_int!");
+          if (i == 0 && str.at(i) == '-' && !positive_) {
+            size = 0;
+            break;  ///< 跳过第一个负号
+          } else {
+            throw std::logic_error("invalid param in big_int!");
+          }
         }
         num += (str.at(i) - '0') * prefix;
         prefix *= 10;
@@ -372,13 +383,13 @@ class big_int {
   unsigned skip_ = 0;
 };
 
-inline lee::big_int factorial(int n) {
+inline lee::big_int factorial(long long n) {
   lee::big_int result = 1;
   if (n % 2) {
     result = n;
     --n;
   }
-  int last = 0;
+  long long last = 0;
   for (; n >= 2; n -= 2) {
     result *= n + last;
     last += n;
