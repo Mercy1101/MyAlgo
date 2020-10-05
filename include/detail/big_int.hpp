@@ -251,31 +251,29 @@ class big_int {
     return *this;
   }
 
-  big_int operator*(big_int const &b) {
-    big_int c;
+  big_int operator*(const big_int &temp) {
+    big_int c = *this;
+    big_int b = temp;
     if (b == big_int(-1)) {
-      positive_ = !positive_;
-      return c;
+      c.positive_ = !c.positive_;
     } else {
-      if (b.num_.size() == 1) return *this *= b.num_[0];
-      std::vector<int>::iterator it1;
-      std::vector<int>::const_iterator it2;
-      for (it1 = num_.begin(); it1 != num_.end(); ++it1) {
-        for (it2 = b.num_.begin(); it2 != b.num_.end(); ++it2) {
-          auto distance = std::distance(it1, num_.begin()) +
-                          std::distance(it2, b.num_.begin());
+      c.positive_ = !(c.positive_ ^ b.positive_);
+      if (b.num_.size() == 1) return c *= b.num_[0];
+      for (auto it1 = c.num_.begin(); it1 != c.num_.end(); ++it1) {
+        for (auto it2 = b.num_.begin(); it2 != b.num_.end(); ++it2) {
+          auto distance = std::distance(c.num_.begin(), it1) +
+                          std::distance(b.num_.begin(), it2);
           c.skip_ = static_cast<unsigned>(distance);
-          c += static_cast<long long>(*it1) * (*it2);
+          c += (static_cast<long long>(*it1) * (*it2));
         }
       }
       c.skip_ = 0;
-      return c;
     }
+    return c;
   }
 
   big_int &operator*=(const big_int &b) {
     *this = *this * b;
-
     return *this;
   }
 
@@ -288,8 +286,14 @@ class big_int {
   big_int &operator*=(const long long &b) {
     if (b == -1) {
       positive_ = !positive_;
-      return *this;
+    } else if (b == 1) {
+      /// DONOTHING
+    } else if (b == 0) {
+      positive_ = true;
+      num_.clear();
+      num_.push_back(0);
     } else {
+      positive_ = !(positive_ ^ (b >= 0));
       std::vector<int>::iterator it = num_.begin();
       long long sum = 0;
       while (it != num_.end()) {
@@ -299,9 +303,8 @@ class big_int {
         ++it;
       }
       if (sum) num_.push_back((int)sum);
-
-      return *this;
     }
+    return *this;
   }
 
   big_int &pow(const int &power) {

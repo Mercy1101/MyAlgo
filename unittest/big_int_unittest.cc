@@ -168,11 +168,11 @@ TEST_CASE("big_int::operator+(long long) 函数测试", "[lee][big_int]") {
   big_int zero("0");
   big_int num(n);
   big_int num1(n + 1);
-  big_int num2(-1*n);
+  big_int num2(-1 * n);
   big_int num3("-999999999");
 
-  REQUIRE((zero+zero).to_string() == "0");
-  REQUIRE((zero+zero) == zero);
+  REQUIRE((zero + zero).to_string() == "0");
+  REQUIRE((zero + zero) == zero);
   REQUIRE(zero == 0);
 
   REQUIRE((num + 1).to_string() == "1000000001");
@@ -181,7 +181,7 @@ TEST_CASE("big_int::operator+(long long) 函数测试", "[lee][big_int]") {
 
   REQUIRE((num2 + 1).to_string() == "-999999999");
   REQUIRE((num2 + 1) == num3);
-  REQUIRE(num2 == big_int(-1*n));
+  REQUIRE(num2 == big_int(-1 * n));
 }
 
 TEST_CASE("big_int::operator+=(long long) 函数测试", "[lee][big_int]") {
@@ -190,7 +190,7 @@ TEST_CASE("big_int::operator+=(long long) 函数测试", "[lee][big_int]") {
   big_int zero(0);
   big_int num(n);
   big_int num1(n + 1);
-  big_int num2(-1*n);
+  big_int num2(-1 * n);
   big_int num3("-999999999");
 
   REQUIRE((zero += zero) == zero);
@@ -209,12 +209,12 @@ TEST_CASE("big_int::operator+(const big_int&) 函数测试", "[lee][big_int]") {
   big_int zero("0");
   big_int num(n);
   big_int num1(n + 1);
-  big_int num2(-1*n);
+  big_int num2(-1 * n);
   big_int num3("-999999999");
   big_int one(1);
 
-  REQUIRE((zero+zero).to_string() == "0");
-  REQUIRE((zero+zero) == zero);
+  REQUIRE((zero + zero).to_string() == "0");
+  REQUIRE((zero + zero) == zero);
   REQUIRE(zero == 0);
 
   REQUIRE((num + one).to_string() == "1000000001");
@@ -223,7 +223,7 @@ TEST_CASE("big_int::operator+(const big_int&) 函数测试", "[lee][big_int]") {
 
   REQUIRE((num2 + one).to_string() == "-999999999");
   REQUIRE((num2 + one) == num3);
-  REQUIRE(num2 == big_int(-1*n));
+  REQUIRE(num2 == big_int(-1 * n));
 }
 
 TEST_CASE("big_int::operator+=(const big_int&) 函数测试", "[lee][big_int]") {
@@ -232,7 +232,7 @@ TEST_CASE("big_int::operator+=(const big_int&) 函数测试", "[lee][big_int]") 
   big_int zero(0);
   big_int num(n);
   big_int num1(n + 1);
-  big_int num2(-1*n);
+  big_int num2(-1 * n);
   big_int num3("-999999999");
   big_int one(1);
 
@@ -252,11 +252,11 @@ TEST_CASE("big_int::operator-(long long) 函数测试", "[lee][big_int]") {
   big_int zero("0");
   big_int num(n);
   big_int num1(n - 1);
-  big_int num2(-1*n);
-  big_int num3(-1*n -1);
+  big_int num2(-1 * n);
+  big_int num3(-1 * n - 1);
 
-  REQUIRE((zero-zero).to_string() == "0");
-  REQUIRE((zero-zero) == zero);
+  REQUIRE((zero - zero).to_string() == "0");
+  REQUIRE((zero - zero) == zero);
   REQUIRE(zero == 0);
 
   REQUIRE((num - 1).to_string() == "999999999");
@@ -274,7 +274,7 @@ TEST_CASE("big_int::operator-=(long long) 函数测试", "[lee][big_int]") {
   big_int zero(0);
   big_int num(n);
   big_int num1(n - 1);
-  big_int num2(-1*n);
+  big_int num2(-1 * n);
   big_int num3("-1000000001");
 
   REQUIRE((zero -= zero) == zero);
@@ -293,12 +293,12 @@ TEST_CASE("big_int::operator-(const big_int&) 函数测试", "[lee][big_int]") {
   big_int zero("0");
   big_int num(n);
   big_int num1(n - 1);
-  big_int num2(-1*n);
+  big_int num2(-1 * n);
   big_int num3("-1000000001");
   big_int one(1);
 
-  REQUIRE((zero-zero).to_string() == "0");
-  REQUIRE((zero-zero) == zero);
+  REQUIRE((zero - zero).to_string() == "0");
+  REQUIRE((zero - zero) == zero);
   REQUIRE(zero == 0);
 
   REQUIRE((num - one).to_string() == "999999999");
@@ -307,7 +307,7 @@ TEST_CASE("big_int::operator-(const big_int&) 函数测试", "[lee][big_int]") {
 
   REQUIRE((num2 - one).to_string() == "-1000000001");
   REQUIRE((num2 - one) == num3);
-  REQUIRE(num2 == big_int(-1*n));
+  REQUIRE(num2 == big_int(-1 * n));
 }
 
 TEST_CASE("big_int::operator-=(const big_int&) 函数测试", "[lee][big_int]") {
@@ -316,7 +316,7 @@ TEST_CASE("big_int::operator-=(const big_int&) 函数测试", "[lee][big_int]") 
   big_int zero(0);
   big_int num(n);
   big_int num1(n - 1);
-  big_int num2(-1*n);
+  big_int num2(-1 * n);
   big_int num3("-1000000001");
   big_int one(1);
 
@@ -329,7 +329,56 @@ TEST_CASE("big_int::operator-=(const big_int&) 函数测试", "[lee][big_int]") 
   REQUIRE((num2 -= one) == num3);
   REQUIRE(num2 == num3);
 }
+
 #if false
+TEST_CASE("big_int::operator*() 函数测试", "[lee][big_int]") {
+  using namespace lee;
+  big_int zero(0);
+  big_int one(1);
+  big_int two(2);
+
+  auto n = static_cast<long long>(1e9);
+  big_int base0(n);
+  big_int base1(n - 1);
+  big_int base2(n + 1);
+  auto max = std::numeric_limits<long long>::max();
+  auto min = std::numeric_limits<long long>::min();
+
+  /// 乘以0
+  REQUIRE((zero * zero) == zero);
+  REQUIRE((zero * zero).to_string() == "0");
+  REQUIRE((zero * one) == zero);
+  REQUIRE((zero * one).to_string() == "0");
+  REQUIRE((zero * base0) == zero);
+  REQUIRE((zero * base0).to_string() == "0");
+  REQUIRE((zero * base1) == zero);
+  REQUIRE((zero * base1).to_string() == "0");
+  REQUIRE((zero * base2) == zero);
+  REQUIRE((zero * base2).to_string() == "0");
+  REQUIRE((zero * max) == zero);
+  REQUIRE((zero * max).to_string() == "0");
+  REQUIRE((zero * min) == zero);
+  REQUIRE((zero * min).to_string() == "0");
+
+  /// 乘以1
+  REQUIRE((one * one) == one);
+  REQUIRE((one * one).to_string() == "1");
+  REQUIRE((one * base0) == base1);
+  REQUIRE((one * base0).to_string() == "1000000000");
+  REQUIRE((one * base1) == base1);
+  REQUIRE((one * base1).to_string() == "999999999");
+  REQUIRE((one * base2) == base2);
+  REQUIRE((one * base2).to_string() == "1000000001");
+  REQUIRE((one * max) == max);
+  REQUIRE((one * min) == min);
+
+  /// 乘以2
+  REQUIRE((two * 2) == 4);
+  REQUIRE((two * two) == 4);
+  REQUIRE((base2 * 2) == 2000000002);
+  REQUIRE((base2 * two) == 2000000002);
+}
+
 TEST_CASE("big_int::pow() 函数测试", "[lee][big_int]") {
   using namespace lee;
   big_int x(2);
