@@ -8,7 +8,7 @@
 /// @brief  kmp字符串匹配算法
 ///
 /// @author lijiancong, pipinstall@163.com
-/// @date  2020-10-05 14:59:35
+/// @date   2020-10-05 14:59:35
 ///////// ///////// ///////// ///////// ///////// ///////// ///////// /////////
 
 #ifndef INCLUDE_DETAIL_KMP_HPP_
