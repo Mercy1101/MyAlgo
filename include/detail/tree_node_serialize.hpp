@@ -1,4 +1,4 @@
-///////// ///////// ///////// ///////// ///////// ///////// ///////// /////////
+﻿///////// ///////// ///////// ///////// ///////// ///////// ///////// /////////
 /// Copyright (c) 2019,2020 Lijiancong. All rights reserved.
 ///
 /// Use of this source code is governed by a MIT license
@@ -23,13 +23,13 @@ struct TreeNode {
   int val;
   TreeNode* left;
   TreeNode* right;
-  TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+  TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
 };
 
-class Codec {
+class tree_node_serialize {
  public:
   // Encodes a tree to a single string.
-  string serialize(TreeNode* root) {
+  std::string serialize(TreeNode* root) {
     std::string res = "[";
     std::queue<TreeNode*> q;
     q.push(root);
@@ -49,12 +49,11 @@ class Codec {
   }
 
   // Decodes your encoded data to tree.
-  TreeNode* deserialize(string data) {
+  TreeNode* deserialize(std::string data) {
     /// 去除首尾的'[]'
     data.erase(data.begin());
     data.erase(std::prev(data.end()));
     /// 把字符串解析成数组
-    auto begin = 0;
     auto lastPos = data.find_first_not_of(',', 0);
     auto pos = data.find_first_of(',', lastPos);
     std::queue<std::string> q;
