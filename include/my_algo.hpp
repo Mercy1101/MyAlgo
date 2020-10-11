@@ -28,5 +28,6 @@
 #include "detail/skip_list.hpp"
 #include "detail/time.hpp"
 #include "detail/union_find.hpp"
+#include "tree_node_serialize.hpp"
 
 #endif
