@@ -18,7 +18,7 @@
 #include <vector>
 
 namespace lee {
-inline namespace list_node {
+inline namespace serialize {
 struct ListNode {
   int val = 0;
   ListNode* next = nullptr;
@@ -57,7 +57,7 @@ class list_node_serialize {
     return res;
   }
 };
-}  // namespace list_node
+}  // namespace serialize
 }  // namespace lee
 
 #endif  ///< end of INCLUDE_DETAIL_LIST_NODE_SERIALIZE_HPP_

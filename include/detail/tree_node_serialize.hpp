@@ -18,7 +18,7 @@
 #include <string>
 
 namespace lee {
-inline namespace tree_node {
+inline namespace serialize {
 struct TreeNode {
   int val;
   TreeNode* left;
@@ -98,7 +98,7 @@ class tree_node_serialize {
     return r;
   }
 };
-}  // namespace tree_node
+}  // namespace serialize
 }  // namespace lee
 
 #endif  ///< end of INCLUDE_DETAIL_TREE_NODE_SERIALIZE_HPP_
