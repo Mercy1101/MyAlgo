@@ -459,6 +459,11 @@ class ObjectCounter {
   static std::size_t live() { return count; }
 };
 
+template <typename T>
+bool is_palindrome(const T &s) {
+  return std::equal(s.begin(), s.begin() + s.size() / 2, s.rbegin());
+}
+
 }  // namespace detail
 }  // namespace lee
 
