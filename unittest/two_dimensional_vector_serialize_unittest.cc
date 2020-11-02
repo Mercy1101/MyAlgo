@@ -1,4 +1,4 @@
-﻿#include "catch/catch.hpp"
+#include "catch/catch.hpp"
 #include "my_algo/my_algo.hpp"
 
 TEST_CASE("二维数组序列化与反序列化 简单测试",

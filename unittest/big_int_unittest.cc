@@ -1,4 +1,4 @@
-﻿#include <iostream>
+#include <iostream>
 
 #include "catch/catch.hpp"
 #include "my_algo/my_algo.hpp"

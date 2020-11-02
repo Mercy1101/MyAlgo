@@ -1,4 +1,4 @@
-﻿#include "catch/catch.hpp"
+#include "catch/catch.hpp"
 #include "my_algo/my_algo.hpp"
 
 TEST_CASE("multi_s() 简单测试", "[lee][multi_s]") {

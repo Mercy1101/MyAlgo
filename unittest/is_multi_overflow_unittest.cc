@@ -1,4 +1,4 @@
-﻿#include "catch/catch.hpp"
+#include "catch/catch.hpp"
 #include "my_algo/my_algo.hpp"
 
 TEST_CASE("is_multi_overflow() 简单测试", "[lee][is_multi_overflow]") {

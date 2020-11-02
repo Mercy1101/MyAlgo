@@ -1,4 +1,4 @@
-﻿#include "catch/catch.hpp"
+#include "catch/catch.hpp"
 #include "my_algo/my_algo.hpp"
 
 TEST_CASE("lee::optional() 简单测试", "[lee][optional]") {
