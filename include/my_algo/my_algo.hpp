@@ -31,5 +31,6 @@
 #include "my_algo/detail/skip_list.hpp"
 #include "my_algo/detail/time.hpp"
 #include "my_algo/detail/union_find.hpp"
+#include "my_algo/detail/threadsafe_stack.hpp"
 
 #endif
