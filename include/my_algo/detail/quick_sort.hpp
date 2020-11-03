@@ -20,23 +20,23 @@
 
 namespace lee {
 inline namespace sort {
-    template<typename ForwardIt>
-  inline void quick_sort(ForwardIt first, ForwardIt last) {
-    if(first == last) return;
-    decltype(std::distance(first, last)) temp = rand() % std::distance(first, last);
-    auto pivot = *std::next(first, temp);
+template<typename ForwardIt>
+inline void quick_sort(ForwardIt first, ForwardIt last) {
+  if(first == last) return;
+  decltype(std::distance(first, last)) temp = rand() % std::distance(first, last);
+  auto pivot = *std::next(first, temp);
 
-    auto middle1 = std::partition(std::execution::par, first, last, [pivot](const auto& em){
-      return em < pivot;
-    });
+  auto middle1 = std::partition(std::execution::par, first, last, [pivot](const auto& em){
+    return em < pivot;
+  });
 
-    auto middle2 = std::partition(std::execution::par, middle1, last, [pivot](const auto& em){
-      return !(pivot < em);
-    });
+  auto middle2 = std::partition(std::execution::par, middle1, last, [pivot](const auto& em){
+    return !(pivot < em);
+  });
 
-    quick_sort(first, middle1);
-    quick_sort(middle2, last);
-  }
+  quick_sort(first, middle1);
+  quick_sort(middle2, last);
+}
 }}
 
 #endif  ///< end of INCLUDE_DETAIL_EXAMPLE_HPP_
