@@ -115,16 +115,16 @@ class hierarchical_mutex {
 /// @date     2020-02-24 09:04:58
 /// @warning  线程安全
 template <typename T>
-class threadsafe_queue {
+class threadsafe_queue1 {
   struct node {
     std::shared_ptr<T> data;
     std::unique_ptr<node> next;
   };
 
  public:
-  threadsafe_queue() : head(new node), tail(head.get()) {}
-  threadsafe_queue(const threadsafe_queue& other) = delete;
-  threadsafe_queue& operator=(const threadsafe_queue& other) = delete;
+  threadsafe_queue1() : head(new node), tail(head.get()) {}
+  threadsafe_queue1(const threadsafe_queue1& other) = delete;
+  threadsafe_queue1& operator=(const threadsafe_queue1& other) = delete;
 
   std::shared_ptr<T> try_pop() {
     std::unique_ptr<node> const old_head = try_pop_head();
@@ -745,7 +745,7 @@ class thread_pool {
   typedef function_wrapper task_type;
 
   std::atomic_bool done;
-  threadsafe_queue<task_type> pool_work_queue;
+  threadsafe_queue1<task_type> pool_work_queue;
   std::vector<std::unique_ptr<work_stealing_queue>> queues;
   std::vector<std::thread> threads;
   lee::join_threads joiner;
