@@ -32,6 +32,7 @@
 #include "my_algo/detail/time.hpp"
 #include "my_algo/detail/union_find.hpp"
 #include "my_algo/detail/threadsafe_stack.hpp"
+#include "my_algo/detail/threadsafe_queue.hpp"
 #include "my_algo/detail/quick_sort.hpp"
 
 #endif
