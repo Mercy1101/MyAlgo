@@ -31,20 +31,20 @@ inline namespace random {
 /// @author   Lijiancong, pipinstall@163.com
 /// @date     2019-12-07 12:07:27
 /// @warning  线程安全
-template <typename T>
-inline T get_range_random_number(T range_bound1, T range_bound2) {
-  if constexpr (std::is_integral<T>::value ||
-                std::is_floating_point<T>::value) {
-    if (range_bound1 > range_bound2) std::swap(range_bound1, range_bound2);
-    static std::random_device r;
-    static std::default_random_engine e(r());
-    std::uniform_real_distribution<T> u(range_bound1, range_bound2);
-    return u(e);
-  } else {
-    static_assert(false, "unsupport type in get_range_random_number()");
-    throw std::logic_error("unsupport type in get_range_random_number()");
-  }
-}
+/// template <typename T>
+/// inline T get_range_random_number(T range_bound1, T range_bound2) {
+///   if constexpr (std::is_integral<std::remove_const<std::remove_reference<T>::value>::value>::value ||
+///                 std::is_floating_point<std::remove_const<std::remove_reference<T>::value>::value>::value) {
+///     if (range_bound1 > range_bound2) std::swap(range_bound1, range_bound2);
+///     static std::random_device r;
+///     static std::default_random_engine e(r());
+///     std::uniform_real_distribution<T> u(range_bound1, range_bound2);
+///     return u(e);
+///   } else {
+///     static_assert(false, "unsupport type in get_range_random_number()");
+///     throw std::logic_error("unsupport type in get_range_random_number()");
+///   }
+/// }
 
 }  // namespace random
 }  // namespace lee
