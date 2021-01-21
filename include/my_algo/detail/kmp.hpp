@@ -35,7 +35,7 @@ class kmp {
     // 影子状态 X 初始为 0
     int X = 0;
     // 构建状态转移图（稍改的更紧凑了）
-    for (int j = 1; j < pattern_.size(); j++) {
+    for (size_t j = 1; j < pattern_.size(); j++) {
       for (int c = 0; c < 256; c++) dp_[j][c] = dp_[X][c];
       dp_[j][pattern_.at(j)] = j + 1;
       // 更新影子状态

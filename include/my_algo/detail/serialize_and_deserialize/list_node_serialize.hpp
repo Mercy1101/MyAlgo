@@ -50,7 +50,7 @@ class list_node_serialize {
     if (vec.empty()) return nullptr;
     ListNode* head = new ListNode(vec.at(0));
     auto res = head;
-    for (int i = 1; i < vec.size(); ++i) {
+    for (size_t i = 1; i < vec.size(); ++i) {
       head->next = new ListNode(vec.at(i));
       head = head->next;
     }

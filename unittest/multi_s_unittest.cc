@@ -1,5 +1,6 @@
 #include "catch/catch.hpp"
 #include "my_algo/my_algo.hpp"
+#include <climits>
 
 TEST_CASE("multi_s() 简单测试", "[lee][multi_s]") {
   using namespace lee;
