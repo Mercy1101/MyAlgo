@@ -23,7 +23,7 @@
 #include <stack>
 #include <thread>
 #include <vector>
-
+#include <list>
 
 namespace lee {
 inline namespace concurrency {
@@ -555,6 +555,29 @@ Iterator parallel_find(Iterator first, Iterator last, MatchType match) {
   return parallel_find_impl(first, last, match, done);
 }
 
+/// @name     join_threads
+/// @brief    接受一个线程的vector的引用，并在析构时自动join所有线程
+///
+/// @author   Lijiancong, pipinstall@163.com
+/// @date     2020-02-26 11:05:35
+/// @warning  线程安全
+class join_threads {
+  std::vector<std::thread>& threads_ref_;
+
+ public:
+  join_threads(std::vector<std::thread>& ref) : threads_ref_(ref) {
+    for (auto& it : threads_ref_) {
+      if (!it.joinable()) throw std::logic_error("No join thread");
+    }
+  }
+  ~join_threads() {
+    for (auto& it : threads_ref_) {
+      it.join();
+    }
+  }
+};
+
+
 /// @name     parallel_partial_sum
 /// @brief    通过划分问题来并行计算分段的和
 ///
@@ -614,7 +637,7 @@ void parallel_partial_sum(Iterator first, Iterator last) {
   std::vector<std::promise<value_type>> end_values(num_threads - 1);
   std::vector<std::future<value_type>> previous_end_values;
   previous_end_values.reserve(num_threads - 1);
-  join_threads joiner(threads);
+  lee::join_threads joiner(threads);
 
   Iterator block_start = first;
   for (unsigned long i = 0; i < (num_threads - 1); ++i) {
@@ -713,27 +736,6 @@ class work_stealing_queue {
   }
 };
 
-/// @name     join_threads
-/// @brief    接受一个线程的vector的引用，并在析构时自动join所有线程
-///
-/// @author   Lijiancong, pipinstall@163.com
-/// @date     2020-02-26 11:05:35
-/// @warning  线程安全
-class join_threads {
-  std::vector<std::thread>& threads_ref_;
-
- public:
-  join_threads(std::vector<std::thread>& ref) : threads_ref_(ref) {
-    for (auto& it : threads_ref_) {
-      if (!it.joinable()) throw std::logic_error("No join thread");
-    }
-  }
-  ~join_threads() {
-    for (auto& it : threads_ref_) {
-      it.join();
-    }
-  }
-};
 
 /// @name     thread_pool
 /// @brief    使用工作窃取的线程池
@@ -780,7 +782,7 @@ class thread_pool {
   }
 
  public:
-  thread_pool() : joiner(threads), done(false) {
+  thread_pool() : done(false), joiner(threads)  {
     unsigned const thread_count = std::thread::hardware_concurrency();
     try {
       for (unsigned i = 0; i < thread_count; ++i) {
