@@ -16,6 +16,7 @@
 
 #include <atomic>
 #include <future>
+#include <list>
 #include <memory>
 #include <mutex>
 #include <queue>
@@ -23,7 +24,6 @@
 #include <stack>
 #include <thread>
 #include <vector>
-#include <list>
 
 namespace lee {
 inline namespace concurrency {
@@ -577,7 +577,6 @@ class join_threads {
   }
 };
 
-
 /// @name     parallel_partial_sum
 /// @brief    通过划分问题来并行计算分段的和
 ///
@@ -736,7 +735,6 @@ class work_stealing_queue {
   }
 };
 
-
 /// @name     thread_pool
 /// @brief    使用工作窃取的线程池
 ///
@@ -782,7 +780,7 @@ class thread_pool {
   }
 
  public:
-  thread_pool() : done(false), joiner(threads)  {
+  thread_pool() : done(false), joiner(threads) {
     unsigned const thread_count = std::thread::hardware_concurrency();
     try {
       for (unsigned i = 0; i < thread_count; ++i) {
