@@ -41,4 +41,4 @@ inline bool operator!=(const my_allocator<T>& a, const my_allocator<U>& b) {
 }  // namespace allocator
 }  // namespace lee
 
-#endif ///< INCLUDE_DETAIL_ALLOCATOR_HPP_
+#endif  ///< INCLUDE_DETAIL_ALLOCATOR_HPP_

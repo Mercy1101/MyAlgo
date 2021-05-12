@@ -41,12 +41,12 @@ class two_dimensional_vector_serialize {
     str.erase(str.begin());
     str.erase(std::prev(str.end()));
     auto prev_pos = str.find_first_of('[', 0);
-    auto pos = str.find_first_of(']', prev_pos+1);
+    auto pos = str.find_first_of(']', prev_pos + 1);
     std::vector<std::vector<int>> res;
     while (prev_pos != std::string::npos && pos != std::string::npos) {
-      res.push_back(parse_string(str.substr(prev_pos+1, pos - prev_pos-1)));
+      res.push_back(parse_string(str.substr(prev_pos + 1, pos - prev_pos - 1)));
       prev_pos = str.find_first_of('[', pos);
-      pos = str.find_first_of(']', prev_pos+1);
+      pos = str.find_first_of(']', prev_pos + 1);
     }
     return res;
   }

@@ -17,7 +17,6 @@
 #include <exception>
 #include <random>
 
-
 namespace lee {
 inline namespace random {
 /// @name     get_range_random_number
@@ -33,8 +32,11 @@ inline namespace random {
 /// @warning  线程安全
 /// template <typename T>
 /// inline T get_range_random_number(T range_bound1, T range_bound2) {
-///   if constexpr (std::is_integral<std::remove_const<std::remove_reference<T>::value>::value>::value ||
-///                 std::is_floating_point<std::remove_const<std::remove_reference<T>::value>::value>::value) {
+///   if constexpr
+///   (std::is_integral<std::remove_const<std::remove_reference<T>::value>::value>::value
+///   ||
+///                 std::is_floating_point<std::remove_const<std::remove_reference<T>::value>::value>::value)
+///                 {
 ///     if (range_bound1 > range_bound2) std::swap(range_bound1, range_bound2);
 ///     static std::random_device r;
 ///     static std::default_random_engine e(r());

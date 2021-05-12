@@ -15,61 +15,59 @@
 #define INCLUDE_DETAIL_THREADSAFE_STACK_H_
 
 #include <exception>
-#include <stack>
 #include <memory>
 #include <mutex>
+#include <stack>
 
 namespace lee {
 inline namespace threadsafe {
-struct empty_stack:std::exception{
-    virtual const char * what() const throw() {
-        return "empty stack!";
-    };
+struct empty_stack : std::exception {
+  virtual const char* what() const throw() { return "empty stack!"; };
 };
 
 template <typename T>
 class threadsafe_stack {
-public:
-    threadsafe_stack() = default;
-    threadsafe_stack(const threadsafe_stack& other){
-        std::lock_guard<std::mutex> lock(other.data);
-        data = other.data;
+ public:
+  threadsafe_stack() = default;
+  threadsafe_stack(const threadsafe_stack& other) {
+    std::lock_guard<std::mutex> lock(other.data);
+    data = other.data;
+  }
+
+  threadsafe_stack& operator=(const threadsafe_stack&) = delete;
+
+  void push(T new_value) {
+    std::lock_guard<std::mutex> lock(m);
+    data.push(new_value);
+  }
+
+  void pop(T& value) {
+    std::lock_guard<std::mutex> lock(m);
+    if (data.empty()) {
+      throw empty_stack();
     }
+    value = data.top();
+    data.pop();
+  }
 
-    threadsafe_stack& operator=(const threadsafe_stack&) = delete;
-
-    void push(T new_value) {
-        std::lock_guard<std::mutex> lock(m);
-        data.push(new_value);
+  std::shared_ptr<T> pop() {
+    std::lock_guard<std::mutex> lock(m);
+    if (data.empty()) {
+      return std::shared_ptr<T>();
     }
+    auto p = std::make_shared<T>(data.top());
+    data.pop();
+    return p;
+  }
 
-    void pop(T& value) {
-        std::lock_guard<std::mutex> lock(m);
-        if(data.empty()) {
-            throw empty_stack();
-        }
-        value = data.top();
-        data.pop();
-    }
+  bool empty() const {
+    std::lock_guard<std::mutex> lock(m);
+    return data.empty();
+  }
 
-    std::shared_ptr<T> pop() {
-        std::lock_guard<std::mutex> lock(m);
-        if(data.empty()) {
-            return std::shared_ptr<T>();
-        }
-        auto p = std::make_shared<T>(data.top());
-        data.pop();
-        return p;
-    }
-
-    bool empty() const {
-        std::lock_guard<std::mutex> lock(m);
-        return data.empty();
-    }
-
-private:
-    std::stack<T> data;
-    mutable std::mutex m;
+ private:
+  std::stack<T> data;
+  mutable std::mutex m;
 };
 
 }  // namespace threadsafe
