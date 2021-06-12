@@ -17,8 +17,10 @@
 #include <exception>
 #include <random>
 
-namespace lee {
-inline namespace random {
+namespace lee
+{
+inline namespace random
+{
 /// @name     get_range_random_number
 /// @brief    等概率获取一个区间中的数值
 ///

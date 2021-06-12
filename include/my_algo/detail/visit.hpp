@@ -21,42 +21,49 @@
 #include <variant>
 #include <vector>
 
-namespace lee {
-inline namespace visit {
+namespace lee
+{
+inline namespace visit
+{
 template <class... Fs>
-struct overload : Fs... {
-  using Fs::operator()...;
+struct overload : Fs...
+{
+    using Fs::operator()...;
 };
 template <class... Fs>
 overload(Fs...) -> overload<Fs...>;
 
 template <class... Ts>
-struct matcher {
-  std::tuple<Ts...> vs;
-  template <class... Vs>
-  constexpr matcher(Vs&&... vs) : vs(std::forward<Vs>(vs)...) {}
-  template <class Fs>
-  constexpr auto operator->*(Fs&& f) const {
-    auto curry = [&](auto&&... vs) {
-      return std::visit(std::forward<Fs>(f), vs...);
-    };
-    return std::apply(curry, std::move(vs));
-  }
+struct matcher
+{
+    std::tuple<Ts...> vs;
+    template <class... Vs>
+    constexpr matcher(Vs&&... vs) : vs(std::forward<Vs>(vs)...)
+    {
+    }
+    template <class Fs>
+    constexpr auto operator->*(Fs&& f) const
+    {
+        auto curry = [&](auto&&... vs) { return std::visit(std::forward<Fs>(f), vs...); };
+        return std::apply(curry, std::move(vs));
+    }
 };
 
 template <class... Ts>
 matcher(Ts&&...) -> matcher<Ts&&...>;
 #define Match(...) matcher{__VA_ARGS__}->*overload
 
-int example() {
-  std::vector<std::variant<int, double, std::string>> vec{1, 1.0, "ljslkfjskd"};
-  for (auto& it : vec) {
-    Match(it){
-        [](auto&& x) { std::cout << "unknow type!" << std::endl; },
-        [](int x) { std::cout << "int: " << x << std::endl; },
-        [](double x) { std::cout << "double: " << x << std::endl; },
-    };
-  }
+int example()
+{
+    std::vector<std::variant<int, double, std::string>> vec{1, 1.0, "ljslkfjskd"};
+    for (auto& it : vec)
+    {
+        Match(it){
+            [](auto&& x) { std::cout << "unknow type!" << std::endl; },
+            [](int x) { std::cout << "int: " << x << std::endl; },
+            [](double x) { std::cout << "double: " << x << std::endl; },
+        };
+    }
 }
 
 }  // namespace visit

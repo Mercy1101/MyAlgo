@@ -16,9 +16,10 @@
 
 #include <filesystem>
 
-namespace lee {
-inline namespace file {
-
+namespace lee
+{
+inline namespace file
+{
 /// @name     get_root_path_s
 /// @brief    获取根路径
 ///
@@ -29,8 +30,9 @@ inline namespace file {
 /// @author   Lijiancong, pipinstall@163.com
 /// @date     2020-06-24 21:08:01
 /// @warning  线程不安全
-inline std::string get_root_path_s() {
-  return std::filesystem::current_path().generic_string();
+inline std::string get_root_path_s()
+{
+    return std::filesystem::current_path().generic_string();
 }
 
 /// @name     create_folder_s
@@ -43,8 +45,9 @@ inline std::string get_root_path_s() {
 /// @author   Lijiancong, pipinstall@163.com
 /// @date     2020-06-24 21:08:01
 /// @warning  线程不安全
-inline bool create_folder_s(const std::string& floder_path) {
-  return std::filesystem::create_directory(floder_path);
+inline bool create_folder_s(const std::string& floder_path)
+{
+    return std::filesystem::create_directory(floder_path);
 }
 
 /// @name     is_file_exist_s
@@ -57,8 +60,9 @@ inline bool create_folder_s(const std::string& floder_path) {
 /// @author   Lijiancong, pipinstall@163.com
 /// @date     2020-06-25 10:47:06
 /// @warning  线程不安全
-inline bool is_file_exist_s(const std::string& file_path_name) {
-  return std::filesystem::exists(file_path_name);
+inline bool is_file_exist_s(const std::string& file_path_name)
+{
+    return std::filesystem::exists(file_path_name);
 }
 
 /// @name     remove_file_or_folder
@@ -71,8 +75,9 @@ inline bool is_file_exist_s(const std::string& file_path_name) {
 /// @author   Lijiancong, pipinstall@163.com
 /// @date     2020-06-25 10:57:20
 /// @warning  线程不安全
-inline bool remove_file_or_folder_s(const std::string& file_or_folder_name) {
-  return 0 != std::filesystem::remove_all(file_or_folder_name);
+inline bool remove_file_or_folder_s(const std::string& file_or_folder_name)
+{
+    return 0 != std::filesystem::remove_all(file_or_folder_name);
 }
 }  // namespace file
 }  // namespace lee

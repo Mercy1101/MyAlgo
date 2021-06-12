@@ -16,25 +16,33 @@
 
 #include <vector>
 
-namespace lee {
-inline namespace union_find {
+namespace lee
+{
+inline namespace union_find
+{
 /// 并查集模板
-struct union_find_example {
-  std::vector<int> ancestor;
+struct union_find_example
+{
+    std::vector<int> ancestor;
 
-  union_find_example(int n) {
-    ancestor.resize(n);
-    for (int i = 0; i < n; ++i) {
-      ancestor[i] = i;
+    union_find_example(int n)
+    {
+        ancestor.resize(n);
+        for (int i = 0; i < n; ++i)
+        {
+            ancestor[i] = i;
+        }
     }
-  }
 
-  int find(int index) {
-    return index == ancestor[index] ? index
-                                    : ancestor[index] = find(ancestor[index]);
-  }
+    int find(int index)
+    {
+        return index == ancestor[index] ? index : ancestor[index] = find(ancestor[index]);
+    }
 
-  void merge(int u, int v) { ancestor[find(u)] = find(v); }
+    void merge(int u, int v)
+    {
+        ancestor[find(u)] = find(v);
+    }
 };
 
 }  // namespace union_find

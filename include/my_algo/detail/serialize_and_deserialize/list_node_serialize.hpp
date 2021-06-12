@@ -17,45 +17,55 @@
 #include <string>
 #include <vector>
 
-namespace lee {
-inline namespace serialize {
-struct ListNode {
-  int val = 0;
-  ListNode* next = nullptr;
-  ListNode(int num) : val(num), next(nullptr) {}
+namespace lee
+{
+inline namespace serialize
+{
+struct ListNode
+{
+    int val = 0;
+    ListNode* next = nullptr;
+    ListNode(int num) : val(num), next(nullptr) {}
 };
-class list_node_serialize {
- public:
-  std::string serialize(ListNode* root) {
-    std::string res = "[";
-    while (root != nullptr) {
-      res += std::to_string(root->val) + "";
-      root = root->next;
+class list_node_serialize
+{
+public:
+    std::string serialize(ListNode* root)
+    {
+        std::string res = "[";
+        while (root != nullptr)
+        {
+            res += std::to_string(root->val) + "";
+            root = root->next;
+        }
+        res += "]";
+        return res;
     }
-    res += "]";
-    return res;
-  }
 
-  ListNode* deserialize(std::string data) {
-    data.erase(data.begin());
-    data.erase(std::prev(data.end()));
-    auto last_pos = data.find_first_not_of(',', 0);
-    auto pos = data.find_first_of(',', last_pos);
-    std::vector<int> vec;
-    while (last_pos != std::string::npos || pos != std::string::npos) {
-      vec.push_back(std::stoi(data.substr(last_pos, pos - last_pos)));
-      last_pos = data.find_first_not_of(',', pos);
-      pos = data.find_first_of(',', last_pos);
+    ListNode* deserialize(std::string data)
+    {
+        data.erase(data.begin());
+        data.erase(std::prev(data.end()));
+        auto last_pos = data.find_first_not_of(',', 0);
+        auto pos = data.find_first_of(',', last_pos);
+        std::vector<int> vec;
+        while (last_pos != std::string::npos || pos != std::string::npos)
+        {
+            vec.push_back(std::stoi(data.substr(last_pos, pos - last_pos)));
+            last_pos = data.find_first_not_of(',', pos);
+            pos = data.find_first_of(',', last_pos);
+        }
+        if (vec.empty())
+            return nullptr;
+        ListNode* head = new ListNode(vec.at(0));
+        auto res = head;
+        for (size_t i = 1; i < vec.size(); ++i)
+        {
+            head->next = new ListNode(vec.at(i));
+            head = head->next;
+        }
+        return res;
     }
-    if (vec.empty()) return nullptr;
-    ListNode* head = new ListNode(vec.at(0));
-    auto res = head;
-    for (size_t i = 1; i < vec.size(); ++i) {
-      head->next = new ListNode(vec.at(i));
-      head = head->next;
-    }
-    return res;
-  }
 };
 }  // namespace serialize
 }  // namespace lee

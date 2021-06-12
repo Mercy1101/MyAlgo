@@ -25,8 +25,10 @@
 #include <string>
 #include <type_traits>
 
-namespace lee {
-inline namespace detail {
+namespace lee
+{
+inline namespace detail
+{
 /// @name     ArraySize
 /// @brief    得出入参数组的长度(如int a0[5]; 5 == ArraySize(a0);)
 ///
@@ -51,11 +53,13 @@ inline namespace detail {
 ///           只有原生数组可以使用该函数，std::array、std::string、
 ///           std::vector等容器不可以调用该函数
 template <class T, std::size_t N>
-constexpr inline std::size_t ArraySize(T (&)[N]) noexcept {
-  return N;
+constexpr inline std::size_t ArraySize(T (&)[N]) noexcept
+{
+    return N;
 }
 
-namespace lee_array_size {
+namespace lee_array_size
+{
 /// 我也见过 github.com/google/benchmark/src/arraysize.h 中的另一种写法
 // The arraysize(arr) macro returns the # of elements in an array arr.
 // The expression is a compile-time constant, and therefore can be
@@ -98,9 +102,13 @@ char (&ArraySizeHelper(const T (&array)[N]))[N];
 ///           在定义变量i的下面写上这句话：
 ///           lee::ignore_unused(i);
 template <typename... Ts>
-inline constexpr void ignore_unused(Ts const &...) {}
+inline constexpr void ignore_unused(Ts const &...)
+{
+}
 template <typename... Ts>
-inline constexpr void ignore_unused() {}
+inline constexpr void ignore_unused()
+{
+}
 
 /// @name     checked_delete
 /// @brief    完全可以替代关键字delete,比delete多了编译期检查不完整类型的检查。
@@ -119,11 +127,12 @@ inline constexpr void ignore_unused() {}
 /// @note     这个函数不能用于指向数组指针的delete，
 ///           数组指针应使用函数checked_array_delete
 template <class T>
-inline void checked_delete(T *x) {
-  // intentionally complex - simplification causes regressions
-  typedef char type_must_be_complete[sizeof(T) ? 1 : -1];
-  (void)sizeof(type_must_be_complete);
-  delete x;
+inline void checked_delete(T *x)
+{
+    // intentionally complex - simplification causes regressions
+    typedef char type_must_be_complete[sizeof(T) ? 1 : -1];
+    (void)sizeof(type_must_be_complete);
+    delete x;
 }
 
 /// @name     checked_array_delete
@@ -140,10 +149,11 @@ inline void checked_delete(T *x) {
 /// @note     这个函数不能用于删除指向非数组指针的对象,
 ///           非数组指针的对象的删除用函数checked_delete
 template <class T>
-inline void checked_array_delete(T *x) {
-  typedef char type_must_be_complete[sizeof(T) ? 1 : -1];
-  (void)sizeof(type_must_be_complete);
-  delete[] x;
+inline void checked_array_delete(T *x)
+{
+    typedef char type_must_be_complete[sizeof(T) ? 1 : -1];
+    (void)sizeof(type_must_be_complete);
+    delete[] x;
 }
 
 /// @name     checked_deleter
@@ -157,13 +167,15 @@ inline void checked_array_delete(T *x) {
 /// @date     2019-12-01 19:26:43
 /// @warning  线程安全
 /// @note     注意：不可以对数组指针使用
-struct checked_deleter {
-  typedef void result_type;
+struct checked_deleter
+{
+    typedef void result_type;
 
-  template <class T>
-  void operator()(T *x) const {
-    lee::checked_delete(x);
-  }
+    template <class T>
+    void operator()(T *x) const
+    {
+        lee::checked_delete(x);
+    }
 };
 
 /// @name     checked_array_deleter
@@ -177,13 +189,15 @@ struct checked_deleter {
 /// @date     2019-10-18 13:49:46
 /// @warning  线程不安全
 /// @note     注意：不可以对非数组指针使用
-struct checked_array_deleter {
-  typedef void result_type;
+struct checked_array_deleter
+{
+    typedef void result_type;
 
-  template <class T>
-  void operator()(T *x) const {
-    lee::checked_array_delete(x);
-  }
+    template <class T>
+    void operator()(T *x) const
+    {
+        lee::checked_array_delete(x);
+    }
 };
 
 /// @name     up_cast
@@ -217,16 +231,19 @@ struct checked_array_deleter {
 ///           3. 关于更多信息可以参考下面这篇文章:
 ///              《c++小技巧(三)更好的类型转换implicit_cast和down_cast》
 ///              https://blog.csdn.net/xiaoc_fantasy/article/details/79570788
-namespace lee_up_cast {
+namespace lee_up_cast
+{
 template <class T>
-struct icast_identity {
-  typedef T type;
+struct icast_identity
+{
+    typedef T type;
 };  ///< 用于implicit_cast函数参数的类型推导
 }  // namespace lee_up_cast
 
 template <typename T>
-inline T up_cast(typename ::lee::lee_up_cast::icast_identity<T>::type x) {
-  return x;
+inline T up_cast(typename ::lee::lee_up_cast::icast_identity<T>::type x)
+{
+    return x;
 }
 
 /// @name     down_cast
@@ -243,42 +260,47 @@ inline T up_cast(typename ::lee::lee_up_cast::icast_identity<T>::type x) {
 ///           (Taken from google-protobuf/stubs/common.h)
 /// @date     2019-10-31 14:30:04
 /// @warning  线程安全
-namespace lee_down_cast {
+namespace lee_down_cast
+{
 template <typename To, typename From>
-inline To check_cast(From const &f) {
-  return f;
+inline To check_cast(From const &f)
+{
+    return f;
 }
 }  // namespace lee_down_cast
 template <typename To, typename From>
 inline To down_cast(From *f)  // 只接受指针
 {
-  if (false) ::lee::lee_down_cast::check_cast<From *, To>(0); /** 编译期检查 */
-  assert(f == NULL || dynamic_cast<To>(f) != NULL); /** 运行期检查 */
-  return static_cast<To>(f);
+    if (false)
+        ::lee::lee_down_cast::check_cast<From *, To>(0); /** 编译期检查 */
+    assert(f == NULL || dynamic_cast<To>(f) != NULL);    /** 运行期检查 */
+    return static_cast<To>(f);
 }
 
 /// @brief: 不可被拷贝的类,如果想要定义一个不可被拷贝的类,继承这个类就行了
-class noncopyable {
- protected:
-  constexpr noncopyable() = default;
-  ~noncopyable() = default;
+class noncopyable
+{
+protected:
+    constexpr noncopyable() = default;
+    ~noncopyable() = default;
 
-  noncopyable(const noncopyable &) = delete;
-  noncopyable &operator=(const noncopyable &) = delete;
+    noncopyable(const noncopyable &) = delete;
+    noncopyable &operator=(const noncopyable &) = delete;
 };
 
 /// @brief: 不可被拷贝移动的类,如果想要定义一个不可被拷贝的类,继承这个类就行了
-struct non_transferable {
-  /// 默认构造函数
-  non_transferable() = default;
-  /// 复制构造函数不定义
-  non_transferable(non_transferable const &) = delete;
-  /// 移动构造函数不定义
-  non_transferable(non_transferable &&) = delete;
-  /// 复制赋值符不定义
-  non_transferable &operator=(non_transferable const &) = delete;
-  /// 移动赋值符不定义
-  non_transferable &operator=(non_transferable &&) = delete;
+struct non_transferable
+{
+    /// 默认构造函数
+    non_transferable() = default;
+    /// 复制构造函数不定义
+    non_transferable(non_transferable const &) = delete;
+    /// 移动构造函数不定义
+    non_transferable(non_transferable &&) = delete;
+    /// 复制赋值符不定义
+    non_transferable &operator=(non_transferable const &) = delete;
+    /// 移动赋值符不定义
+    non_transferable &operator=(non_transferable &&) = delete;
 };
 
 /// @name     IsLittleEndian
@@ -293,14 +315,16 @@ struct non_transferable {
 /// @author   Lijiancong, pipinstall@163.com
 /// @date     2019-12-01 18:45:21
 /// @warning  线程不安全
-inline bool IsLittleEndian() noexcept {
-  union ss {
-    int i;
-    char a[sizeof(int)];
-  };
-  ss Endian;
-  Endian.i = 0x0102;
-  return Endian.a[0] == 0x02;
+inline bool IsLittleEndian() noexcept
+{
+    union ss
+    {
+        int i;
+        char a[sizeof(int)];
+    };
+    ss Endian;
+    Endian.i = 0x0102;
+    return Endian.a[0] == 0x02;
 }
 
 /// @name     to_hex
@@ -313,12 +337,13 @@ inline bool IsLittleEndian() noexcept {
 /// @author   lijiancong, pipinstall@163.com
 /// @date     2020-07-20 10:11:58
 /// @warning  线程不安全
-inline std::string to_hex(const size_t dec) {
-  std::ostringstream h;
-  h << std::hex << (dec);
-  std::string result("0x");
-  result += h.str();
-  return result;
+inline std::string to_hex(const size_t dec)
+{
+    std::ostringstream h;
+    h << std::hex << (dec);
+    std::string result("0x");
+    result += h.str();
+    return result;
 }
 
 /// @name     pointer_to_hex
@@ -332,10 +357,10 @@ inline std::string to_hex(const size_t dec) {
 /// @date     2020-07-20 10:22:00
 /// @warning  线程不安全
 template <typename T>
-inline std::string pointer_to_hex(const T pointer) {
-  static_assert(std::is_pointer<T>::value,
-                " pointer_to_hex param is not a pointer!");
-  return to_hex(reinterpret_cast<size_t>(pointer));
+inline std::string pointer_to_hex(const T pointer)
+{
+    static_assert(std::is_pointer<T>::value, " pointer_to_hex param is not a pointer!");
+    return to_hex(reinterpret_cast<size_t>(pointer));
 }
 
 /// @name     remove_repeat_element
@@ -347,67 +372,85 @@ inline std::string pointer_to_hex(const T pointer) {
 ///
 /// @author   Lijiancong, pipinstall@163.com
 /// @date     2020-09-11 20:41:39
-inline std::vector<std::vector<int>> &remove_repeat_element(
-    std::vector<std::vector<int>> &res) {
-  std::sort(res.begin(), res.end(),
-            [](const std::vector<int> &l, const std::vector<int> &r) {
-              if (l.size() == r.size()) {
-                for (size_t i = 0; i < l.size(); ++i) {
-                  if (l.at(i) == r.at(i)) {
+inline std::vector<std::vector<int>> &remove_repeat_element(std::vector<std::vector<int>> &res)
+{
+    std::sort(res.begin(), res.end(), [](const std::vector<int> &l, const std::vector<int> &r) {
+        if (l.size() == r.size())
+        {
+            for (size_t i = 0; i < l.size(); ++i)
+            {
+                if (l.at(i) == r.at(i))
+                {
                     continue;
-                  } else {
-                    return l.at(i) < r.at(i);
-                  }
                 }
-                return false;
-              } else {
-                return l.size() < r.size();
-              }
-            });
-  auto it = std::unique(res.begin(), res.end(),
-                        [](const std::vector<int> &l,
-                           const std::vector<int> &r) { return l == r; });
-  res.erase(it, res.end());
-  return res;
+                else
+                {
+                    return l.at(i) < r.at(i);
+                }
+            }
+            return false;
+        }
+        else
+        {
+            return l.size() < r.size();
+        }
+    });
+    auto it = std::unique(res.begin(), res.end(),
+                          [](const std::vector<int> &l, const std::vector<int> &r) { return l == r; });
+    res.erase(it, res.end());
+    return res;
 }
 
 template <typename T>
-class optional {
- public:
-  optional() : val_(), has_val_(false) {}
-  optional(T val) : val_(val), has_val_(true) {}
-  ~optional() = default;
-  optional(const optional &other) {
-    this->val_ = other.val_;
-    this->has_val_ = other.has_val_;
-  }
-  optional(optional &&other) {
-    this->val_ = other.val_;
-    this->has_val_ = other.has_val_;
-  }
-  optional &operator=(const optional &other) {
-    this->val_ = other.val_;
-    this->has_val_ = other.has_val_;
-    return *this;
-  }
-  optional &operator=(optional &&other) {
-    this->val_ = other.val_;
-    this->has_val_ = other.has_val_;
-    return *this;
-  }
-
-  bool has_value() { return has_val_; }
-  T value() {
-    if (!has_val_) {
-      throw std::runtime_error("has no value in this");
+class optional
+{
+public:
+    optional() : val_(), has_val_(false) {}
+    optional(T val) : val_(val), has_val_(true) {}
+    ~optional() = default;
+    optional(const optional &other)
+    {
+        this->val_ = other.val_;
+        this->has_val_ = other.has_val_;
     }
-    return val_;
-  }
-  T value_or(const T &val) { return has_val_ ? val_ : val; }
+    optional(optional &&other)
+    {
+        this->val_ = other.val_;
+        this->has_val_ = other.has_val_;
+    }
+    optional &operator=(const optional &other)
+    {
+        this->val_ = other.val_;
+        this->has_val_ = other.has_val_;
+        return *this;
+    }
+    optional &operator=(optional &&other)
+    {
+        this->val_ = other.val_;
+        this->has_val_ = other.has_val_;
+        return *this;
+    }
 
- private:
-  T val_{};
-  bool has_val_ = false;
+    bool has_value()
+    {
+        return has_val_;
+    }
+    T value()
+    {
+        if (!has_val_)
+        {
+            throw std::runtime_error("has no value in this");
+        }
+        return val_;
+    }
+    T value_or(const T &val)
+    {
+        return has_val_ ? val_ : val;
+    }
+
+private:
+    T val_{};
+    bool has_val_ = false;
 };
 
 /// @brief  对调用函数进行了封装, 使用了完美转发
@@ -416,19 +459,22 @@ class optional {
 ///         Chapter 11 (11.1.3 Wrapping Function Calls)
 /// @date   2020-02-10 13:17:58
 template <typename Callable, typename... Args>
-decltype(auto) call(Callable &&op, Args &&... args) {
-  if constexpr (std::is_same_v<std::invoke_result_t<Callable, Args...>, void>) {
-    // return type is void:
-    std::invoke(std::forward<Callable>(op), std::forward<Args>(args)...);
-    //...
-    return;
-  } else {
-    // return type is not void:
-    decltype(auto) ret{
-        std::invoke(std::forward<Callable>(op), std::forward<Args>(args)...)};
-    //...
-    return ret;
-  }
+decltype(auto) call(Callable &&op, Args &&... args)
+{
+    if constexpr (std::is_same_v<std::invoke_result_t<Callable, Args...>, void>)
+    {
+        // return type is void:
+        std::invoke(std::forward<Callable>(op), std::forward<Args>(args)...);
+        //...
+        return;
+    }
+    else
+    {
+        // return type is not void:
+        decltype(auto) ret{std::invoke(std::forward<Callable>(op), std::forward<Args>(args)...)};
+        //...
+        return ret;
+    }
 }
 
 /// @brief  一个对象实现次数统计的模板
@@ -437,31 +483,48 @@ decltype(auto) call(Callable &&op, Args &&... args) {
 ///         Chapter 21 (21.2 The Curiously Recurring Template Pattern (CRTP))
 /// @date   2020-02-10 12:41:47
 template <typename CountedType>
-class ObjectCounter {
- private:
-  inline static std::atomic<int> count = 0;  // number of existing objects
+class ObjectCounter
+{
+private:
+    inline static std::atomic<int> count = 0;  // number of existing objects
 
- protected:
-  // default constructor
-  ObjectCounter() { ++count; }
+protected:
+    // default constructor
+    ObjectCounter()
+    {
+        ++count;
+    }
 
-  // copy constructor
-  ObjectCounter(ObjectCounter<CountedType> const &) { ++count; }
+    // copy constructor
+    ObjectCounter(ObjectCounter<CountedType> const &)
+    {
+        ++count;
+    }
 
-  // move constructor
-  ObjectCounter(ObjectCounter<CountedType> &&) { ++count; }
+    // move constructor
+    ObjectCounter(ObjectCounter<CountedType> &&)
+    {
+        ++count;
+    }
 
-  // destructor
-  ~ObjectCounter() { --count; }
+    // destructor
+    ~ObjectCounter()
+    {
+        --count;
+    }
 
- public:
-  // return number of existing objects:
-  static std::size_t live() { return count; }
+public:
+    // return number of existing objects:
+    static std::size_t live()
+    {
+        return count;
+    }
 };
 
 template <typename T>
-bool is_palindrome(const T &s) {
-  return std::equal(s.begin(), s.begin() + s.size() / 2, s.rbegin());
+bool is_palindrome(const T &s)
+{
+    return std::equal(s.begin(), s.begin() + s.size() / 2, s.rbegin());
 }
 
 }  // namespace detail

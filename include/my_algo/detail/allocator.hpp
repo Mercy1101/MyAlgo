@@ -14,28 +14,39 @@
 #ifndef INCLUDE_DETAIL_ALLOCATOR_HPP_
 #define INCLUDE_DETAIL_ALLOCATOR_HPP_
 
-namespace lee {
-inline namespace allocator {
+namespace lee
+{
+inline namespace allocator
+{
 template <typename T>
-struct my_allocator {
-  using value_type = T;
-  my_allocator() = default;
-  template <class U>
-  my_allocator(const my_allocator<U>&) {}
+struct my_allocator
+{
+    using value_type = T;
+    my_allocator() = default;
+    template <class U>
+    my_allocator(const my_allocator<U>&)
+    {
+    }
 
-  T* allocate(std::size_t n, void const* = 0) {
-    return reinterpret_cast<T*>(::operator new(n * sizeof(T)));
-  }
+    T* allocate(std::size_t n, void const* = 0)
+    {
+        return reinterpret_cast<T*>(::operator new(n * sizeof(T)));
+    }
 
-  void deallocate(T* ptr, size_t) { ::operator delete(ptr); }
+    void deallocate(T* ptr, size_t)
+    {
+        ::operator delete(ptr);
+    }
 };
 template <typename T, typename U>
-inline bool operator==(const my_allocator<T>&, const my_allocator<U>&) {
-  return true;
+inline bool operator==(const my_allocator<T>&, const my_allocator<U>&)
+{
+    return true;
 }
 template <typename T, typename U>
-inline bool operator!=(const my_allocator<T>& a, const my_allocator<U>& b) {
-  return !(a == b);
+inline bool operator!=(const my_allocator<T>& a, const my_allocator<U>& b)
+{
+    return !(a == b);
 }
 
 }  // namespace allocator
