@@ -17,6 +17,8 @@
 #include <chrono>
 #include <ctime>
 
+#pragma warning(disable : 6031)
+
 namespace lee
 {
 inline namespace time
@@ -131,77 +133,79 @@ inline time_t get_compile_time()
 {
     static std::once_flag InstanceFlag;
     static time_t compile_time_s = 0;  ///< 单位为秒
-    std::call_once(InstanceFlag, []() {
-        tm tm = {0};
-        char Mmm[4] = {0};
-        strncpy(Mmm, "Jan", sizeof(Mmm));
-        sscanf(__DATE__, "%3s %d %d", Mmm, &tm.tm_mday, &tm.tm_year);
+    std::call_once(InstanceFlag,
+                   []()
+                   {
+                       tm tm = {0};
+                       char Mmm[4] = {0};
+                       strncpy(Mmm, "Jan", sizeof(Mmm));
+                       sscanf(__DATE__, "%3s %d %d", Mmm, &tm.tm_mday, &tm.tm_year);
 
-        std::string Month(Mmm);
-        if (Month.find("Jan") != std::string::npos)
-        {
-            tm.tm_mon = 1;
-        }
-        else if (Month.find("Feb") != std::string::npos)
-        {
-            tm.tm_mon = 2;
-        }
-        else if (Month.find("Mar") != std::string::npos)
-        {
-            tm.tm_mon = 3;
-        }
-        else if (Month.find("Apr") != std::string::npos)
-        {
-            tm.tm_mon = 4;
-        }
-        else if (Month.find("May") != std::string::npos)
-        {
-            tm.tm_mon = 5;
-        }
-        else if (Month.find("Jun") != std::string::npos)
-        {
-            tm.tm_mon = 6;
-        }
-        else if (Month.find("Jul") != std::string::npos)
-        {
-            tm.tm_mon = 7;
-        }
-        else if (Month.find("Aug") != std::string::npos)
-        {
-            tm.tm_mon = 8;
-        }
-        else if (Month.find("Sep") != std::string::npos)
-        {
-            tm.tm_mon = 9;
-        }
-        else if (Month.find("Oct") != std::string::npos)
-        {
-            tm.tm_mon = 10;
-        }
-        else if (Month.find("Nov") != std::string::npos)
-        {
-            tm.tm_mon = 11;
-        }
-        else if (Month.find("Dec") != std::string::npos)
-        {
-            tm.tm_mon = 12;
-        }
-        else
-        {
-            tm.tm_mon = 0;
-        }
+                       std::string Month(Mmm);
+                       if (Month.find("Jan") != std::string::npos)
+                       {
+                           tm.tm_mon = 1;
+                       }
+                       else if (Month.find("Feb") != std::string::npos)
+                       {
+                           tm.tm_mon = 2;
+                       }
+                       else if (Month.find("Mar") != std::string::npos)
+                       {
+                           tm.tm_mon = 3;
+                       }
+                       else if (Month.find("Apr") != std::string::npos)
+                       {
+                           tm.tm_mon = 4;
+                       }
+                       else if (Month.find("May") != std::string::npos)
+                       {
+                           tm.tm_mon = 5;
+                       }
+                       else if (Month.find("Jun") != std::string::npos)
+                       {
+                           tm.tm_mon = 6;
+                       }
+                       else if (Month.find("Jul") != std::string::npos)
+                       {
+                           tm.tm_mon = 7;
+                       }
+                       else if (Month.find("Aug") != std::string::npos)
+                       {
+                           tm.tm_mon = 8;
+                       }
+                       else if (Month.find("Sep") != std::string::npos)
+                       {
+                           tm.tm_mon = 9;
+                       }
+                       else if (Month.find("Oct") != std::string::npos)
+                       {
+                           tm.tm_mon = 10;
+                       }
+                       else if (Month.find("Nov") != std::string::npos)
+                       {
+                           tm.tm_mon = 11;
+                       }
+                       else if (Month.find("Dec") != std::string::npos)
+                       {
+                           tm.tm_mon = 12;
+                       }
+                       else
+                       {
+                           tm.tm_mon = 0;
+                       }
 
-        sscanf(__TIME__, "%d:%d:%d", &tm.tm_hour, &tm.tm_min, &tm.tm_sec);
-        /** 修正参数 */
-        tm.tm_year -= 1900;
-        tm.tm_mon -= 1;
-        compile_time_s = mktime(&tm);
-        if (compile_time_s <= 0 || compile_time_s > lee::get_time_stamp())
-        {
-            throw std::logic_error("error time param!");
-            compile_time_s = -1;
-        }
-    });  /// std::call_once()
+                       sscanf(__TIME__, "%d:%d:%d", &tm.tm_hour, &tm.tm_min, &tm.tm_sec);
+                       /** 修正参数 */
+                       tm.tm_year -= 1900;
+                       tm.tm_mon -= 1;
+                       compile_time_s = mktime(&tm);
+                       if (compile_time_s <= 0 || compile_time_s > lee::get_time_stamp())
+                       {
+                           throw std::logic_error("error time param!");
+                           compile_time_s = -1;
+                       }
+                   });  /// std::call_once()
     return compile_time_s;
 }
 

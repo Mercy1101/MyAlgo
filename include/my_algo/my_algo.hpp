@@ -34,5 +34,7 @@
 #include "my_algo/detail/time.hpp"
 #include "my_algo/detail/union_find.hpp"
 /// #include "my_algo/detail/quick_sort.hpp"
+#include "catch/catch.hpp"
+#include "my_algo/detail/color_print.hpp"
 
 #endif

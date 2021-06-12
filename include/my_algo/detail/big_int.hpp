@@ -15,6 +15,7 @@
 #define INCLUDE_DETAIL_BIG_INT_HPP_
 
 #include <algorithm>
+#include <cassert>
 #include <exception>
 #include <functional>
 #include <limits>
@@ -407,7 +408,8 @@ public:
         {
             positive_ = true;
         }
-        std::function<big_int(const int)> func = [&, this](const int n) {
+        std::function<big_int(const int)> func = [&, this](const int n)
+        {
             if (n == 1)
                 return lookup[n];
             if (lookup.count(n))

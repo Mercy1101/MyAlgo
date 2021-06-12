@@ -41,7 +41,7 @@ public:
         for (size_t j = 1; j < pattern_.size(); j++)
         {
             for (int c = 0; c < 256; c++) dp_[j][c] = dp_[X][c];
-            dp_[j][pattern_.at(j)] = j + 1;
+            dp_[j][pattern_.at(j)] = static_cast<int>(j) + 1;
             // 更新影子状态
             X = dp_[X][pattern_.at(j)];
         }

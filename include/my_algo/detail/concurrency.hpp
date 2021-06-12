@@ -948,7 +948,7 @@ public:
     template <typename FunctionType>
     std::future<typename std::invoke_result<FunctionType()>::type> submit(FunctionType f)
     {
-        typedef typename std::result_of<FunctionType()>::type result_type;
+        typedef typename std::invoke_result<FunctionType()>::type result_type;
 
         std::packaged_task<result_type()> task(f);
         task_handle<result_type> res(task.get_future());
