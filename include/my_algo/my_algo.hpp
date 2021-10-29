@@ -36,5 +36,10 @@
 /// #include "my_algo/detail/quick_sort.hpp"
 #include "catch/catch.hpp"
 #include "my_algo/detail/color_print.hpp"
+#include "my_algo/detail/array_utility.hpp"
+#include "my_algo/detail/base64_utility.hpp"
+#include "my_algo/detail/bimap_utility.hpp"
+#include "my_algo/detail/earse_if.hpp"
+#include "my_algo/detail/string_utility.hpp"
 
 #endif

@@ -1,7 +1,7 @@
 ﻿/**
  * @file            color_print.hpp
  * @brief           颜色输出print的实现
- * @author          lijiancong(lijiancong@gbcom.com.cn)
+ * @author          lijiancong(pipinstall@163.com)
  * @version         0.1
  * @date            2021-06-03 13:23:34
  *
